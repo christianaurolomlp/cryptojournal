@@ -9,9 +9,9 @@ export const CRYPTOS = [
   'HYPER', 'ICP', 'INIT', 'IOTA', 'IP', 'JELLY', 'KAS', 'KAVA', 'LAYER',
   'LINEA', 'LPT', 'MEME', 'MKR', 'MOVE', 'OM', 'ONDO', 'ORCA', 'ORDI',
   'PARTI', 'PENGU', 'PIXEL', 'PLUME', 'PNUT', 'POL', 'PUMFUN', 'PUNDIX',
-  'QNT', 'RARE', 'RAY', 'RECALL', 'RIVER', 'ROBO', 'ROSE', 'RUNE', 'SAHARA',
+  'MULTI', 'QNT', 'RARE', 'RAY', 'RECALL', 'RIVER', 'ROBO', 'ROSE', 'RUNE', 'SAHARA',
   'SHIB', 'SILVER', 'SONIC', 'SUPER', 'SUSHI', 'THETA', 'TRX', 'TURBO',
-  'VOXEL', 'WLFI', 'XAG', 'XPL', 'ZEREBRO'
+  'VOXEL', 'WLFI', 'XAG', 'XPL', 'XAUT', 'ZEREBRO'
 ]
 
 export const TIMEFRAMES = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '8h', '12h', '1D', '1W', '1M']
