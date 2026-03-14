@@ -2,7 +2,9 @@ export const CRYPTOS = [
   'BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'AVAX', 'DOGE', 'DOT', 'MATIC',
   'LINK', 'UNI', 'ATOM', 'NEAR', 'APT', 'ARB', 'OP', 'SUI', 'SEI', 'INJ',
   'TIA', 'JUP', 'WIF', 'PEPE', 'BONK', 'RENDER', 'FET', 'TAO', 'WLD', 'TON',
-  'HBAR', 'FIL', 'LTC', 'BCH', 'ETC', 'SAND', 'MANA', 'AXS', 'GALA', 'IMX'
+  'HBAR', 'FIL', 'LTC', 'BCH', 'ETC', 'SAND', 'MANA', 'AXS', 'GALA', 'IMX',
+  'GOLD', 'FARTCOIN', 'HYPE', 'INIT', 'MELANIA', 'RIVER', 'ROBO', 'CAKE',
+  'XAG', 'ASTER', 'ORO'
 ]
 
 export const TIMEFRAMES = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '8h', '12h', '1D', '1W', '1M']

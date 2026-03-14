@@ -42,3 +42,29 @@ export const store = {
 export function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
 }
+
+// Auto-seed: load demo data if no trades exist
+export async function seedIfEmpty() {
+  const existing = store.getTrades()
+  if (existing.length > 0) return false
+  
+  try {
+    const base = import.meta.env.BASE_URL || '/'
+    const resp = await fetch(`${base}seed-data.json`)
+    if (!resp.ok) return false
+    const data = await resp.json()
+    
+    if (data.trades && data.trades.length > 0) {
+      // Assign unique IDs
+      const trades = data.trades.map(t => ({ ...t, id: uid() }))
+      store.saveTrades(trades)
+    }
+    if (data.caps) {
+      store.saveCaps(data.caps)
+    }
+    return true
+  } catch (e) {
+    console.log('No seed data found:', e)
+    return false
+  }
+}

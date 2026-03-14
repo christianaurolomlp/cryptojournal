@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { VIEWS } from './constants.js'
-import { store, uid } from './store.js'
+import { store, uid, seedIfEmpty } from './store.js'
 import { currentMonthKey, monthLabel, prevMonth, nextMonth } from './utils.js'
 import Dashboard from './components/Dashboard.jsx'
 import Calendar from './components/Calendar.jsx'
@@ -106,6 +106,16 @@ export default function App() {
   const [voiceStatus, setVoiceStatus] = useState(VOICE_IDLE)
   const [voiceText, setVoiceText] = useState('')
   const recognitionRef = useRef(null)
+
+  // Auto-seed on first load
+  useEffect(() => {
+    seedIfEmpty().then(seeded => {
+      if (seeded) {
+        setTrades(store.getTrades())
+        setCaps(store.getCaps())
+      }
+    })
+  }, [])
 
   // ── Trade actions ──────────────────────────────────────────────────────────
   const saveTrade = useCallback((trade) => {
