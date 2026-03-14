@@ -1,10 +1,17 @@
 export const CRYPTOS = [
-  'BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'AVAX', 'DOGE', 'DOT', 'MATIC',
-  'LINK', 'UNI', 'ATOM', 'NEAR', 'APT', 'ARB', 'OP', 'SUI', 'SEI', 'INJ',
-  'TIA', 'JUP', 'WIF', 'PEPE', 'BONK', 'RENDER', 'FET', 'TAO', 'WLD', 'TON',
-  'HBAR', 'FIL', 'LTC', 'BCH', 'ETC', 'SAND', 'MANA', 'AXS', 'GALA', 'IMX',
-  'GOLD', 'FARTCOIN', 'HYPE', 'INIT', 'MELANIA', 'RIVER', 'ROBO', 'CAKE',
-  'XAG', 'ASTER', 'ORO'
+  'BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LINK',
+  'UNI', 'ATOM', 'NEAR', 'APT', 'ARB', 'OP', 'SUI', 'SEI', 'INJ', 'TAO',
+  'JUP', 'WIF', 'PEPE', 'BONK', 'RENDER', 'FET', 'WLD', 'TON', 'HBAR', 'LTC',
+  'BCH', 'SAND', 'GALA', 'GOLD', 'TRUMP', 'HYPE', 'FARTCOIN', 'MELANIA',
+  'AAVE', 'AERO', 'AEVO', 'ALPHA', 'API3', 'ASTER', 'BAKE', 'BANANA', 'BERA',
+  'BIO', 'BRETT', 'CAKE', 'CETUS', 'CURVE', 'DRIFT', 'EIGEN', 'ENA', 'EOS',
+  'FLOKI', 'FUN', 'GOAT', 'GRASS', 'GRIFFAIN', 'HAEDAL', 'HFT', 'HIFI',
+  'HYPER', 'ICP', 'INIT', 'IOTA', 'IP', 'JELLY', 'KAS', 'KAVA', 'LAYER',
+  'LINEA', 'LPT', 'MEME', 'MKR', 'MOVE', 'OM', 'ONDO', 'ORCA', 'ORDI',
+  'PARTI', 'PENGU', 'PIXEL', 'PLUME', 'PNUT', 'POL', 'PUMFUN', 'PUNDIX',
+  'QNT', 'RARE', 'RAY', 'RECALL', 'RIVER', 'ROBO', 'ROSE', 'RUNE', 'SAHARA',
+  'SHIB', 'SILVER', 'SONIC', 'SUPER', 'SUSHI', 'THETA', 'TRX', 'TURBO',
+  'VOXEL', 'WLFI', 'XAG', 'XPL', 'ZEREBRO'
 ]
 
 export const TIMEFRAMES = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '8h', '12h', '1D', '1W', '1M']
