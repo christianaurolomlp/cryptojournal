@@ -49,7 +49,8 @@ export function calcStats(trades, capital) {
   const wins = closed.filter(t => t.result === 'WIN').length
   const losses = closed.filter(t => t.result === 'LOSS').length
   const be = closed.filter(t => t.result === 'BE').length
-  const winRate = totalClosed > 0 ? (wins / totalClosed) * 100 : 0
+  const winLossClosed = wins + losses  // excluye BE del winrate
+  const winRate = winLossClosed > 0 ? (wins / winLossClosed) * 100 : 0
   const pnl = closed.reduce((acc, t) => acc + (t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl), 0)
   
   const winPnls = closed.filter(t => t.result === 'WIN').map(t => t.pnl)
@@ -93,8 +94,8 @@ export function calcStats(trades, capital) {
     winRate, pnl, avgWin, avgLoss, profitFactor,
     bestTrade, worstTrade, maxWinStreak, maxLossStreak,
     rentPct, capitalFinal,
-    longs: { count: longs.length, wins: longWins, pnl: longPnl, winRate: longs.length > 0 ? (longWins / longs.length) * 100 : 0 },
-    shorts: { count: shorts.length, wins: shortWins, pnl: shortPnl, winRate: shorts.length > 0 ? (shortWins / shorts.length) * 100 : 0 }
+    longs: { count: longs.length, wins: longWins, pnl: longPnl, winRate: (() => { const ll = longs.filter(t => t.result !== 'BE').length; return ll > 0 ? (longWins / ll) * 100 : 0 })() },
+    shorts: { count: shorts.length, wins: shortWins, pnl: shortPnl, winRate: (() => { const sl = shorts.filter(t => t.result !== 'BE').length; return sl > 0 ? (shortWins / sl) * 100 : 0 })() }
   }
 }
 
