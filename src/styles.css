@@ -589,8 +589,39 @@ body::after {
 .card-body { padding: 14px 16px; }
 
 /* ===== EQUITY CURVE ===== */
-.equity-curve { width: 100%; overflow: hidden; }
+.equity-curve { width: 100%; overflow: hidden; position: relative; }
 .equity-curve svg { width: 100%; display: block; }
+
+/* Equity Tooltip */
+.equity-tooltip {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -120%);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.equity-tooltip-date {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+.equity-tooltip-pnl {
+  font-weight: 700;
+  font-size: 14px;
+}
+.equity-tooltip-pct {
+  color: #d4af37;
+  font-size: 11px;
+  margin-top: 1px;
+}
 
 /* ===== TRADE LIST ===== */
 .trade-list { display: flex; flex-direction: column; gap: 6px; }

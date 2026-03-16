@@ -79,7 +79,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
             <span style={{ fontSize: 12, color: 'var(--text3)' }}>{monthLabel(currentMonth)}</span>
           </div>
           <div className="card-body" style={{ padding: '12px 16px' }}>
-            <EquityCurve trades={monthTrades} height={140} />
+            <EquityCurve trades={monthTrades} height={140} capital={capital} />
           </div>
         </div>
 
