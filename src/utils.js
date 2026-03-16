@@ -99,6 +99,37 @@ export function calcStats(trades, capital) {
   }
 }
 
+export function calcStatsByTf(trades) {
+  const closed = trades.filter(t => t.closed && t.result && t.pnl !== null)
+  const tfMap = {}
+  for (const t of closed) {
+    const tf = t.tf || t.timeframe || 'Sin TF'
+    if (!tfMap[tf]) tfMap[tf] = { ops: 0, wins: 0, losses: 0, be: 0, pnl: 0, best: -Infinity, worst: Infinity }
+    const entry = tfMap[tf]
+    const pnlVal = t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl
+    entry.ops++
+    if (t.result === 'WIN') entry.wins++
+    else if (t.result === 'LOSS') entry.losses++
+    else entry.be++
+    entry.pnl += pnlVal
+    if (pnlVal > entry.best) entry.best = pnlVal
+    if (pnlVal < entry.worst) entry.worst = pnlVal
+  }
+  return Object.entries(tfMap)
+    .map(([tf, d]) => {
+      const winLoss = d.wins + d.losses
+      return {
+        tf,
+        ops: d.ops,
+        winRate: winLoss > 0 ? (d.wins / winLoss) * 100 : 0,
+        pnl: d.pnl,
+        best: d.best === -Infinity ? null : d.best,
+        worst: d.worst === Infinity ? null : d.worst
+      }
+    })
+    .sort((a, b) => b.pnl - a.pnl)
+}
+
 export function equityPoints(trades) {
   const sorted = [...trades]
     .filter(t => t.closed && t.result && t.pnl !== null)

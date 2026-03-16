@@ -1,10 +1,12 @@
 import { useMemo } from 'react'
-import { calcStats, formatMoney, formatPct, tradesForMonth, monthLabel } from '../utils.js'
+import { calcStats, calcStatsByTf, formatMoney, formatPct, tradesForMonth, monthLabel } from '../utils.js'
 
 export default function Stats({ trades, caps, currentMonth }) {
   const capital = caps[currentMonth] || 0
   const monthTrades = useMemo(() => tradesForMonth(trades, currentMonth), [trades, currentMonth])
   const stats = useMemo(() => calcStats(monthTrades, capital), [monthTrades, capital])
+
+  const tfStats = useMemo(() => calcStatsByTf(monthTrades), [monthTrades])
 
   const { wins, losses, be, totalClosed } = stats
   const winPct = totalClosed > 0 ? (wins / totalClosed) * 100 : 0
@@ -174,6 +176,47 @@ export default function Stats({ trades, caps, currentMonth }) {
               <div style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--red)' }} />
               <span style={{ fontSize: 12, color: 'var(--text2)' }}>LOSS: {losses} ({lossPct.toFixed(1)}%)</span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Timeframe Performance */}
+      {tfStats.length > 0 && (
+        <div className="stats-section">
+          <div className="stats-section-title">📊 Rendimiento por Temporalidad</div>
+          <div className="tf-table-wrap">
+            <table className="tf-table">
+              <thead>
+                <tr>
+                  <th>Temporalidad</th>
+                  <th>Ops</th>
+                  <th>Win Rate</th>
+                  <th>PnL Total</th>
+                  <th>Mejor Op</th>
+                  <th>Peor Op</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tfStats.map(row => (
+                  <tr key={row.tf}>
+                    <td><span className="tf-badge">{row.tf}</span></td>
+                    <td>{row.ops}</td>
+                    <td className={row.winRate >= 60 ? 'text-green' : row.winRate >= 40 ? 'text-yellow' : 'text-red'}>
+                      {row.winRate.toFixed(1)}%
+                    </td>
+                    <td className={row.pnl > 0 ? 'text-green' : row.pnl < 0 ? 'text-red' : ''} style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                      {formatMoney(row.pnl)}
+                    </td>
+                    <td className="text-green" style={{ fontFamily: 'var(--font-mono)' }}>
+                      {row.best !== null ? formatMoney(row.best) : '—'}
+                    </td>
+                    <td className="text-red" style={{ fontFamily: 'var(--font-mono)' }}>
+                      {row.worst !== null ? formatMoney(row.worst) : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}

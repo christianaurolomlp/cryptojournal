@@ -1546,3 +1546,53 @@ textarea.form-control { resize: vertical; min-height: 72px; }
   .topbar { padding: 0 12px; }
   .month-label { min-width: 100px; font-size: 12px; }
 }
+
+/* ===== TIMEFRAME TABLE ===== */
+.tf-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 10px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+}
+.tf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.tf-table thead {
+  background: var(--surface3);
+}
+.tf-table th {
+  padding: 10px 14px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text3);
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 1px solid var(--border2);
+}
+.tf-table td {
+  padding: 10px 14px;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+}
+.tf-table tbody tr:last-child td { border-bottom: none; }
+.tf-table tbody tr:hover { background: var(--gold-dim); }
+.tf-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 6px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(245,158,11,0.2);
+  color: var(--gold-bright);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+.text-green { color: var(--green) !important; }
+.text-red { color: var(--red) !important; }
+.text-yellow { color: var(--yellow) !important; }
