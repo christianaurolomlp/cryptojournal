@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { VIEWS } from './constants.js'
-import { store, uid, seedIfEmpty } from './store.js'
+import { store, apiStore, isApiConfigured, uid, seedIfEmpty } from './store.js'
 import { currentMonthKey, monthLabel, prevMonth, nextMonth } from './utils.js'
 import Dashboard from './components/Dashboard.jsx'
 import Calendar from './components/Calendar.jsx'
@@ -17,6 +17,32 @@ const VOICE_LISTENING = 'listening'
 const VOICE_PROCESSING = 'processing'
 const VOICE_SUCCESS = 'success'
 const VOICE_ERROR = 'error'
+
+// ─── Migration Modal ──────────────────────────────────────────────────────────
+function MigrationModal({ count, onMigrate, onSkip }) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal" style={{ maxWidth: 420 }}>
+        <div className="modal-header">
+          <h2 className="modal-title">📦 Migrar datos locales</h2>
+        </div>
+        <div className="modal-body">
+          <p style={{ fontSize: 14, color: 'var(--text2)', lineHeight: 1.5 }}>
+            Se encontraron <strong>{count}</strong> operaciones guardadas en este navegador. 
+            ¿Quieres migrarlas a la base de datos?
+          </p>
+          <p style={{ fontSize: 13, color: 'var(--text3)', marginTop: 10 }}>
+            Después de migrar, los datos estarán seguros en la nube y accesibles desde cualquier dispositivo.
+          </p>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-ghost" onClick={onSkip}>No, descartar</button>
+          <button className="btn btn-primary" onClick={onMigrate}>Sí, migrar</button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 // ─── Capital Modal ────────────────────────────────────────────────────────────
 function CapitalModal({ currentMonth, caps, onSave, onClose }) {
@@ -85,14 +111,37 @@ function VoiceBanner({ status, text, onClose }) {
   )
 }
 
+// ─── Sync indicator ───────────────────────────────────────────────────────────
+function SyncBadge({ syncing }) {
+  if (!isApiConfigured()) return null
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      fontSize: 11, color: syncing ? 'var(--yellow)' : 'var(--green)',
+      marginLeft: 8, opacity: 0.7
+    }}>
+      <span style={{
+        width: 6, height: 6, borderRadius: '50%',
+        background: syncing ? 'var(--yellow)' : 'var(--green)',
+        animation: syncing ? 'pulse 1s infinite' : 'none'
+      }} />
+      {syncing ? 'Sincronizando...' : 'Sincronizado'}
+    </span>
+  )
+}
+
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [trades, setTrades] = useState(() => store.getTrades())
-  const [caps, setCaps] = useState(() => store.getCaps())
-  const [apiKey, setApiKey] = useState(() => store.getApiKey())
+  const [trades, setTrades] = useState([])
+  const [caps, setCaps] = useState({})
+  const [anthropicKey, setAnthropicKey] = useState(() => store.getAnthropicKey())
   const [view, setView] = useState(VIEWS.DASHBOARD)
   const [currentMonth, setCurrentMonth] = useState(currentMonthKey())
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [syncing, setSyncing] = useState(false)
+  const [showMigration, setShowMigration] = useState(false)
+  const [migrationCount, setMigrationCount] = useState(0)
+  const [loading, setLoading] = useState(true)
 
   // Modals
   const [showNewTrade, setShowNewTrade] = useState(false)
@@ -107,37 +156,134 @@ export default function App() {
   const [voiceText, setVoiceText] = useState('')
   const recognitionRef = useRef(null)
 
-  // Auto-seed on first load
-  useEffect(() => {
-    seedIfEmpty().then(seeded => {
+  // ── Load data ──────────────────────────────────────────────────────────────
+  const loadData = useCallback(async () => {
+    if (isApiConfigured()) {
+      setSyncing(true)
+      try {
+        const [remoteTrades, remoteCaps] = await Promise.all([
+          apiStore.getTrades(),
+          apiStore.getCaps()
+        ])
+        if (remoteTrades !== null) {
+          setTrades(remoteTrades)
+          if (remoteCaps !== null) setCaps(remoteCaps)
+          
+          // Check for local data to migrate
+          if (store.hasLocalTrades()) {
+            const localTrades = store.getTrades()
+            setMigrationCount(localTrades.length)
+            setShowMigration(true)
+          }
+          
+          setSyncing(false)
+          setLoading(false)
+          return
+        }
+      } catch (err) {
+        console.error('Failed to load from API:', err)
+      }
+      setSyncing(false)
+    }
+    
+    // Fallback to localStorage
+    const localTrades = store.getTrades()
+    const localCaps = store.getCaps()
+    setTrades(localTrades)
+    setCaps(localCaps)
+    setLoading(false)
+    
+    // Auto-seed if empty
+    if (localTrades.length === 0) {
+      const seeded = await seedIfEmpty()
       if (seeded) {
         setTrades(store.getTrades())
         setCaps(store.getCaps())
       }
-    })
+    }
+  }, [])
+
+  useEffect(() => { loadData() }, [loadData])
+
+  // ── Migration ──────────────────────────────────────────────────────────────
+  const handleMigrate = useCallback(async () => {
+    const localTrades = store.getTrades()
+    const localCaps = store.getCaps()
+    setSyncing(true)
+    setShowMigration(false)
+    try {
+      if (localTrades.length > 0) {
+        await apiStore.bulkImport(localTrades)
+      }
+      if (Object.keys(localCaps).length > 0) {
+        // Merge with remote caps
+        const remoteCaps = await apiStore.getCaps() || {}
+        const merged = { ...remoteCaps, ...localCaps }
+        await apiStore.saveCaps(merged)
+      }
+      // Clear local data after successful migration
+      store.clearLocalTrades()
+      // Reload from API
+      const fresh = await apiStore.getTrades()
+      if (fresh) setTrades(fresh)
+      const freshCaps = await apiStore.getCaps()
+      if (freshCaps) setCaps(freshCaps)
+    } catch (err) {
+      console.error('Migration error:', err)
+    }
+    setSyncing(false)
+  }, [])
+
+  const handleSkipMigration = useCallback(() => {
+    store.clearLocalTrades()
+    setShowMigration(false)
   }, [])
 
   // ── Trade actions ──────────────────────────────────────────────────────────
-  const saveTrade = useCallback((trade) => {
+  const saveTrade = useCallback(async (trade) => {
     setTrades(prev => {
       const exists = prev.find(t => t.id === trade.id)
-      const next = exists ? prev.map(t => t.id === trade.id ? trade : t) : [...prev, trade]
-      store.saveTrades(next)
-      return next
+      return exists ? prev.map(t => t.id === trade.id ? trade : t) : [...prev, trade]
     })
     setShowNewTrade(false)
     setEditTrade(null)
     setCloseTrade(null)
     setVoicePrefill(null)
+
+    if (isApiConfigured()) {
+      setSyncing(true)
+      try {
+        await apiStore.saveTrade(trade)
+      } catch (err) {
+        console.error('Failed to save trade to API:', err)
+      }
+      setSyncing(false)
+    } else {
+      // Fallback: save to localStorage
+      setTrades(prev => {
+        store.saveTrades(prev)
+        return prev
+      })
+    }
   }, [])
 
-  const deleteTradeFn = useCallback((trade) => {
+  const deleteTradeFn = useCallback(async (trade) => {
     setTrades(prev => {
       const next = prev.filter(t => t.id !== trade.id)
-      store.saveTrades(next)
+      if (!isApiConfigured()) store.saveTrades(next)
       return next
     })
     setDeleteTrade(null)
+
+    if (isApiConfigured()) {
+      setSyncing(true)
+      try {
+        await apiStore.deleteTrade(trade.id)
+      } catch (err) {
+        console.error('Failed to delete trade from API:', err)
+      }
+      setSyncing(false)
+    }
   }, [])
 
   const reopenTrade = useCallback((trade) => {
@@ -145,9 +291,19 @@ export default function App() {
     saveTrade(updated)
   }, [saveTrade])
 
-  const saveCaps = useCallback((newCaps) => {
+  const saveCaps = useCallback(async (newCaps) => {
     setCaps(newCaps)
-    store.saveCaps(newCaps)
+    if (isApiConfigured()) {
+      setSyncing(true)
+      try {
+        await apiStore.saveCaps(newCaps)
+      } catch (err) {
+        console.error('Failed to save caps to API:', err)
+      }
+      setSyncing(false)
+    } else {
+      store.saveCaps(newCaps)
+    }
   }, [])
 
   const saveCapForMonth = useCallback((amount) => {
@@ -166,7 +322,7 @@ export default function App() {
       return
     }
 
-    if (!apiKey) {
+    if (!anthropicKey) {
       setVoiceStatus(VOICE_ERROR)
       setVoiceText('Configura tu API key de Anthropic en Ajustes.')
       setTimeout(() => setVoiceStatus(VOICE_IDLE), 4000)
@@ -198,7 +354,7 @@ export default function App() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': apiKey,
+            'x-api-key': anthropicKey,
             'anthropic-version': '2023-06-01',
             'anthropic-dangerous-direct-browser-access': 'true'
           },
@@ -259,7 +415,7 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
     }
 
     rec.start()
-  }, [apiKey, voiceStatus])
+  }, [anthropicKey, voiceStatus])
 
   const stopVoice = useCallback(() => {
     try { recognitionRef.current?.stop() } catch {}
@@ -282,6 +438,17 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
 
   const capital = caps[currentMonth] || 0
 
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: 32, marginBottom: 12 }}>₿</div>
+          <div>Cargando...</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app-layout">
       {/* Overlay for mobile sidebar */}
@@ -296,7 +463,7 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
           <div className="brand-icon">₿</div>
           <div>
             <div className="brand-text">CryptoJournal</div>
-            <div className="brand-sub">Trading Diary</div>
+            <div className="brand-sub">Trading Diary <SyncBadge syncing={syncing} /></div>
           </div>
         </div>
 
@@ -416,8 +583,9 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
             <Settings
               caps={caps}
               onCapsChange={saveCaps}
-              apiKey={apiKey}
-              onApiKeyChange={setApiKey}
+              anthropicKey={anthropicKey}
+              onAnthropicKeyChange={setAnthropicKey}
+              onDataReload={loadData}
             />
           )}
         </main>
@@ -465,6 +633,14 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
           caps={caps}
           onSave={saveCapForMonth}
           onClose={() => setShowCapital(false)}
+        />
+      )}
+
+      {showMigration && (
+        <MigrationModal
+          count={migrationCount}
+          onMigrate={handleMigrate}
+          onSkip={handleSkipMigration}
         />
       )}
 

@@ -1,17 +1,24 @@
 import { useState } from 'react'
 import { MONTHS_ES } from '../constants.js'
-import { store } from '../store.js'
+import { store, saveApiConfig, isApiConfigured, apiStore } from '../store.js'
 import { monthLabel, currentMonthKey } from '../utils.js'
 
-export default function Settings({ caps, onCapsChange, apiKey, onApiKeyChange }) {
-  const [keyInput, setKeyInput] = useState(apiKey)
+export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropicKeyChange, onDataReload }) {
+  const [keyInput, setKeyInput] = useState(anthropicKey)
   const [keyVisible, setKeyVisible] = useState(false)
   const [editingMonth, setEditingMonth] = useState(null)
   const [capInput, setCapInput] = useState('')
   const [saved, setSaved] = useState(false)
 
+  // Backend API config
+  const [apiUrl, setApiUrl] = useState(() => localStorage.getItem('cj_api_url') || 'https://cryptojournal-api-production.up.railway.app')
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('cj_api_key') || '')
+  const [apiKeyVisible, setApiKeyVisible] = useState(false)
+  const [apiSaved, setApiSaved] = useState(false)
+  const [apiTesting, setApiTesting] = useState(false)
+  const [apiStatus, setApiStatus] = useState(isApiConfigured() ? 'connected' : 'disconnected')
+
   const cur = currentMonthKey()
-  const curYear = parseInt(cur.split('-')[0])
 
   // Show last 12 months + next 2
   const months = []
@@ -23,11 +30,40 @@ export default function Settings({ caps, onCapsChange, apiKey, onApiKeyChange })
     months.push(key)
   }
 
-  function saveApiKey() {
-    onApiKeyChange(keyInput)
-    store.saveApiKey(keyInput)
+  function saveAnthropicKey() {
+    onAnthropicKeyChange(keyInput)
+    store.saveAnthropicKey(keyInput)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
+  }
+
+  async function saveBackendConfig() {
+    saveApiConfig(apiUrl, apiKey)
+    setApiTesting(true)
+    setApiStatus('testing')
+    try {
+      const resp = await fetch(`${apiUrl}/health`)
+      if (resp.ok) {
+        setApiStatus('connected')
+        setApiSaved(true)
+        setTimeout(() => setApiSaved(false), 2000)
+        // Reload data from backend
+        if (onDataReload) onDataReload()
+      } else {
+        setApiStatus('error')
+      }
+    } catch {
+      setApiStatus('error')
+    }
+    setApiTesting(false)
+  }
+
+  function disconnectBackend() {
+    localStorage.removeItem('cj_api_url')
+    localStorage.removeItem('cj_api_key')
+    setApiKey('')
+    setApiStatus('disconnected')
+    if (onDataReload) onDataReload()
   }
 
   function startEditCap(key) {
@@ -44,8 +80,6 @@ export default function Settings({ caps, onCapsChange, apiKey, onApiKeyChange })
       delete newCaps[key]
     }
     onCapsChange(newCaps)
-    store.saveCaps(newCaps)
-    setEditingMonth(null)
   }
 
   function clearAllData() {
@@ -74,12 +108,19 @@ export default function Settings({ caps, onCapsChange, apiKey, onApiKeyChange })
     const file = e.target.files[0]
     if (!file) return
     const reader = new FileReader()
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       try {
         const data = JSON.parse(ev.target.result)
-        if (data.trades) store.saveTrades(data.trades)
-        if (data.caps) store.saveCaps(data.caps)
-        alert('Datos importados correctamente. Recargando...')
+        if (isApiConfigured() && data.trades) {
+          // Import to API
+          await apiStore.bulkImport(data.trades)
+          if (data.caps) await apiStore.saveCaps(data.caps)
+          alert('Datos importados al servidor. Recargando...')
+        } else {
+          if (data.trades) store.saveTrades(data.trades)
+          if (data.caps) store.saveCaps(data.caps)
+          alert('Datos importados correctamente. Recargando...')
+        }
         window.location.reload()
       } catch {
         alert('Error al importar: archivo inválido')
@@ -89,11 +130,75 @@ export default function Settings({ caps, onCapsChange, apiKey, onApiKeyChange })
     e.target.value = ''
   }
 
+  const statusColors = {
+    connected: 'var(--green)',
+    disconnected: 'var(--text3)',
+    testing: 'var(--yellow)',
+    error: 'var(--red)'
+  }
+  const statusLabels = {
+    connected: '✓ Conectado',
+    disconnected: 'Sin conectar',
+    testing: 'Probando...',
+    error: '✗ Error de conexión'
+  }
+
   return (
     <div className="page">
       <h1 className="page-title">Configuración</h1>
 
-      {/* API Key */}
+      {/* Backend API */}
+      <div className="settings-section">
+        <div className="settings-section-header">
+          Base de Datos (Backend)
+          <span style={{ marginLeft: 8, fontSize: 12, color: statusColors[apiStatus] }}>
+            {statusLabels[apiStatus]}
+          </span>
+        </div>
+        <div className="settings-body">
+          <p style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 14 }}>
+            Conecta con el servidor para guardar tus datos de forma segura en la nube. Sin conexión, se usa localStorage.
+          </p>
+          <div className="form-group" style={{ marginBottom: 10 }}>
+            <label className="form-label" style={{ fontSize: 12 }}>URL del servidor</label>
+            <input
+              className="form-control"
+              type="text"
+              placeholder="https://cryptojournal-api-production.up.railway.app"
+              value={apiUrl}
+              onChange={e => setApiUrl(e.target.value)}
+            />
+          </div>
+          <div className="form-group" style={{ marginBottom: 10 }}>
+            <label className="form-label" style={{ fontSize: 12 }}>API Key</label>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                className="form-control"
+                type={apiKeyVisible ? 'text' : 'password'}
+                placeholder="Tu API key del servidor..."
+                value={apiKey}
+                onChange={e => setApiKey(e.target.value)}
+                style={{ flex: 1 }}
+              />
+              <button className="btn btn-ghost" onClick={() => setApiKeyVisible(v => !v)}>
+                {apiKeyVisible ? '🙈' : '👁'}
+              </button>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-primary" onClick={saveBackendConfig} disabled={apiTesting}>
+              {apiSaved ? '✓ Conectado' : apiTesting ? 'Probando...' : 'Conectar'}
+            </button>
+            {isApiConfigured() && (
+              <button className="btn btn-ghost" onClick={disconnectBackend}>
+                Desconectar
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Anthropic API Key */}
       <div className="settings-section">
         <div className="settings-section-header">API de Anthropic (Comandos de Voz)</div>
         <div className="settings-body">
@@ -112,11 +217,11 @@ export default function Settings({ caps, onCapsChange, apiKey, onApiKeyChange })
             <button className="btn btn-ghost" onClick={() => setKeyVisible(v => !v)}>
               {keyVisible ? '🙈' : '👁'}
             </button>
-            <button className="btn btn-primary" onClick={saveApiKey}>
+            <button className="btn btn-primary" onClick={saveAnthropicKey}>
               {saved ? '✓ Guardado' : 'Guardar'}
             </button>
           </div>
-          {apiKey && (
+          {anthropicKey && (
             <div className="alert alert-success" style={{ marginTop: 10, marginBottom: 0 }}>
               ✓ API key configurada
             </div>
@@ -214,7 +319,7 @@ export default function Settings({ caps, onCapsChange, apiKey, onApiKeyChange })
             <div>
               <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>CryptoJournal</div>
               <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
-                v1.0 · Diario de Trading Cripto · Datos locales en tu navegador
+                v1.1 · Diario de Trading Cripto · {isApiConfigured() ? 'Datos en la nube ☁️' : 'Datos locales en tu navegador'}
               </div>
             </div>
           </div>
