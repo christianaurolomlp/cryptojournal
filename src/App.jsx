@@ -169,11 +169,14 @@ export default function App() {
           setTrades(remoteTrades)
           if (remoteCaps !== null) setCaps(remoteCaps)
           
-          // Check for local data to migrate
-          if (store.hasLocalTrades()) {
+          // Check for local data to migrate — only if DB is empty (prevents duplicate migration)
+          if (store.hasLocalTrades() && remoteTrades.length === 0) {
             const localTrades = store.getTrades()
             setMigrationCount(localTrades.length)
             setShowMigration(true)
+          } else if (store.hasLocalTrades()) {
+            // DB already has data — clear local to prevent future duplicates
+            store.clearLocalTrades()
           }
           
           setSyncing(false)
