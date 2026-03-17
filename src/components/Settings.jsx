@@ -317,7 +317,7 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
               display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22
             }}>₿</div>
             <div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>CryptoJournal</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>MLP Diario de Trading</div>
               <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
                 v1.1 · Diario de Trading Cripto · {isApiConfigured() ? 'Datos en la nube ☁️' : 'Datos locales en tu navegador'}
               </div>
