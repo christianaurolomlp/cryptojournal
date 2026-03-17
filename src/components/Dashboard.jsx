@@ -27,6 +27,17 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
   const winRateColor = stats.winRate >= 60 ? 'green' : stats.winRate >= 40 ? 'yellow' : 'red'
   const pfColor = stats.profitFactor >= 2 ? 'green' : stats.profitFactor >= 1 ? 'yellow' : 'red'
 
+  function elapsedLabel(dateStr) {
+    const opened = new Date(dateStr + 'T00:00:00')
+    const now = new Date()
+    const diffMs = now - opened
+    const diffH = Math.floor(diffMs / 3600000)
+    const diffD = Math.floor(diffH / 24)
+    if (diffD >= 1) return `${diffD}d`
+    if (diffH >= 1) return `${diffH}h`
+    return '<1h'
+  }
+
   return (
     <div className="page">
       {!capital && (
@@ -67,6 +78,27 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
           <div className="stat-label">Operaciones</div>
           <div className="stat-value">{stats.total}</div>
           <div className="stat-sub">{openTrades.length} abiertas · {closedTrades.length} cerradas</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Max Drawdown</div>
+          <div className="stat-value red">{stats.maxDrawdown > 0 ? `-$${stats.maxDrawdown.toFixed(2)}` : '—'}</div>
+          <div className="stat-sub">Caída máxima acumulada</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Mejor / Peor op</div>
+          <div className="stat-value" style={{ fontSize: 13 }}>
+            <span style={{ color: 'var(--green)' }}>{stats.bestTrade !== null ? `+$${Math.abs(stats.bestTrade).toFixed(2)}` : '—'}</span>
+            {' · '}
+            <span style={{ color: 'var(--red)' }}>{stats.worstTrade !== null ? `-$${Math.abs(stats.worstTrade).toFixed(2)}` : '—'}</span>
+          </div>
+          <div className="stat-sub">Best · Worst</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Racha actual</div>
+          <div className={`stat-value ${stats.currentStreakType === 'WIN' ? 'green' : stats.currentStreakType === 'LOSS' ? 'red' : ''}`}>
+            {stats.currentStreakType ? `${stats.currentStreak} ${stats.currentStreakType === 'WIN' ? '✓' : '✗'}` : '—'}
+          </div>
+          <div className="stat-sub">Máx: {stats.maxWinStreak}W · {stats.maxLossStreak}L</div>
         </div>
       </div>
 

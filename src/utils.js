@@ -81,6 +81,31 @@ export function calcStats(trades, capital) {
   const rentPct = capital > 0 ? (pnl / capital) * 100 : 0
   const capitalFinal = capital > 0 ? capital + pnl : null
 
+  // Max Drawdown
+  let maxDrawdown = 0
+  let peak = 0, cumPnl = 0
+  for (const t of closed) {
+    cumPnl += t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl
+    if (cumPnl > peak) peak = cumPnl
+    const dd = peak - cumPnl
+    if (dd > maxDrawdown) maxDrawdown = dd
+  }
+
+  // Current streak
+  let currentStreak = 0, currentStreakType = null
+  for (let i = closed.length - 1; i >= 0; i--) {
+    const r = closed[i].result
+    if (r === 'BE') continue
+    if (currentStreakType === null) {
+      currentStreakType = r
+      currentStreak = 1
+    } else if (r === currentStreakType) {
+      currentStreak++
+    } else {
+      break
+    }
+  }
+
   // Long vs Short
   const longs = closed.filter(t => t.type === 'LONG')
   const shorts = closed.filter(t => t.type === 'SHORT')
@@ -93,6 +118,7 @@ export function calcStats(trades, capital) {
     total, totalClosed, wins, losses, be,
     winRate, pnl, avgWin, avgLoss, profitFactor,
     bestTrade, worstTrade, maxWinStreak, maxLossStreak,
+    maxDrawdown, currentStreak, currentStreakType,
     rentPct, capitalFinal,
     longs: { count: longs.length, wins: longWins, pnl: longPnl, winRate: (() => { const ll = longs.filter(t => t.result !== 'BE').length; return ll > 0 ? (longWins / ll) * 100 : 0 })() },
     shorts: { count: shorts.length, wins: shortWins, pnl: shortPnl, winRate: (() => { const sl = shorts.filter(t => t.result !== 'BE').length; return sl > 0 ? (shortWins / sl) * 100 : 0 })() }

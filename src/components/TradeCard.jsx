@@ -69,6 +69,17 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
             <strong>{trade.closeDate}</strong>
           </div>
         )}
+        {!trade.closed && trade.date && (() => {
+          const diffH = Math.floor((Date.now() - new Date(trade.date + 'T00:00:00')) / 3600000)
+          const diffD = Math.floor(diffH / 24)
+          const label = diffD >= 1 ? `${diffD}d` : diffH >= 1 ? `${diffH}h` : '<1h'
+          return (
+            <div className="meta-item">
+              <span>Abierta hace:</span>
+              <strong style={{ color: diffD >= 3 ? 'var(--orange)' : 'inherit' }}>{label}</strong>
+            </div>
+          )
+        })()}
       </div>
 
       {trade.notes && (

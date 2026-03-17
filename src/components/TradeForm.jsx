@@ -92,13 +92,17 @@ export default function TradeForm({ initial, prefill, capital, onSave, onClose, 
               {/* Cripto */}
               <div className="form-group">
                 <label className="form-label">Criptomoneda</label>
-                <select
+                <input
                   className="form-control"
+                  list="crypto-list"
                   value={form.crypto}
-                  onChange={e => set('crypto', e.target.value)}
-                >
-                  {CRYPTOS.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
+                  onChange={e => set('crypto', e.target.value.toUpperCase())}
+                  placeholder="BTC, ETH, ROBO..."
+                  autoComplete="off"
+                />
+                <datalist id="crypto-list">
+                  {CRYPTOS.map(c => <option key={c} value={c} />)}
+                </datalist>
               </div>
 
               {/* Temporalidad */}
