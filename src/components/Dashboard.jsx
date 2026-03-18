@@ -1,12 +1,23 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { calcStats, formatMoney, formatPct, monthLabel, tradesForMonth } from '../utils.js'
 import EquityCurve from './EquityCurve.jsx'
 import TradeCard from './TradeCard.jsx'
 
 export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete, onClose, onReopen, onNewTrade }) {
+  const [searchQuery, setSearchQuery] = useState('')
   const capital = caps[currentMonth] || 0
   const monthTrades = useMemo(() => tradesForMonth(trades, currentMonth), [trades, currentMonth])
   const stats = useMemo(() => calcStats(monthTrades, capital), [monthTrades, capital])
+
+  // Search: when active, search across ALL trades
+  const isSearching = searchQuery.trim().length > 0
+  const searchResults = useMemo(() => {
+    if (!isSearching) return []
+    const q = searchQuery.trim().toUpperCase()
+    return [...trades]
+      .filter(t => t.crypto?.toUpperCase().includes(q) || t.notes?.toUpperCase().includes(q))
+      .sort((a, b) => new Date(b.date || '') - new Date(a.date || ''))
+  }, [trades, searchQuery, isSearching])
 
   const openTrades = monthTrades.filter(t => !t.closed)
   const closedTrades = [...monthTrades.filter(t => t.closed)]
@@ -184,51 +195,90 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
         </div>
       </div>
 
-      {/* Open Trades */}
-      {openTrades.length > 0 && (
-        <div style={{ marginTop: 20 }}>
+      {/* Search Bar */}
+      <div style={{ marginTop: 20, marginBottom: 4 }}>
+        <div style={{ position: 'relative', maxWidth: 360 }}>
+          <span style={{
+            position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+            fontSize: 14, color: 'var(--text3)', pointerEvents: 'none'
+          }}>🔍</span>
+          <input
+            className="form-control"
+            style={{ paddingLeft: 36, height: 38, fontSize: 13 }}
+            placeholder="Buscar operación por activo (BTC, PEPE…)"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          {isSearching && (
+            <button
+              onClick={() => setSearchQuery('')}
+              style={{
+                position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'var(--text3)', fontSize: 14, padding: '0 4px'
+              }}
+            >✕</button>
+          )}
+        </div>
+      </div>
+
+      {/* Search Results */}
+      {isSearching && (
+        <div style={{ marginTop: 12 }}>
           <div className="section-header">
-            <span className="section-title">Operaciones Abiertas</span>
-            <span className="count-badge">{openTrades.length}</span>
+            <span className="section-title">Resultados para "{searchQuery.trim().toUpperCase()}"</span>
+            <span className="count-badge">{searchResults.length}</span>
           </div>
-          <div className="trade-list">
-            {openTrades.map(t => (
-              <TradeCard
-                key={t.id}
-                trade={t}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onClose={onClose}
-                onReopen={onReopen}
-              />
-            ))}
-          </div>
+          {searchResults.length === 0 ? (
+            <div style={{ color: 'var(--text3)', fontSize: 13, padding: '20px 0' }}>
+              No hay operaciones con ese activo
+            </div>
+          ) : (
+            <div className="trade-list">
+              {searchResults.map(t => (
+                <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      {/* Closed Trades */}
-      {closedTrades.length > 0 && (
-        <div style={{ marginTop: 20 }}>
-          <div className="section-header">
-            <span className="section-title">Historial</span>
-            <span className="count-badge">{closedTrades.length}</span>
-          </div>
-          <div className="trade-list">
-            {closedTrades.map(t => (
-              <TradeCard
-                key={t.id}
-                trade={t}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                onClose={onClose}
-                onReopen={onReopen}
-              />
-            ))}
-          </div>
-        </div>
+      {/* Normal month view when not searching */}
+      {!isSearching && (
+        <>
+          {/* Open Trades */}
+          {openTrades.length > 0 && (
+            <div style={{ marginTop: 20 }}>
+              <div className="section-header">
+                <span className="section-title">Operaciones Abiertas</span>
+                <span className="count-badge">{openTrades.length}</span>
+              </div>
+              <div className="trade-list">
+                {openTrades.map(t => (
+                  <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Closed Trades */}
+          {closedTrades.length > 0 && (
+            <div style={{ marginTop: 20 }}>
+              <div className="section-header">
+                <span className="section-title">Historial del mes</span>
+                <span className="count-badge">{closedTrades.length}</span>
+              </div>
+              <div className="trade-list">
+                {closedTrades.map(t => (
+                  <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
 
-      {monthTrades.length === 0 && (
+      {!isSearching && monthTrades.length === 0 && (
         <div className="empty-state" style={{ marginTop: 40 }}>
           <div className="empty-icon">📊</div>
           <div className="empty-title">Sin operaciones este mes</div>
