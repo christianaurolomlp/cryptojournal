@@ -7,6 +7,7 @@ import Calendar from './components/Calendar.jsx'
 import Stats from './components/Stats.jsx'
 import Annual from './components/Annual.jsx'
 import Settings from './components/Settings.jsx'
+import TradeHistory from './components/TradeHistory.jsx'
 import TradeForm from './components/TradeForm.jsx'
 import CloseModal from './components/CloseModal.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
@@ -436,6 +437,7 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
     { id: VIEWS.CALENDAR, icon: '📅', label: 'Calendario' },
     { id: VIEWS.STATS, icon: '📈', label: 'Estadísticas' },
     { id: VIEWS.ANNUAL, icon: '🗓', label: 'Vista Anual' },
+    { id: VIEWS.HISTORY, icon: '📋', label: 'Historial' },
     { id: VIEWS.SETTINGS, icon: '⚙', label: 'Configuración' }
   ]
 
@@ -570,6 +572,15 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
               trades={trades}
               caps={caps}
               currentMonth={currentMonth}
+            />
+          )}
+          {view === VIEWS.HISTORY && (
+            <TradeHistory
+              trades={trades}
+              onEdit={t => setEditTrade(t)}
+              onDelete={t => setDeleteTrade(t)}
+              onClose={t => setCloseTrade(t)}
+              onReopen={reopenTrade}
             />
           )}
           {view === VIEWS.ANNUAL && (

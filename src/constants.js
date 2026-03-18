@@ -43,6 +43,7 @@ export const VIEWS = {
   CALENDAR: 'calendar',
   STATS: 'stats',
   ANNUAL: 'annual',
+  HISTORY: 'history',
   SETTINGS: 'settings'
 }
 
