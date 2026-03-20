@@ -30,7 +30,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
   const riskData = useMemo(() => {
     const protectedCount = allOpenTrades.filter(t => t.protected).length
     const totalRisk = allOpenTrades.reduce((sum, t) => sum + (t.protected ? 0 : (parseFloat(t.risk) || 0)), 0)
-    const refCapital = capital || DEFAULT_CAPITAL
+    const refCapital = stats?.capitalFinal || capital || DEFAULT_CAPITAL
     const riskDollar = (totalRisk / 100) * refCapital
     const breakdown = allOpenTrades.map(t => ({
       crypto: t.crypto,
@@ -38,7 +38,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
       protected: !!t.protected
     }))
     return { totalRisk, riskDollar, protectedCount, breakdown, refCapital, count: allOpenTrades.length }
-  }, [allOpenTrades, capital])
+  }, [allOpenTrades, capital, stats])
 
   // Asset performance
   const assetMap = {}
