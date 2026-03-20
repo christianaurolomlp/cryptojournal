@@ -295,6 +295,11 @@ export default function App() {
     saveTrade(updated)
   }, [saveTrade])
 
+  const toggleProtected = useCallback((trade) => {
+    const updated = { ...trade, protected: !trade.protected }
+    saveTrade(updated)
+  }, [saveTrade])
+
   const saveCaps = useCallback(async (newCaps) => {
     setCaps(newCaps)
     if (isApiConfigured()) {
@@ -556,6 +561,7 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
               onDelete={t => setDeleteTrade(t)}
               onClose={t => setCloseTrade(t)}
               onReopen={reopenTrade}
+              onToggleProtected={toggleProtected}
               onNewTrade={() => setShowNewTrade(true)}
             />
           )}

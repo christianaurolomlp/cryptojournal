@@ -3,7 +3,9 @@ import { calcStats, formatMoney, formatPct, monthLabel, tradesForMonth } from '.
 import EquityCurve from './EquityCurve.jsx'
 import TradeCard from './TradeCard.jsx'
 
-export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete, onClose, onReopen, onNewTrade }) {
+const DEFAULT_CAPITAL = 13000
+
+export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete, onClose, onReopen, onNewTrade, onToggleProtected }) {
   const [searchQuery, setSearchQuery] = useState('')
   const capital = caps[currentMonth] || 0
   const monthTrades = useMemo(() => tradesForMonth(trades, currentMonth), [trades, currentMonth])
@@ -22,6 +24,21 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
   const openTrades = monthTrades.filter(t => !t.closed)
   const closedTrades = [...monthTrades.filter(t => t.closed)]
     .sort((a, b) => new Date(b.closeDate || b.date) - new Date(a.closeDate || a.date))
+
+  // Riesgo Total Actual — all open trades across all months
+  const allOpenTrades = useMemo(() => trades.filter(t => !t.closed), [trades])
+  const riskData = useMemo(() => {
+    const protectedCount = allOpenTrades.filter(t => t.protected).length
+    const totalRisk = allOpenTrades.reduce((sum, t) => sum + (t.protected ? 0 : (parseFloat(t.risk) || 0)), 0)
+    const refCapital = capital || DEFAULT_CAPITAL
+    const riskDollar = (totalRisk / 100) * refCapital
+    const breakdown = allOpenTrades.map(t => ({
+      crypto: t.crypto,
+      risk: t.protected ? 0 : (parseFloat(t.risk) || 0),
+      protected: !!t.protected
+    }))
+    return { totalRisk, riskDollar, protectedCount, breakdown, refCapital, count: allOpenTrades.length }
+  }, [allOpenTrades, capital])
 
   // Asset performance
   const assetMap = {}
@@ -112,6 +129,53 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
           <div className="stat-sub">Máx: {stats.maxWinStreak}W · {stats.maxLossStreak}L</div>
         </div>
       </div>
+
+      {/* Riesgo Total Actual */}
+      {allOpenTrades.length > 0 && (
+        <div className="card" style={{ marginTop: 16, border: '1px solid var(--border)', background: 'var(--surface1)' }}>
+          <div className="card-header">
+            <span className="card-title">💰 RIESGO TOTAL ACTUAL</span>
+          </div>
+          <div className="card-body" style={{ padding: '16px 20px' }}>
+            <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', marginBottom: 12 }}>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text3)' }}>Operaciones abiertas</div>
+                <div style={{ fontSize: 22, fontWeight: 700 }}>{riskData.count}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text3)' }}>Riesgo total</div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: riskData.totalRisk > 10 ? 'var(--red)' : riskData.totalRisk > 5 ? 'var(--orange)' : 'var(--green)' }}>
+                  {riskData.totalRisk.toFixed(1)}%
+                  <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text3)', marginLeft: 8 }}>
+                    ≈ ${riskData.riskDollar.toLocaleString('es-ES', { maximumFractionDigits: 0 })}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text3)' }}>Protegidas</div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--green)' }}>
+                  {riskData.protectedCount}
+                  <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text3)', marginLeft: 4 }}>operaciones</span>
+                </div>
+              </div>
+            </div>
+            {/* Breakdown */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 12px', fontSize: 12, color: 'var(--text2)' }}>
+              {riskData.breakdown.map((item, i) => (
+                <span key={i} style={{
+                  padding: '2px 8px',
+                  borderRadius: 6,
+                  background: item.protected ? 'rgba(46,204,113,0.15)' : 'var(--surface2)',
+                  color: item.protected ? 'var(--green)' : 'var(--text2)',
+                  fontFamily: 'var(--font-mono)'
+                }}>
+                  {item.crypto}: {item.protected ? '🛡️ 0%' : `${item.risk}%`}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Grid */}
       <div className="dashboard-grid">
@@ -236,7 +300,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
           ) : (
             <div className="trade-list">
               {searchResults.map(t => (
-                <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} />
+                <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} onToggleProtected={onToggleProtected} />
               ))}
             </div>
           )}
@@ -255,7 +319,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
               </div>
               <div className="trade-list">
                 {openTrades.map(t => (
-                  <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} />
+                  <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} onToggleProtected={onToggleProtected} />
                 ))}
               </div>
             </div>
@@ -270,7 +334,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
               </div>
               <div className="trade-list">
                 {closedTrades.map(t => (
-                  <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} />
+                  <TradeCard key={t.id} trade={t} onEdit={onEdit} onDelete={onDelete} onClose={onClose} onReopen={onReopen} onToggleProtected={onToggleProtected} />
                 ))}
               </div>
             </div>

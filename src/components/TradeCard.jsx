@@ -15,7 +15,7 @@ function getCardClass(trade) {
   return ''
 }
 
-export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, compact = false }) {
+export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, onToggleProtected, compact = false }) {
   const pnlValue = trade.pnl !== null && trade.pnl !== undefined
     ? (trade.result === 'LOSS' ? -Math.abs(trade.pnl) : trade.pnl)
     : null
@@ -38,6 +38,9 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
               </span>
             : <span className="badge badge-open">Abierta</span>
           }
+          {!trade.closed && trade.protected && (
+            <span className="badge" style={{ background: 'var(--green)', color: '#fff', fontSize: 10 }}>🛡️ Protegida</span>
+          )}
         </div>
         {trade.closed && pnlValue !== null && (
           <span className={`trade-pnl ${getPnlClass(trade.result)}`}>
@@ -91,6 +94,20 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
           <button className="btn btn-ghost btn-sm" onClick={() => onEdit(trade)}>
             ✎ Editar
           </button>
+          {!trade.closed && onToggleProtected && (
+            <button
+              className="btn btn-sm"
+              style={{
+                background: trade.protected ? 'var(--green)' : 'var(--surface3)',
+                color: trade.protected ? '#fff' : 'var(--text2)',
+                border: trade.protected ? '1px solid var(--green)' : '1px solid var(--border)'
+              }}
+              onClick={() => onToggleProtected(trade)}
+              title="SL en entrada — riesgo 0"
+            >
+              {trade.protected ? '✅ Protegida' : '🛡️ Proteger'}
+            </button>
+          )}
           {!trade.closed && (
             <button className="btn btn-primary btn-sm" onClick={() => onClose(trade)}>
               ✓ Cerrar
