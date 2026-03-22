@@ -190,11 +190,18 @@ export default function App() {
       setSyncing(false)
     }
     
-    // Fallback to localStorage
-    const localTrades = store.getTrades()
-    const localCaps = store.getCaps()
-    setTrades(localTrades)
-    setCaps(localCaps)
+    // Fallback to localStorage ONLY if API key is not configured at all
+    // If API key IS configured but request failed, show empty (not stale data)
+    if (!isApiConfigured()) {
+      const localTrades = store.getTrades()
+      const localCaps = store.getCaps()
+      setTrades(localTrades)
+      setCaps(localCaps)
+    } else {
+      // API key configured but failed — show empty, not stale localStorage
+      setTrades([])
+      setCaps({})
+    }
     setLoading(false)
     
     // Auto-seed if empty
@@ -292,11 +299,6 @@ export default function App() {
 
   const reopenTrade = useCallback((trade) => {
     const updated = { ...trade, closed: false, result: null, pnl: null, closeDate: null }
-    saveTrade(updated)
-  }, [saveTrade])
-
-  const toggleProtected = useCallback((trade) => {
-    const updated = { ...trade, protected: !trade.protected }
     saveTrade(updated)
   }, [saveTrade])
 
@@ -561,7 +563,6 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
               onDelete={t => setDeleteTrade(t)}
               onClose={t => setCloseTrade(t)}
               onReopen={reopenTrade}
-              onToggleProtected={toggleProtected}
               onNewTrade={() => setShowNewTrade(true)}
             />
           )}
