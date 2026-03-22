@@ -2,7 +2,7 @@ import { LS_KEYS } from './constants.js'
 
 // ── API Configuration ────────────────────────────────────────────────────────
 const DEFAULT_API_URL = 'https://cryptojournal-api-production.up.railway.app'
-const DEFAULT_API_KEY = ''
+const DEFAULT_API_KEY = 'd4665c7f7a075109e9a41f1ad3bdd7cd131e91f1cd62110032df842239dd28df'
 
 function getApiConfig() {
   return {
