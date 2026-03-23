@@ -143,6 +143,7 @@ export default function App() {
   const [showMigration, setShowMigration] = useState(false)
   const [migrationCount, setMigrationCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [apiError, setApiError] = useState(false)
 
   // Modals
   const [showNewTrade, setShowNewTrade] = useState(false)
@@ -158,7 +159,7 @@ export default function App() {
   const recognitionRef = useRef(null)
 
   // ── Load data ──────────────────────────────────────────────────────────────
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (retryCount = 0) => {
     if (isApiConfigured()) {
       setSyncing(true)
       try {
@@ -182,36 +183,35 @@ export default function App() {
           
           setSyncing(false)
           setLoading(false)
+          setApiError(false)
           return
         }
       } catch (err) {
         console.error('Failed to load from API:', err)
       }
       setSyncing(false)
-    }
-    
-    // Fallback to localStorage ONLY if API key is not configured at all
-    // If API key IS configured but request failed, show empty (not stale data)
-    if (!isApiConfigured()) {
-      const localTrades = store.getTrades()
-      const localCaps = store.getCaps()
-      setTrades(localTrades)
-      setCaps(localCaps)
-    } else {
-      // API key configured but failed — show empty, not stale localStorage
+      
+      // Auto-retry once after 2s (handles Railway cold start / brief timeouts)
+      if (retryCount === 0) {
+        console.log('API load failed, retrying in 2s...')
+        await new Promise(r => setTimeout(r, 2000))
+        return loadData(1)
+      }
+      
+      // After retry, show error state with refresh button
       setTrades([])
       setCaps({})
+      setApiError(true)
+      setLoading(false)
+      return
     }
-    setLoading(false)
     
-    // Auto-seed if empty
-    if (localTrades.length === 0) {
-      const seeded = await seedIfEmpty()
-      if (seeded) {
-        setTrades(store.getTrades())
-        setCaps(store.getCaps())
-      }
-    }
+    // No API key — use localStorage
+    const localTrades = store.getTrades()
+    const localCaps = store.getCaps()
+    setTrades(localTrades)
+    setCaps(localCaps)
+    setLoading(false)
   }, [])
 
   useEffect(() => { loadData() }, [loadData])
@@ -461,6 +461,24 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
     )
   }
 
+  if (apiError) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)' }}>
+        <div style={{ textAlign: 'center', maxWidth: 380, padding: '0 24px' }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>⚠️</div>
+          <div style={{ fontSize: 16, color: 'var(--text)', marginBottom: 8, fontWeight: 600 }}>No se pudo conectar con la base de datos</div>
+          <div style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 24, lineHeight: 1.5 }}>El servidor tardó demasiado en responder. Puede que esté iniciando. Intenta de nuevo.</div>
+          <button
+            onClick={() => { setApiError(false); setLoading(true); loadData() }}
+            style={{ background: 'var(--green)', color: '#000', border: 'none', borderRadius: 6, padding: '10px 28px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+          >
+            🔄 Reintentar
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app-layout">
       {/* Overlay for mobile sidebar */}
@@ -533,6 +551,16 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
           </div>
 
           <div className="topbar-right">
+            {/* Refresh button — recargar datos desde la API */}
+            <button
+              onClick={() => { setSyncing(true); loadData() }}
+              disabled={syncing}
+              title="Recargar datos desde la base de datos"
+              style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 5, padding: '4px 10px', color: 'var(--text2)', cursor: syncing ? 'default' : 'pointer', fontSize: 13, opacity: syncing ? 0.5 : 1 }}
+            >
+              {syncing ? '⏳' : '↻'}
+            </button>
+
             {/* Voice Button */}
             <button
               className={`btn-voice ${voiceStatus === VOICE_LISTENING ? 'listening' : voiceStatus === VOICE_PROCESSING ? 'processing' : ''}`}
