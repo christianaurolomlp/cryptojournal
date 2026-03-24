@@ -191,11 +191,12 @@ export default function App() {
       }
       setSyncing(false)
       
-      // Auto-retry once after 2s (handles Railway cold start / brief timeouts)
-      if (retryCount === 0) {
-        console.log('API load failed, retrying in 2s...')
-        await new Promise(r => setTimeout(r, 2000))
-        return loadData(1)
+      // Auto-retry con backoff (Railway cold start puede tardar 10-20s)
+      if (retryCount < 3) {
+        const delay = retryCount === 0 ? 3000 : retryCount === 1 ? 6000 : 10000
+        console.log(`API load failed, retrying in ${delay}ms... (attempt ${retryCount + 1}/3)`)
+        await new Promise(r => setTimeout(r, delay))
+        return loadData(retryCount + 1)
       }
       
       // After retry, show error state with refresh button
@@ -471,8 +472,8 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)' }}>
         <div style={{ textAlign: 'center', maxWidth: 380, padding: '0 24px' }}>
           <div style={{ fontSize: 40, marginBottom: 16 }}>⚠️</div>
-          <div style={{ fontSize: 16, color: 'var(--text)', marginBottom: 8, fontWeight: 600 }}>No se pudo conectar con la base de datos</div>
-          <div style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 24, lineHeight: 1.5 }}>El servidor tardó demasiado en responder. Puede que esté iniciando. Intenta de nuevo.</div>
+          <div style={{ fontSize: 16, color: 'var(--text)', marginBottom: 8, fontWeight: 600 }}>Servidor iniciando...</div>
+          <div style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 24, lineHeight: 1.5 }}>El servidor puede tardar unos segundos en arrancar. Pulsa Reintentar y espera un momento.</div>
           <button
             onClick={() => { setApiError(false); setLoading(true); loadData() }}
             style={{ background: 'var(--green)', color: '#000', border: 'none', borderRadius: 6, padding: '10px 28px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
