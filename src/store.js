@@ -5,9 +5,11 @@ const DEFAULT_API_URL = 'https://cryptojournal-api-production.up.railway.app'
 const DEFAULT_API_KEY = 'd4665c7f7a075109e9a41f1ad3bdd7cd131e91f1cd62110032df842239dd28df'
 
 function getApiConfig() {
+  // Siempre usar DEFAULT_API_KEY — ignorar localStorage para evitar keys obsoletas/incorrectas
+  // Solo usar URL de localStorage si está explícitamente configurada (desarrollo local)
   return {
     url: localStorage.getItem('cj_api_url') || DEFAULT_API_URL,
-    key: localStorage.getItem('cj_api_key') || DEFAULT_API_KEY
+    key: DEFAULT_API_KEY
   }
 }
 
