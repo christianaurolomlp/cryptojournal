@@ -34,6 +34,7 @@ export default function TradeForm({ initial, prefill, capital, onSave, onClose, 
 
   const margin = parseFloat(form.margin) || 0
   const positionSize = margin * form.lev
+  // capital aquí ya es capitalActual (dinámico: inicial + PnL cerrado)
   const riskUSD = capital > 0 ? capital * form.risk / 100 : null
   const capUsedPct = capital > 0 && margin > 0 ? (margin / capital) * 100 : null
 

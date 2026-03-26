@@ -456,6 +456,16 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
 
   const capital = caps[currentMonth] || 0
 
+  // Capital actual = capital inicial + PnL de trades cerrados del mes (para cálculo de riesgo dinámico)
+  const capitalActual = (() => {
+    if (!capital) return 0
+    const monthPrefix = currentMonth // 'YYYY-MM'
+    const closedPnl = trades
+      .filter(t => t.closed && t.pnl != null && (t.date || '').startsWith(monthPrefix))
+      .reduce((sum, t) => sum + (parseFloat(t.pnl) || 0), 0)
+    return capital + closedPnl
+  })()
+
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)' }}>
@@ -651,7 +661,7 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
       {(showNewTrade || voicePrefill) && (
         <TradeForm
           prefill={voicePrefill}
-          capital={capital}
+          capital={capitalActual}
           onSave={saveTrade}
           onClose={() => { setShowNewTrade(false); setVoicePrefill(null) }}
         />
@@ -660,7 +670,7 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
       {editTrade && (
         <TradeForm
           initial={editTrade}
-          capital={capital}
+          capital={capitalActual}
           onSave={saveTrade}
           onClose={() => setEditTrade(null)}
           isEdit
