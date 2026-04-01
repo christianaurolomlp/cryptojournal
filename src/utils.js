@@ -39,17 +39,10 @@ export function currentMonthKey() {
 }
 
 export function tradesForMonth(trades, key) {
-  const currentKey = currentMonthKey()
   return trades.filter(t => {
-    if (!t.date) return false
-    if (t.closed && t.closeDate) {
-      // Cerradas: mostrar en el mes de cierre
-      return t.closeDate.startsWith(key)
-    } else {
-      // Abiertas: mostrar en su mes de apertura
-      // Y TAMBIÉN en el mes actual (para poder cerrarlas sin navegar atrás)
-      return t.date.startsWith(key) || key === currentKey
-    }
+    // Operaciones cerradas → usar closeDate; abiertas → usar date de apertura
+    const relevantDate = (t.closed && t.closeDate) ? t.closeDate : t.date
+    return relevantDate && relevantDate.startsWith(key)
   })
 }
 
