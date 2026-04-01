@@ -89,11 +89,14 @@ export default function Calendar({ trades, currentMonth }) {
                   ].filter(Boolean).join(' ')}
                   title={cell.dateStr}
                 >
-                  <span>{cell.day}</span>
+                  <span className="cal-day-num">{cell.day}</span>
                   {cell.pnl !== null && (
                     <span className={`cal-pnl ${cell.pnl > 0 ? 'green' : cell.pnl < 0 ? 'red' : 'yellow'}`}>
-                      {cell.pnl > 0 ? '+' : ''}{(cell.pnl / 1).toFixed(0)}
+                      {cell.pnl > 0 ? '+' : ''}{(cell.pnl / 1).toFixed(0)}$
                     </span>
+                  )}
+                  {cell.status === 'open' && cell.pnl === null && (
+                    <span className="cal-pnl yellow">●</span>
                   )}
                 </div>
               )

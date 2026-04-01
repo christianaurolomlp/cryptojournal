@@ -39,7 +39,11 @@ export function currentMonthKey() {
 }
 
 export function tradesForMonth(trades, key) {
-  return trades.filter(t => t.date && t.date.startsWith(key))
+  return trades.filter(t => {
+    // Operaciones cerradas → usar closeDate; abiertas → usar date de apertura
+    const relevantDate = (t.closed && t.closeDate) ? t.closeDate : t.date
+    return relevantDate && relevantDate.startsWith(key)
+  })
 }
 
 export function calcStats(trades, capital) {
