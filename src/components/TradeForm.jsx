@@ -136,13 +136,20 @@ export default function TradeForm({ initial, prefill, capital, onSave, onClose, 
               {/* Apalancamiento */}
               <div className="form-group">
                 <label className="form-label">Apalancamiento</label>
-                <select
+                <input
                   className="form-control"
+                  type="number"
+                  min="1"
+                  max="500"
+                  step="1"
+                  placeholder="50"
+                  list="leverage-suggestions"
                   value={form.lev}
-                  onChange={e => set('lev', parseInt(e.target.value))}
-                >
+                  onChange={e => set('lev', parseInt(e.target.value) || 1)}
+                />
+                <datalist id="leverage-suggestions">
                   {LEVERAGES.map(l => <option key={l} value={l}>{l}x</option>)}
-                </select>
+                </datalist>
               </div>
 
               {/* Riesgo */}
