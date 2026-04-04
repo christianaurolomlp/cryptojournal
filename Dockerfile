@@ -8,8 +8,8 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/serve.js ./
+COPY --from=build /app/serve.cjs ./
 COPY --from=build /app/package.json ./
 RUN npm install express --production
 EXPOSE ${PORT:-4173}
-CMD ["node", "serve.js"]
+CMD ["node", "serve.cjs"]
