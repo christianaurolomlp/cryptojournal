@@ -10,6 +10,6 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/serve.cjs ./
 COPY --from=build /app/package.json ./
-RUN npm install express --production
+RUN npm install express http-proxy-middleware --production
 EXPOSE ${PORT:-4173}
 CMD ["node", "serve.cjs"]
