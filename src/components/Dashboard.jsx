@@ -137,6 +137,33 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
             <span className="card-title">💰 RIESGO TOTAL ACTUAL</span>
           </div>
           <div className="card-body" style={{ padding: '16px 20px' }}>
+            {/* Barra de riesgo total */}
+            {(() => {
+              const r = riskData.totalRisk
+              const pct = Math.min(r / 20 * 100, 100)
+              const color = r < 5 ? '#22c55e' : r < 10 ? '#eab308' : r < 15 ? '#f97316' : '#ef4444'
+              const label = r < 5 ? '🟢 Riesgo bajo' : r < 10 ? '🟡 Riesgo moderado' : r < 15 ? '🟠 Riesgo alto' : '🔴 Riesgo muy alto'
+              return (
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <span style={{ fontSize: 12, color: 'var(--text3)' }}>{label}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color }}>{r.toFixed(1)}% de la cuenta</span>
+                  </div>
+                  <div style={{ background: '#1e293b', borderRadius: 6, height: 12, overflow: 'hidden' }}>
+                    <div style={{
+                      width: `${pct}%`,
+                      height: '100%',
+                      background: color,
+                      borderRadius: 6,
+                      transition: 'width 0.3s, background 0.3s'
+                    }} />
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>
+                    ≈ ${riskData.riskDollar.toLocaleString('es-ES', { maximumFractionDigits: 0 })} en riesgo · barra llena = 20%
+                  </div>
+                </div>
+              )
+            })()}
             <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap', marginBottom: 12 }}>
               <div>
                 <div style={{ fontSize: 12, color: 'var(--text3)' }}>Operaciones abiertas</div>
@@ -146,9 +173,6 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
                 <div style={{ fontSize: 12, color: 'var(--text3)' }}>Riesgo total</div>
                 <div style={{ fontSize: 22, fontWeight: 700, color: riskData.totalRisk > 10 ? 'var(--red)' : riskData.totalRisk > 5 ? 'var(--orange)' : 'var(--green)' }}>
                   {riskData.totalRisk.toFixed(1)}%
-                  <span style={{ fontSize: 14, fontWeight: 400, color: 'var(--text3)', marginLeft: 8 }}>
-                    ≈ ${riskData.riskDollar.toLocaleString('es-ES', { maximumFractionDigits: 0 })}
-                  </span>
                 </div>
               </div>
               <div>
