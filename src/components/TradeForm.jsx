@@ -165,6 +165,32 @@ export default function TradeForm({ initial, prefill, capital, onSave, onClose, 
                   value={form.risk}
                   onChange={e => set('risk', parseFloat(e.target.value))}
                 />
+                {/* Barra de riesgo visual */}
+                {(() => {
+                  const r = parseFloat(form.risk) || 0
+                  const pct = Math.min(r / 10 * 100, 100)
+                  const color = r < 2 ? '#22c55e' : r < 5 ? '#eab308' : r < 10 ? '#f97316' : '#ef4444'
+                  return (
+                    <div style={{ marginTop: 6, background: '#1e293b', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                      <div style={{
+                        width: `${pct}%`,
+                        height: '100%',
+                        background: color,
+                        borderRadius: 4,
+                        transition: 'width 0.2s, background 0.2s'
+                      }} />
+                    </div>
+                  )
+                })()}
+                <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                  {(() => {
+                    const r = parseFloat(form.risk) || 0
+                    if (r < 2) return '🟢 Riesgo bajo'
+                    if (r < 5) return '🟡 Riesgo moderado'
+                    if (r < 10) return '🟠 Riesgo alto'
+                    return '🔴 Riesgo muy alto'
+                  })()}
+                </div>
               </div>
 
               {/* Fecha */}
