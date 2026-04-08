@@ -132,7 +132,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
 
       {/* Riesgo Total Actual */}
       {allOpenTrades.length > 0 && (
-        <div className="card" style={{ marginTop: 16, border: '1px solid var(--border)', background: 'var(--surface1)' }}>
+        <div className="card" style={{ marginTop: 16, borderLeftColor: 'var(--orange)' }}>
           <div className="card-header">
             <span className="card-title">💰 RIESGO TOTAL ACTUAL</span>
           </div>
@@ -140,27 +140,39 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
             {/* Barra de riesgo total */}
             {(() => {
               const r = riskData.totalRisk
-              const pct = Math.min(r / 20 * 100, 100)
-              const color = r < 5 ? '#22c55e' : r < 10 ? '#eab308' : r < 15 ? '#f97316' : '#ef4444'
-              const label = r < 5 ? '🟢 Riesgo bajo' : r < 10 ? '🟡 Riesgo moderado' : r < 15 ? '🟠 Riesgo alto' : '🔴 Riesgo muy alto'
+              const pct = Math.min(r, 100) // barra = 0-100% directo
+              const overLimit = r > 20
+              const color = r < 5 ? '#00FF41' : r < 10 ? '#FFD700' : r < 20 ? '#FF8C00' : '#FF3B3B'
+              const label = r < 5 ? '🟢 Riesgo bajo' : r < 10 ? '🟡 Riesgo moderado' : r < 20 ? '🟠 Riesgo alto' : '🔴 LÍMITE SUPERADO'
               return (
                 <div style={{ marginBottom: 16 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <span style={{ fontSize: 12, color: 'var(--text3)' }}>{label}</span>
-                    <span style={{ fontSize: 13, fontWeight: 700, color }}>{r.toFixed(1)}% de la cuenta</span>
+                    <span style={{ fontSize: 12, color: overLimit ? '#ef4444' : 'var(--text3)', fontWeight: overLimit ? 700 : 400 }}>{label}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color }}>{r.toFixed(1)}% de la cuenta</span>
                   </div>
-                  <div style={{ background: '#1e293b', borderRadius: 6, height: 12, overflow: 'hidden' }}>
+                  <div style={{ background: 'var(--surface3)', height: 10, overflow: 'hidden', position: 'relative' }}>
+                    {/* Marca de límite en el 20% */}
+                    <div style={{ position: 'absolute', left: '20%', top: 0, bottom: 0, width: 2, background: 'rgba(255,255,255,0.25)', zIndex: 1 }} />
                     <div style={{
                       width: `${pct}%`,
                       height: '100%',
                       background: color,
-                      borderRadius: 6,
-                      transition: 'width 0.3s, background 0.3s'
+                      transition: 'width 0.3s, background 0.3s',
+                      animation: overLimit ? 'riskPulse 1s ease-in-out infinite' : 'none'
                     }} />
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>
-                    ≈ ${riskData.riskDollar.toLocaleString('es-ES', { maximumFractionDigits: 0 })} en riesgo · barra llena = 20%
+                  {/* Pérdida máxima */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
+                    <span style={{ fontSize: 12, color: 'var(--text3)' }}>Pérdida máxima si sale todo mal:</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: '#ef4444' }}>
+                      -${riskData.riskDollar.toLocaleString('es-ES', { maximumFractionDigits: 0 })}
+                    </span>
                   </div>
+                  {overLimit && (
+                    <div style={{ marginTop: 6, padding: '6px 10px', background: 'rgba(255,59,59,0.08)', border: '1px solid rgba(255,59,59,0.3)', fontSize: 12, color: 'var(--red)', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+                      ⚠️ Riesgo por encima del 20% — considera cerrar o proteger alguna posición
+                    </div>
+                  )}
                 </div>
               )
             })()}
@@ -188,8 +200,8 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
               {riskData.breakdown.map((item, i) => (
                 <span key={i} style={{
                   padding: '2px 8px',
-                  borderRadius: 6,
-                  background: item.protected ? 'rgba(46,204,113,0.15)' : 'var(--surface2)',
+                  background: item.protected ? 'rgba(0,255,65,0.08)' : 'var(--surface3)',
+                  border: `1px solid ${item.protected ? 'rgba(0,255,65,0.2)' : 'var(--border)'}`,
                   color: item.protected ? 'var(--green)' : 'var(--text2)',
                   fontFamily: 'var(--font-mono)'
                 }}>
@@ -264,7 +276,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
             ) : (
               <div className="trade-list">
                 {closedTrades.slice(0, 5).map(t => (
-                  <div key={t.id} style={{ padding: '8px 10px', background: 'var(--surface2)', borderRadius: 8, border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div key={t.id} style={{ padding: '8px 10px', background: 'var(--surface2)', border: '1px solid var(--border)', borderLeft: `3px solid ${t.result === 'WIN' ? 'var(--green)' : t.result === 'LOSS' ? 'var(--red)' : 'var(--yellow)'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 13 }}>{t.crypto}</span>
                       <span className={`badge badge-${t.type === 'LONG' ? 'long' : 'short'}`} style={{ fontSize: 10 }}>{t.type}</span>

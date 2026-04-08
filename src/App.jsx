@@ -468,10 +468,10 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)', background: 'var(--bg)' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 32, marginBottom: 12 }}>₿</div>
-          <div>Cargando...</div>
+          <div style={{ fontSize: 16, fontFamily: 'var(--font-mono)', color: 'var(--green)', letterSpacing: '0.15em', marginBottom: 12 }}>CRYPTO JOURNAL</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text3)', animation: 'pulse 1s infinite' }}>INITIALIZING...</div>
         </div>
       </div>
     )
@@ -479,16 +479,15 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
 
   if (apiError) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)', background: 'var(--bg)' }}>
         <div style={{ textAlign: 'center', maxWidth: 380, padding: '0 24px' }}>
-          <div style={{ fontSize: 40, marginBottom: 16 }}>⚠️</div>
-          <div style={{ fontSize: 16, color: 'var(--text)', marginBottom: 8, fontWeight: 600 }}>Servidor iniciando...</div>
-          <div style={{ fontSize: 13, color: 'var(--text3)', marginBottom: 24, lineHeight: 1.5 }}>El servidor puede tardar unos segundos en arrancar. Pulsa Reintentar y espera un momento.</div>
+          <div style={{ fontSize: 16, fontFamily: 'var(--font-mono)', color: 'var(--red)', letterSpacing: '0.1em', marginBottom: 16 }}>CONNECTION ERROR</div>
+          <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text3)', marginBottom: 24, lineHeight: 1.8 }}>Server cold start detected. Retry in a few seconds.</div>
           <button
             onClick={() => { setApiError(false); setLoading(true); loadData() }}
-            style={{ background: 'var(--green)', color: '#000', border: 'none', borderRadius: 6, padding: '10px 28px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+            className="btn btn-primary"
           >
-            🔄 Reintentar
+            RETRY CONNECTION
           </button>
         </div>
       </div>
@@ -506,10 +505,10 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
       {/* ── Sidebar ── */}
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-brand">
-          <div className="brand-icon">⚓</div>
+          <div className="brand-icon">⚡</div>
           <div>
-            <div className="brand-text">MLP Diario de Trading</div>
-            <div className="brand-sub">by Aurolo <SyncBadge syncing={syncing} /></div>
+            <div className="brand-text">CRYPTO JOURNAL</div>
+            <div className="brand-sub">WAR ROOM <SyncBadge syncing={syncing} /></div>
           </div>
         </div>
 

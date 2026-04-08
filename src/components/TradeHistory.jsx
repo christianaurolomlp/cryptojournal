@@ -1,12 +1,11 @@
 import { useState, useMemo } from 'react'
-import { formatDate } from '../utils.js'
 
 const RESULT_COLORS = {
-  win:  'var(--green)',
-  loss: 'var(--red)',
-  be:   'var(--text3)',
+  WIN:  'var(--green)',
+  LOSS: 'var(--red)',
+  BE:   'var(--yellow)',
 }
-const RESULT_LABELS = { win: 'WIN', loss: 'LOSS', be: 'BE' }
+const RESULT_LABELS = { WIN: 'WIN', LOSS: 'LOSS', BE: 'BE' }
 
 export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReopen }) {
   const [search, setSearch]     = useState('')
@@ -36,7 +35,7 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
 
     // Result
     if (resultFilter === 'open')  list = list.filter(t => !t.closed)
-    else if (resultFilter !== 'all') list = list.filter(t => t.closed && t.result === resultFilter)
+    else if (resultFilter !== 'all') list = list.filter(t => t.closed && t.result === resultFilter.toUpperCase())
 
     // Date from
     if (dateFrom) list = list.filter(t => (t.date || t.closeDate || '') >= dateFrom)
@@ -61,28 +60,21 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
   // Summary stats for filtered set
   const stats = useMemo(() => {
     const closed = filtered.filter(t => t.closed)
-    const wins   = closed.filter(t => t.result === 'win').length
-    const losses = closed.filter(t => t.result === 'loss').length
-    const bes    = closed.filter(t => t.result === 'be').length
-    const pnl    = closed.reduce((s, t) => s + (t.pnl || 0), 0)
+    const wins   = closed.filter(t => t.result === 'WIN').length
+    const losses = closed.filter(t => t.result === 'LOSS').length
+    const bes    = closed.filter(t => t.result === 'BE').length
+    const pnl    = closed.reduce((s, t) => s + (t.result === 'LOSS' ? -Math.abs(t.pnl || 0) : (t.pnl || 0)), 0)
     const wr     = (wins + losses) > 0 ? Math.round(wins / (wins + losses) * 100) : null
     return { total: filtered.length, wins, losses, bes, pnl, wr, open: filtered.filter(t => !t.closed).length }
   }, [filtered])
 
   return (
-    <div style={{ padding: '20px 24px', maxWidth: 1100, margin: '0 auto' }}>
-      <div style={{ marginBottom: 20 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text1)', margin: 0 }}>
-          📋 Historial de Operaciones
-        </h2>
-        <p style={{ fontSize: 13, color: 'var(--text3)', marginTop: 4 }}>
-          Busca y filtra todas tus operaciones
-        </p>
-      </div>
+    <div className="page">
+      <h1 className="page-title">📋 Historial de Operaciones</h1>
 
       {/* ── Filters ── */}
       <div style={{
-        background: 'var(--surface1)', borderRadius: 12, padding: '16px 20px',
+        background: 'var(--surface)', border: '1px solid var(--border)', padding: '16px 20px',
         marginBottom: 20, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-end'
       }}>
         {/* Asset search */}
@@ -158,19 +150,19 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
       {/* ── Summary stats ── */}
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 20 }}>
         {[
-          { label: 'Operaciones', value: stats.total, color: 'var(--text1)' },
-          { label: 'Abiertas', value: stats.open, color: 'var(--yellow)' },
+          { label: 'TOTAL', value: stats.total, color: 'var(--text1)' },
+          { label: 'OPEN', value: stats.open, color: 'var(--cyan)' },
           { label: 'WIN', value: stats.wins, color: 'var(--green)' },
           { label: 'LOSS', value: stats.losses, color: 'var(--red)' },
-          { label: 'Winrate', value: stats.wr != null ? `${stats.wr}%` : '—', color: stats.wr >= 50 ? 'var(--green)' : 'var(--red)' },
-          { label: 'PnL Total', value: `${stats.pnl >= 0 ? '+' : ''}$${stats.pnl.toFixed(0)}`, color: stats.pnl >= 0 ? 'var(--green)' : 'var(--red)' },
+          { label: 'WIN RATE', value: stats.wr != null ? `${stats.wr}%` : '—', color: stats.wr >= 50 ? 'var(--green)' : 'var(--red)' },
+          { label: 'PNL', value: `${stats.pnl >= 0 ? '+' : ''}$${stats.pnl.toFixed(0)}`, color: stats.pnl >= 0 ? 'var(--green)' : 'var(--red)' },
         ].map(s => (
           <div key={s.label} style={{
-            background: 'var(--surface1)', borderRadius: 10, padding: '10px 18px',
+            background: 'var(--surface)', border: '1px solid var(--border)', padding: '10px 18px',
             textAlign: 'center', flex: '1 1 80px'
           }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{s.label}</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: s.color, fontFamily: 'var(--font-mono)' }}>{s.value}</div>
+            <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2, fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -182,13 +174,14 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
         </div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border)' }}>
+              <tr style={{ borderBottom: '1px solid var(--border)', background: 'var(--surface2)' }}>
                 {['Fecha', 'Activo', 'Dir', 'TF', 'Lev', 'Margen', 'Riesgo', 'PnL', 'Resultado', ''].map(h => (
                   <th key={h} style={{
-                    textAlign: 'left', padding: '8px 12px', fontSize: 11,
-                    color: 'var(--text3)', fontWeight: 600, whiteSpace: 'nowrap'
+                    textAlign: 'left', padding: '8px 12px', fontSize: 10,
+                    color: 'var(--text3)', fontWeight: 600, whiteSpace: 'nowrap',
+                    fontFamily: 'var(--font-mono)', letterSpacing: '0.08em', textTransform: 'uppercase'
                   }}>{h}</th>
                 ))}
               </tr>
@@ -223,20 +216,24 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
                   <td style={{ padding: '10px 12px', color: 'var(--text2)' }}>{t.lev ? `${t.lev}x` : '—'}</td>
                   <td style={{ padding: '10px 12px', color: 'var(--text2)' }}>{t.margin ? `$${t.margin}` : '—'}</td>
                   <td style={{ padding: '10px 12px', color: 'var(--text2)' }}>{t.risk ? `${t.risk}%` : '—'}</td>
-                  <td style={{ padding: '10px 12px', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                    {t.pnl != null
-                      ? <span style={{ color: t.pnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
-                          {t.pnl >= 0 ? '+' : ''}${t.pnl.toFixed(0)}
-                        </span>
+                  <td style={{ padding: '10px 12px', fontWeight: 600, whiteSpace: 'nowrap', fontFamily: 'var(--font-mono)' }}>
+                    {t.pnl != null && t.closed
+                      ? (() => {
+                          const displayPnl = t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl;
+                          return <span style={{ color: displayPnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
+                            {displayPnl >= 0 ? '+' : ''}${displayPnl.toFixed(0)}
+                          </span>
+                        })()
                       : <span style={{ color: 'var(--text3)' }}>—</span>
                     }
                   </td>
                   <td style={{ padding: '10px 12px' }}>
                     {!t.closed
-                      ? <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 4, background: 'rgba(250,204,21,0.15)', color: 'var(--yellow)' }}>ABIERTA</span>
-                      : <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 4,
-                          background: t.result === 'win' ? 'rgba(52,211,153,0.15)' : t.result === 'loss' ? 'rgba(239,68,68,0.15)' : 'rgba(148,163,184,0.1)',
-                          color: RESULT_COLORS[t.result] || 'var(--text3)'
+                      ? <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', padding: '2px 8px', background: 'rgba(0,212,255,0.1)', color: 'var(--cyan)', border: '1px solid rgba(0,212,255,0.2)' }}>ABIERTA</span>
+                      : <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700, padding: '2px 8px',
+                          background: t.result === 'WIN' ? 'rgba(0,255,65,0.1)' : t.result === 'LOSS' ? 'rgba(255,59,59,0.1)' : 'rgba(255,215,0,0.1)',
+                          color: RESULT_COLORS[t.result] || 'var(--text3)',
+                          border: `1px solid ${t.result === 'WIN' ? 'rgba(0,255,65,0.2)' : t.result === 'LOSS' ? 'rgba(255,59,59,0.2)' : 'rgba(255,215,0,0.2)'}`
                         }}>{RESULT_LABELS[t.result] || t.result}</span>
                     }
                   </td>

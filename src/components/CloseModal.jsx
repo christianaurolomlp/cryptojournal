@@ -32,7 +32,7 @@ export default function CloseModal({ trade, onSave, onClose }) {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
-            <div style={{ marginBottom: 12, padding: '10px 12px', background: 'var(--surface2)', borderRadius: 8 }}>
+            <div style={{ marginBottom: 12, padding: '10px 12px', background: 'var(--surface2)', border: '1px solid var(--border)' }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 15, color: 'var(--text)' }}>
                 {trade.type} {trade.crypto}
               </span>

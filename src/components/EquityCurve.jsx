@@ -37,8 +37,8 @@ export default function EquityCurve({ trades, height = 140, capital = 0 }) {
   const finalValue = points[points.length - 1].y
   const isPositive = finalValue >= 0
 
-  const fillColor = isPositive ? '#22c55e' : '#ef4444'
-  const strokeColor = isPositive ? '#22c55e' : '#ef4444'
+  const fillColor = isPositive ? '#00FF41' : '#FF3B3B'
+  const strokeColor = isPositive ? '#00FF41' : '#FF3B3B'
   const gradId = `eq-grad-${isPositive ? 'g' : 'r'}`
 
   const zeroY = toY(0)
@@ -169,7 +169,7 @@ export default function EquityCurve({ trades, height = 140, capital = 0 }) {
           top: hover.clientY,
         }}>
           <div className="equity-tooltip-date">{getDate(hoverPoint)}</div>
-          <div className="equity-tooltip-pnl" style={{ color: hoverPoint.y >= 0 ? '#22c55e' : '#ef4444' }}>
+          <div className="equity-tooltip-pnl" style={{ color: hoverPoint.y >= 0 ? '#00FF41' : '#FF3B3B' }}>
             {formatPnl(hoverPoint.y)}
           </div>
           {getPctGain(hoverPoint.y) && (

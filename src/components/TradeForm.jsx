@@ -169,20 +169,19 @@ export default function TradeForm({ initial, prefill, capital, onSave, onClose, 
                 {(() => {
                   const r = parseFloat(form.risk) || 0
                   const pct = Math.min(r / 10 * 100, 100)
-                  const color = r < 2 ? '#22c55e' : r < 5 ? '#eab308' : r < 10 ? '#f97316' : '#ef4444'
+                  const color = r < 2 ? '#00FF41' : r < 5 ? '#FFD700' : r < 10 ? '#FF8C00' : '#FF3B3B'
                   return (
-                    <div style={{ marginTop: 6, background: '#1e293b', borderRadius: 4, height: 8, overflow: 'hidden' }}>
+                    <div style={{ marginTop: 6, background: 'var(--surface3)', height: 6, overflow: 'hidden' }}>
                       <div style={{
                         width: `${pct}%`,
                         height: '100%',
                         background: color,
-                        borderRadius: 4,
                         transition: 'width 0.2s, background 0.2s'
                       }} />
                     </div>
                   )
                 })()}
-                <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2, fontFamily: 'var(--font-mono)' }}>
                   {(() => {
                     const r = parseFloat(form.risk) || 0
                     if (r < 2) return '🟢 Riesgo bajo'

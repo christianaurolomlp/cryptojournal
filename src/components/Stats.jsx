@@ -113,22 +113,22 @@ export default function Stats({ trades, caps, currentMonth }) {
           <span className="progress-val">{stats.shorts.count} ops</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
-          <div style={{ padding: '12px 14px', background: 'var(--green-dim)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: 8 }}>
-            <div style={{ fontSize: 11, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>LONG</div>
+          <div style={{ padding: '12px 14px', background: 'var(--green-dim)', border: '1px solid rgba(0,255,65,0.15)', borderLeft: '3px solid var(--green)' }}>
+            <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>LONG</div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: 18, fontWeight: 700, color: stats.longs.pnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
               {formatMoney(stats.longs.pnl)}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
-              Win rate: {stats.longs.winRate.toFixed(1)}%
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text3)', marginTop: 2 }}>
+              WR: {stats.longs.winRate.toFixed(1)}%
             </div>
           </div>
-          <div style={{ padding: '12px 14px', background: 'var(--red-dim)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 8 }}>
-            <div style={{ fontSize: 11, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>SHORT</div>
+          <div style={{ padding: '12px 14px', background: 'var(--red-dim)', border: '1px solid rgba(255,59,59,0.15)', borderLeft: '3px solid var(--red)' }}>
+            <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>SHORT</div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: 18, fontWeight: 700, color: stats.shorts.pnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
               {formatMoney(stats.shorts.pnl)}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
-              Win rate: {stats.shorts.winRate.toFixed(1)}%
+            <div style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text3)', marginTop: 2 }}>
+              WR: {stats.shorts.winRate.toFixed(1)}%
             </div>
           </div>
         </div>

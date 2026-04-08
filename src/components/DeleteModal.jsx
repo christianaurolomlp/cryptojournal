@@ -10,7 +10,7 @@ export default function DeleteModal({ trade, onConfirm, onClose }) {
           <p style={{ color: 'var(--text2)', marginBottom: 16, fontSize: 14 }}>
             ¿Estás seguro que deseas eliminar esta operación? Esta acción no se puede deshacer.
           </p>
-          <div style={{ padding: '12px 14px', background: 'var(--red-dim)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8 }}>
+          <div style={{ padding: '12px 14px', background: 'var(--red-dim)', border: '1px solid rgba(255,59,59,0.2)', borderLeft: '3px solid var(--red)' }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 15, color: 'var(--text)', marginBottom: 4 }}>
               {trade.type} {trade.crypto}
             </div>

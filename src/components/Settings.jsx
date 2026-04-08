@@ -312,14 +312,15 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
         <div className="settings-body">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{
-              width: 44, height: 44, borderRadius: 12,
-              background: 'linear-gradient(135deg, var(--indigo), var(--purple))',
+              width: 44, height: 44,
+              background: 'rgba(0, 255, 65, 0.08)',
+              border: '1px solid rgba(0, 255, 65, 0.2)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22
-            }}>₿</div>
+            }}>⚡</div>
             <div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>MLP Diario de Trading</div>
-              <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
-                v1.1 · Diario de Trading Cripto · {isApiConfigured() ? 'Datos en la nube ☁️' : 'Datos locales en tu navegador'}
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700, color: 'var(--green)', letterSpacing: '0.08em' }}>CRYPTO JOURNAL</div>
+              <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2, fontFamily: 'var(--font-mono)' }}>
+                v2.0 · War Room · {isApiConfigured() ? 'Cloud sync ✓' : 'Local storage'}
               </div>
             </div>
           </div>
