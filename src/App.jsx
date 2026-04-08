@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTheme } from './hooks/useTheme'
 import { VIEWS } from './constants.js'
+import { LayoutDashboard, CalendarDays, BarChart2, CalendarRange, History, Settings as SettingsIcon, Plus, Mic, MicOff, Zap, RefreshCw, Moon, Sun } from 'lucide-react'
 import { store, apiStore, isApiConfigured, uid, seedIfEmpty } from './store.js'
 import { currentMonthKey, monthLabel, prevMonth, nextMonth } from './utils.js'
 import Dashboard from './components/Dashboard.jsx'
@@ -546,12 +547,12 @@ EJEMPLOS:
   }
 
   const navItems = [
-    { id: VIEWS.DASHBOARD, icon: '📊', label: 'Dashboard' },
-    { id: VIEWS.CALENDAR, icon: '📅', label: 'Calendario' },
-    { id: VIEWS.STATS, icon: '📈', label: 'Estadísticas' },
-    { id: VIEWS.ANNUAL, icon: '🗓', label: 'Vista Anual' },
-    { id: VIEWS.HISTORY, icon: '📋', label: 'Historial' },
-    { id: VIEWS.SETTINGS, icon: '⚙', label: 'Configuración' }
+    { id: VIEWS.DASHBOARD, icon: LayoutDashboard, label: 'Dashboard' },
+    { id: VIEWS.CALENDAR, icon: CalendarDays, label: 'Calendario' },
+    { id: VIEWS.STATS, icon: BarChart2, label: 'Estadísticas' },
+    { id: VIEWS.ANNUAL, icon: CalendarRange, label: 'Vista Anual' },
+    { id: VIEWS.HISTORY, icon: History, label: 'Historial' },
+    { id: VIEWS.SETTINGS, icon: SettingsIcon, label: 'Configuración' }
   ]
 
   const capital = caps[currentMonth] || 0
@@ -613,46 +614,31 @@ EJEMPLOS:
         </div>
 
         <nav className="sidebar-nav">
-          {navItems.map(item => (
-            <button
-              key={item.id}
-              className={`nav-item ${view === item.id ? 'active' : ''}`}
-              onClick={() => navigate(item.id)}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              {item.label}
-            </button>
-          ))}
+          {navItems.map(item => {
+            const Icon = item.icon
+            return (
+              <button
+                key={item.id}
+                className={`nav-item ${view === item.id ? 'active' : ''}`}
+                onClick={() => navigate(item.id)}
+              >
+                <Icon size={16} strokeWidth={1.8} />
+                {item.label}
+              </button>
+            )
+          })}
         </nav>
 
         <div className="sidebar-footer">
-          <button
-            onClick={toggleTheme}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              width: '100%',
-              padding: '8px 10px',
-              border: 'none',
-              borderRadius: '8px',
-              background: 'transparent',
-              color: 'var(--text-secondary)',
-              fontSize: '13px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              fontFamily: 'var(--font)',
-              marginBottom: '6px',
-            }}
-          >
-            {theme === 'light' ? '🌙 Modo oscuro' : '☀️ Modo claro'}
+          <button className="nav-item" onClick={toggleTheme}>
+            {theme === 'light' ? <Moon size={16} strokeWidth={1.8} /> : <Sun size={16} strokeWidth={1.8} />}
+            {theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
           </button>
           <button
-            className="btn btn-primary"
-            style={{ width: '100%', justifyContent: 'center' }}
+            className="btn-primary-full"
             onClick={() => { setVoicePrefill(null); setShowNewTrade(true); setSidebarOpen(false) }}
           >
-            + Nueva Operación
+            <Plus size={14} strokeWidth={2.2} /> Nueva operación
           </button>
         </div>
       </aside>
@@ -691,10 +677,10 @@ EJEMPLOS:
             <button
               onClick={() => { setSyncing(true); loadData() }}
               disabled={syncing}
-              title="Recargar datos desde la base de datos"
-              style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', color: 'var(--text-muted)', cursor: syncing ? 'default' : 'pointer', fontSize: 13, opacity: syncing ? 0.5 : 1 }}
+              title="Recargar datos"
+              className="icon-btn"
             >
-              {syncing ? '⏳' : '↻'}
+              <RefreshCw size={15} strokeWidth={1.8} style={{ opacity: syncing ? 0.4 : 1, animation: syncing ? 'spin 1s linear infinite' : 'none' }} />
             </button>
 
             {/* Voice Button */}
@@ -703,14 +689,19 @@ EJEMPLOS:
               onClick={voiceStatus === VOICE_LISTENING ? stopVoice : startVoice}
               title="Comando de voz"
             >
-              {voiceStatus === VOICE_LISTENING ? '⏹ Detener' : voiceStatus === VOICE_PROCESSING ? '⚡ IA...' : '🎙 Voz'}
+              {voiceStatus === VOICE_LISTENING
+                ? <><MicOff size={13} strokeWidth={2} /> Detener</>
+                : voiceStatus === VOICE_PROCESSING
+                  ? <><Zap size={13} strokeWidth={2} /> IA...</>
+                  : <><Mic size={13} strokeWidth={1.8} /> Voz</>
+              }
             </button>
 
             <button
-              className="btn btn-primary btn-sm"
+              className="btn-new"
               onClick={() => { setVoicePrefill(null); setShowNewTrade(true) }}
             >
-              + Nueva
+              <Plus size={14} strokeWidth={2.2} /> Nueva
             </button>
           </div>
         </header>

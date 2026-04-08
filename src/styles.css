@@ -623,3 +623,102 @@ body {
   .modal { padding: 16px; margin: 10px; border-radius: 14px; }
   .voice-banner { min-width: unset; max-width: 90vw; }
 }
+
+/* ─── shadcn-style refinements ───────────────────────────────── */
+
+/* Remove emoji nav icons, make nav items tighter */
+.nav-item {
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  gap: 8px;
+  letter-spacing: -0.1px;
+}
+.nav-item svg { flex-shrink: 0; color: inherit; }
+.nav-item.active svg { color: var(--blue); }
+
+/* Icon-only button (topbar sync) */
+.icon-btn {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: transparent; color: var(--text-muted);
+  cursor: pointer; transition: background 120ms;
+}
+.icon-btn:hover { background: var(--bg); color: var(--text); }
+.icon-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* "Nueva" button in topbar */
+.btn-new {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 6px;
+  background: var(--text); color: var(--bg-card);
+  border: none; font-size: 13px; font-weight: 500;
+  font-family: var(--font); cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms;
+}
+.btn-new:hover { opacity: 0.85; }
+[data-theme="dark"] .btn-new { background: #E6EDF3; color: #0D1117; }
+
+/* "Nueva operación" full-width sidebar button */
+.btn-primary-full {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 8px 12px;
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 6px;
+  font-size: 13px; font-weight: 500; font-family: var(--font);
+  cursor: pointer; letter-spacing: -0.1px;
+  transition: opacity 120ms;
+}
+.btn-primary-full:hover { opacity: 0.88; }
+
+/* Voice button — smaller, cleaner */
+.btn-voice {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 10px; border-radius: 6px;
+  border: 1px solid var(--border); background: transparent;
+  font-size: 12px; font-weight: 500; font-family: var(--font);
+  color: var(--text-secondary); cursor: pointer;
+  transition: background 120ms, color 120ms;
+}
+.btn-voice:hover { background: var(--bg); }
+.btn-voice.listening { background: var(--red-soft); color: var(--red); border-color: transparent; }
+.btn-voice.processing { background: var(--blue-soft); color: var(--blue); border-color: transparent; }
+
+/* Topbar refinements — shadcn style */
+.topbar { height: 52px; padding: 0 16px; }
+.topbar-right { gap: 6px; }
+
+/* Cards — remove shadow, use border (shadcn style) */
+.card {
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+.kpi-card {
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+[data-theme="dark"] .card { border-color: rgba(255,255,255,0.07); }
+[data-theme="dark"] .kpi-card { border-color: rgba(255,255,255,0.07); }
+
+/* Sidebar brand — cleaner */
+.sidebar-brand { height: 52px; }
+.brand-icon { border-radius: 6px; width: 28px; height: 28px; font-size: 14px; }
+.brand-name { font-size: 13px; letter-spacing: -0.2px; }
+
+/* KPI values — tighter */
+.kpi-value { font-size: 22px; }
+.kpi-label { font-size: 10.5px; letter-spacing: 0.5px; }
+
+/* Table — tighter rows */
+.data-table td { padding: 9px 14px; font-size: 13px; }
+.data-table th { font-size: 10.5px; letter-spacing: 0.5px; }
+
+/* Spin animation for sync icon */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Sidebar footer gap */
+.sidebar-footer { padding: 10px 8px; gap: 4px; display: flex; flex-direction: column; }
