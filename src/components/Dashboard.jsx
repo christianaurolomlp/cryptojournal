@@ -348,7 +348,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
                     </td>
                     <td style={{ color: 'var(--text-muted)' }}>{t.tf}</td>
                     <td style={{ color: 'var(--text-muted)' }}>${t.margin?.toFixed(0)}</td>
-                    <td style={{ textAlign: 'right', fontWeight: 700, color: t.result === 'WIN' ? 'var(--blue)' : t.result === 'LOSS' ? 'var(--red)' : 'var(--orange)' }}>
+                    <td style={{ textAlign: 'right', fontWeight: 700, color: t.result === 'WIN' ? 'var(--green)' : t.result === 'LOSS' ? 'var(--red)' : 'var(--orange)' }}>
                       {t.pnl !== null ? formatMoney(t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl) : '—'}
                     </td>
                   </tr>

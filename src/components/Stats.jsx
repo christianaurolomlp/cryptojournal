@@ -119,7 +119,7 @@ export default function Stats({ trades, caps, currentMonth }) {
       <div className="stats-section">
         <div className="stats-section-title">Long vs Short</div>
         <div className="progress-row">
-          <span className="progress-label" style={{ color: 'var(--blue)' }}>LONG</span>
+          <span className="progress-label" style={{ color: 'var(--green)' }}>LONG</span>
           <div className="progress-bar-wrap">
             <div className="progress-bar" style={{ width: `${(stats.longs.count / maxLongShort) * 100}%`, background: 'var(--blue)' }} />
           </div>
@@ -151,12 +151,12 @@ export default function Stats({ trades, caps, currentMonth }) {
         <div className="stats-section">
           <div className="stats-section-title">Distribución de Resultados</div>
           <div className="distribution-bar">
-            {wins > 0 && <div className="dist-segment" style={{ width: `${winPct}%`, background: 'var(--blue)' }} title={`WIN: ${wins}`} />}
+            {wins > 0 && <div className="dist-segment" style={{ width: `${winPct}%`, background: 'var(--green)' }} title={`WIN: ${wins}`} />}
             {be > 0 && <div className="dist-segment" style={{ width: `${bePct}%`, background: 'var(--orange)' }} title={`BE: ${be}`} />}
             {losses > 0 && <div className="dist-segment" style={{ width: `${lossPct}%`, background: 'var(--red)' }} title={`LOSS: ${losses}`} />}
           </div>
           <div className="flex gap-5 flex-wrap">
-            <LegendItem color="var(--blue)" label={`WIN: ${wins} (${winPct.toFixed(1)}%)`} />
+            <LegendItem color="var(--green)" label={`WIN: ${wins} (${winPct.toFixed(1)}%)`} />
             {be > 0 && <LegendItem color="var(--orange)" label={`BE: ${be} (${bePct.toFixed(1)}%)`} />}
             <LegendItem color="var(--red)" label={`LOSS: ${losses} (${lossPct.toFixed(1)}%)`} />
           </div>
