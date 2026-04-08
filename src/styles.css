@@ -15,8 +15,10 @@
   --blue-soft: #EBF4FF;
   --orange: #FF9500;
   --orange-soft: #FFF3E0;
-  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-sm: 0 1px 3px rgba(50,50,93,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(50,50,93,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(50,50,93,0.12), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(50,50,93,0.15), 0 4px 8px rgba(0,0,0,0.08);
   --radius: 12px;
   --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -29,6 +31,7 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  font-feature-settings: "cv01", "ss03";
 }
 
 /* ─── Layout ─────────────────────────── */
@@ -241,14 +244,15 @@ body {
   .kpi-grid { grid-template-columns: repeat(2,1fr); }
 }
 
-/* ─── Dark Theme ─────────────────────────── */
+/* ─── Dark Theme (Linear-inspired) ───────── */
 [data-theme="dark"] {
-  --bg: #0D1117;
-  --bg-card: #161B22;
-  --border: rgba(255,255,255,0.08);
-  --text: #E6EDF3;
-  --text-secondary: #8B949E;
-  --text-muted: #6E7681;
+  --bg: #08090a;
+  --bg-card: #0f1011;
+  --card-elevated: #191a1b;
+  --border: rgba(255,255,255,0.06);
+  --text: #f7f8f8;
+  --text-secondary: #d0d6e0;
+  --text-muted: #8a8f98;
   --green: #3FB950;
   --green-soft: rgba(63,185,80,0.12);
   --red: #F85149;
@@ -257,8 +261,10 @@ body {
   --blue-soft: rgba(88,166,255,0.12);
   --orange: #D29922;
   --orange-soft: rgba(210,153,34,0.12);
-  --shadow: 0 1px 3px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
 [data-theme="dark"] .form-input { background: #0D1117; border-color: rgba(255,255,255,0.12); }
@@ -764,3 +770,75 @@ body { letter-spacing: -0.011em; }
 .equity-card { display: flex; flex-direction: column; }
 .equity-card .card-body { flex: 1; display: flex; flex-direction: column; min-height: 240px; padding-bottom: 10px; }
 .equity-card .card-body .recharts-wrapper { flex: 1; }
+
+/* ─── Design System: Linear/Stripe/Revolut patterns ──────────── */
+
+/* 1. KPI values — aggressive tracking (Revolut/Stripe) */
+.kpi-value { letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.kpi-value.lg { letter-spacing: -0.06em; font-weight: 600; }
+
+/* 2. Tabular nums on all monetary/percentage values */
+.trade-pnl, .calc-item-val, .cal-pnl, .bar-value,
+.capital-badge strong, .progress-val, .equity-tooltip-pnl {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 3. Card titles — tighter tracking */
+.card-title { letter-spacing: -0.025em; font-weight: 600; }
+
+/* 4. Cards — hover state with shadow lift */
+.card { transition: box-shadow 0.15s ease, border-color 0.15s ease; }
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* 5. Buttons — refined shadow + hover */
+.btn-primary {
+  box-shadow: 0 1px 2px rgba(0,122,255,0.25);
+  transition: all 0.15s ease;
+}
+.btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 2px 8px rgba(0,122,255,0.35);
+  opacity: 1;
+}
+.btn-primary-full {
+  box-shadow: 0 1px 2px rgba(0,122,255,0.25);
+  transition: all 0.15s ease;
+}
+.btn-primary-full:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 2px 8px rgba(0,122,255,0.35);
+  opacity: 1;
+}
+
+/* 6. Nav sidebar — active state with left accent border */
+.nav-item {
+  border-left: 2px solid transparent;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+.nav-item.active {
+  border-left: 2px solid var(--blue);
+  background: rgba(0,122,255,0.07);
+  border-radius: 0 6px 6px 0;
+}
+
+/* 7. Large stat numbers */
+.stat-value-lg {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 8. Separadores más sutiles — reduced opacity */
+.data-table th { border-bottom: 1px solid color-mix(in srgb, var(--border) 55%, transparent); }
+.data-table td { border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); }
+.settings-row { border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); }
+.trade-actions { border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent); }
+.capital-month-row { border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); }
+
+/* 9. Page title — tighter tracking */
+.page-title { letter-spacing: -0.035em; }
+
+/* 10. Year label in stats — big number treatment */
+.year-label { letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
