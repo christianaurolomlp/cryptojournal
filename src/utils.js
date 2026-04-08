@@ -4,9 +4,7 @@ export function formatMoney(value, decimals = 2) {
   if (value === null || value === undefined) return '—'
   const abs = Math.abs(value)
   const sign = value < 0 ? '-' : value > 0 ? '+' : ''
-  if (abs >= 1000000) return `${sign}$${(abs / 1000000).toFixed(1)}M`
-  if (abs >= 1000) return `${sign}$${(abs / 1000).toFixed(1)}k`
-  return `${sign}$${abs.toFixed(decimals)}`
+  return `${sign}$${abs.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`
 }
 
 export function formatMoneyPlain(value, decimals = 2) {

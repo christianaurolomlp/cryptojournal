@@ -722,3 +722,41 @@ body {
 
 /* Sidebar footer gap */
 .sidebar-footer { padding: 10px 8px; gap: 4px; display: flex; flex-direction: column; }
+
+/* ─── shadcn typography refinements ─────────────────────────────── */
+/* Numeric tabular layout for all money/% values */
+.kpi-value, .kpi-sub, .data-table td, .tf-table td,
+.green, .red, .yellow { font-variant-numeric: tabular-nums; }
+
+/* Letter spacing — shadcn uses slight negative on all text */
+body { letter-spacing: -0.011em; }
+.page-title { letter-spacing: -0.03em; font-size: 18px; font-weight: 700; }
+.kpi-value { letter-spacing: -0.03em; }
+.kpi-value.lg { letter-spacing: -0.04em; }
+.kpi-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-muted);
+}
+.kpi-sub { font-size: 11px; letter-spacing: -0.01em; }
+
+/* Card header titles tighter */
+.card-title { font-size: 13px; font-weight: 600; letter-spacing: -0.02em; }
+.card-description { font-size: 11px; letter-spacing: -0.01em; }
+
+/* Stats section titles */
+.stats-section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+
+/* Nav items */
+.nav-item { letter-spacing: -0.015em; }
+
+/* Topbar title */
+.brand-name { letter-spacing: -0.04em; font-weight: 700; }
+
+/* Table tighter */
+.data-table th { letter-spacing: 0.05em; }
+.data-table td { letter-spacing: -0.01em; }
+
+/* Inter variable font if available */
+@supports (font-variation-settings: normal) {
+  body { font-family: 'Inter var', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+}
