@@ -144,7 +144,7 @@ body {
 .kpi-card.hero { text-align: center; padding: 20px 18px; }
 
 /* ─── Charts layout ──────────────────────── */
-.charts-grid { display: grid; grid-template-columns: 1fr 380px; gap: 12px; margin-bottom: 12px; }
+.charts-grid { display: grid; grid-template-columns: 1fr 380px; gap: 12px; margin-bottom: 12px; align-items: start; }
 
 /* ─── Table ────────────────────────────── */
 .data-table { width: 100%; border-collapse: collapse; }

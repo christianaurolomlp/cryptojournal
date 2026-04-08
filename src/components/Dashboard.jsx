@@ -189,14 +189,14 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
               <div className="card-description">{monthLabel(currentMonth)}</div>
             </div>
           </div>
-          <div className="card-body">
+          <div className="card-body" style={{ paddingBottom: 12 }}>
             {equityData.length < 2 ? (
               <div className="empty-state" style={{ padding: '32px 0' }}>
                 <div className="empty-icon">📈</div>
                 <div className="empty-sub">Sin operaciones cerradas</div>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={260}>
                 <AreaChart data={equityData} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="eqFill" x1="0" y1="0" x2="0" y2="1">
