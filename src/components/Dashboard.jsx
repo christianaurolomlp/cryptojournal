@@ -5,12 +5,6 @@ import TradeCard from './TradeCard.jsx'
 
 const DEFAULT_CAPITAL = 13000
 
-const CRYPTO_EMOJI = {
-  BTC: '₿', ETH: 'Ξ', SOL: '◎', DOGE: '🐕', XRP: '✕', ADA: '₳',
-  BNB: '🔶', AVAX: '🔺', DOT: '●', LINK: '⬡', ATOM: '⚛',
-  NEAR: '🌐', PEPE: '🐸', BONK: '🐶', SHIB: '🐕', TON: '💎',
-  TRUMP: '🇺🇸', GOLD: '🥇', SILVER: '🥈'
-}
 
 /* ── Recharts Custom Tooltip ── */
 function ChartTooltip({ active, payload, label }) {
@@ -79,27 +73,22 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
     return { totalRisk, riskDollar, protectedCount, breakdown, refCapital, count: allOpenTrades.length }
   }, [allOpenTrades, capital, stats])
 
-  // Equity chart data (recharts format)
+  // Equity chart data — aggregated by day (one point per day)
   const equityData = useMemo(() => {
     const pts = equityPoints(monthTrades)
-    return pts.map((p, i) => {
-      const rawDate = p.trade
-        ? (p.trade.closeDate || p.trade.date)
-        : null
-      const display = rawDate
-        ? (() => { const dd = new Date(rawDate); return `${dd.getDate()} ${dd.toLocaleString('es-ES', {month: 'short'})}` })()
-        : 'Inicio'
-      return { name: display, rawDate: rawDate || '', pnl: parseFloat(p.y.toFixed(2)), idx: i }
+    // Group by date: keep last cumulative PnL per day
+    const dateMap = new Map()
+    pts.forEach(p => {
+      const rawDate = p.trade ? (p.trade.closeDate || p.trade.date) : null
+      const key = rawDate || '__inicio__'
+      dateMap.set(key, p.y)  // overwrites → last trade of day wins
+    })
+    return Array.from(dateMap.entries()).map(([key, cum], i) => {
+      const display = key === '__inicio__' ? 'Inicio'
+        : (() => { const dd = new Date(key); return `${dd.getDate()} ${dd.toLocaleString('es-ES', {month: 'short'})}` })()
+      return { name: display, pnl: parseFloat(cum.toFixed(2)), idx: i }
     })
   }, [monthTrades])
-
-  // Unique date ticks for X-axis (show first occurrence of each date only)
-  const uniqueDateTicks = useMemo(() => {
-    const seen = new Set()
-    return equityData
-      .filter(p => { if (!seen.has(p.name)) { seen.add(p.name); return true; } return false; })
-      .map(p => p.idx)
-  }, [equityData])
 
   // Asset performance (for bar chart)
   const assetData = useMemo(() => {
@@ -221,11 +210,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.5} vertical={false} />
                   <XAxis
-                    dataKey="idx"
-                    type="number"
-                    domain={[0, equityData.length - 1]}
-                    ticks={uniqueDateTicks}
-                    tickFormatter={(idx) => equityData[idx]?.name || ''}
+                    dataKey="name"
                     tick={{ fill: axisColor, fontSize: 11, fontFamily: "var(--font)" }}
                     axisLine={{ stroke: gridColor }}
                     tickLine={false}
@@ -321,7 +306,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
               <tbody>
                 {closedTrades.slice(0, 8).map(t => (
                   <tr key={t.id}>
-                    <td style={{ fontWeight: 700, color: 'var(--text)' }}>{CRYPTO_EMOJI[t.crypto] || '🪙'} {t.crypto}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--text)' }}>{t.crypto}</td>
                     <td><span className={`badge badge-${t.type === 'LONG' ? 'long' : 'short'}`}>{t.type}</span></td>
                     <td>
                       <span className={`badge badge-${(t.result || '').toLowerCase()}`}>

@@ -1,15 +1,5 @@
 import { formatMoney } from '../utils.js'
 
-const CRYPTO_EMOJI = {
-  BTC: '₿', ETH: 'Ξ', SOL: '◎', DOGE: '🐕', XRP: '✕', ADA: '₳',
-  BNB: '🔶', AVAX: '🔺', DOT: '●', LINK: '⬡', ATOM: '⚛',
-  NEAR: '🌐', PEPE: '🐸', BONK: '🐶', SHIB: '🐕', TON: '💎',
-  TRUMP: '🇺🇸', GOLD: '🥇', SILVER: '🥈'
-}
-
-function getCryptoEmoji(crypto) {
-  return CRYPTO_EMOJI[crypto] || '🪙'
-}
 
 function getPnlClass(result) {
   if (result === 'WIN') return 'green'
@@ -37,7 +27,7 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
     <div className={`trade-card ${getCardClass(trade)}`}>
       <div className="trade-card-top">
         <div className="trade-card-left">
-          <span className="trade-crypto">{getCryptoEmoji(trade.crypto)} {trade.crypto}</span>
+          <span className="trade-crypto">{trade.crypto}</span>
           <span className={`badge badge-${trade.type === 'LONG' ? 'long' : 'short'}`}>
             {trade.type}
           </span>
