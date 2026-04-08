@@ -76,10 +76,13 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
   const equityData = useMemo(() => {
     const pts = equityPoints(monthTrades)
     return pts.map((p, i) => {
-      const date = p.trade
-        ? new Date(p.trade.closeDate || p.trade.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+      const rawDate = p.trade
+        ? (p.trade.closeDate || p.trade.date)
+        : null
+      const display = rawDate
+        ? (() => { const dd = new Date(rawDate); return `${dd.getDate()} ${dd.toLocaleString('es-ES', {month: 'short'})}` })()
         : 'Inicio'
-      return { name: date, pnl: parseFloat(p.y.toFixed(2)), idx: i }
+      return { name: display, rawDate: rawDate || '', pnl: parseFloat(p.y.toFixed(2)), idx: i }
     })
   }, [monthTrades])
 
@@ -204,7 +207,8 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.5} vertical={false} />
                   <XAxis
                     dataKey="name"
-                    tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }}
+                    interval="preserveStartEnd"
+                    tick={{ fill: axisColor, fontSize: 11, fontFamily: "var(--font)" }}
                     axisLine={{ stroke: gridColor }}
                     tickLine={false}
                   />
@@ -245,7 +249,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={assetData} margin={{ top: 8, right: 8, left: -10, bottom: 0 }} layout="vertical">
+                <BarChart data={assetData} margin={{ top: 8, right: 8, left: 10, bottom: 0 }} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.3} horizontal={false} />
                   <XAxis
                     type="number"
@@ -260,7 +264,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
                     tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }}
                     axisLine={false}
                     tickLine={false}
-                    width={48}
+                    width={56}
                   />
                   <Tooltip content={<AssetTooltip />} cursor={{ fill: cursorFill }} />
                   <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={20}>
