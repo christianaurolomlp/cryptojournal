@@ -62,6 +62,44 @@ export default function Stats({ trades, caps, currentMonth }) {
         </div>
       </div>
 
+      {/* Expectativa Matemática (EV) */}
+      {totalClosed > 0 && (
+        <div className="stats-section">
+          <div className="stats-section-title">Expectativa Matemática</div>
+          <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            {(() => {
+              const wr = stats.winRate / 100
+              const lr = 1 - wr
+              const ev = (wr * stats.avgWin) - (lr * stats.avgLoss)
+              const evColor = ev > 0 ? 'green' : ev < 0 ? 'red' : ''
+              return (
+                <>
+                  <div className="kpi-card hero">
+                    <div className="kpi-label">EV por Operación</div>
+                    <div className={`kpi-value lg ${evColor}`}>{formatMoney(ev)}</div>
+                    <div className="kpi-sub">
+                      ({(wr * 100).toFixed(0)}% × {formatMoney(stats.avgWin)}) − ({(lr * 100).toFixed(0)}% × {formatMoney(stats.avgLoss)})
+                    </div>
+                  </div>
+                  <div className="kpi-card">
+                    <div className="kpi-label">Ratio W/L</div>
+                    <div className={`kpi-value ${stats.avgLoss > 0 ? (stats.avgWin / stats.avgLoss >= 1 ? 'green' : 'red') : ''}`}>
+                      {stats.avgLoss > 0 ? (stats.avgWin / stats.avgLoss).toFixed(2) : '∞'}
+                    </div>
+                    <div className="kpi-sub">Avg Win / Avg Loss</div>
+                  </div>
+                  <div className="kpi-card">
+                    <div className="kpi-label">EV × Operaciones</div>
+                    <div className={`kpi-value ${evColor}`}>{formatMoney(ev * totalClosed)}</div>
+                    <div className="kpi-sub">Expectativa total ({totalClosed} ops)</div>
+                  </div>
+                </>
+              )
+            })()}
+          </div>
+        </div>
+      )}
+
       {/* Streaks */}
       <div className="stats-section">
         <div className="stats-section-title">Rachas</div>

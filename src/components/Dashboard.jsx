@@ -5,6 +5,13 @@ import TradeCard from './TradeCard.jsx'
 
 const DEFAULT_CAPITAL = 13000
 
+const CRYPTO_EMOJI = {
+  BTC: '₿', ETH: 'Ξ', SOL: '◎', DOGE: '🐕', XRP: '✕', ADA: '₳',
+  BNB: '🔶', AVAX: '🔺', DOT: '●', LINK: '⬡', ATOM: '⚛',
+  NEAR: '🌐', PEPE: '🐸', BONK: '🐶', SHIB: '🐕', TON: '💎',
+  TRUMP: '🇺🇸', GOLD: '🥇', SILVER: '🥈'
+}
+
 /* ── Recharts Custom Tooltip ── */
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
@@ -141,7 +148,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
         <div className="kpi-card">
           <div className="kpi-label">Max Drawdown</div>
           <div className="kpi-value red">{stats.maxDrawdown > 0 ? `-$${stats.maxDrawdown.toFixed(0)}` : '—'}</div>
-          <div className="kpi-sub">Caída máxima</div>
+          <div className="kpi-sub">{capital > 0 && stats.maxDrawdown > 0 ? `${(stats.maxDrawdown / capital * 100).toFixed(1)}% del capital` : 'Caída máxima'}</div>
         </div>
       </div>
 
@@ -314,7 +321,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
               <tbody>
                 {closedTrades.slice(0, 8).map(t => (
                   <tr key={t.id}>
-                    <td style={{ fontWeight: 700, color: 'var(--text)' }}>{t.crypto}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--text)' }}>{CRYPTO_EMOJI[t.crypto] || '🪙'} {t.crypto}</td>
                     <td><span className={`badge badge-${t.type === 'LONG' ? 'long' : 'short'}`}>{t.type}</span></td>
                     <td>
                       <span className={`badge badge-${(t.result || '').toLowerCase()}`}>

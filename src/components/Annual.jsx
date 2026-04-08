@@ -77,13 +77,18 @@ export default function Annual({ trades, caps, onMonthClick }) {
             {monthStats.map(({ key, stats }, i) => {
               const pct = Math.abs(stats.pnl) / maxAbsPnl
               const hasData = stats.total > 0
-              const barH = hasData ? Math.max(pct * 96, 2) : 2
+              const barH = hasData ? Math.max(pct * 140, 2) : 2
               return (
                 <div className="bar-wrap" key={key} onClick={() => onMonthClick(key)} style={{ cursor: 'pointer' }}>
+                  {hasData && stats.pnl !== 0 && (
+                    <span className="bar-value" style={{ color: stats.pnl > 0 ? 'var(--green)' : 'var(--red)' }}>
+                      {stats.pnl > 0 ? '+' : ''}{stats.pnl >= 1000 || stats.pnl <= -1000 ? `${(stats.pnl/1000).toFixed(1)}k` : stats.pnl.toFixed(0)}
+                    </span>
+                  )}
                   <div className="bar" style={{
                     height: `${barH}px`,
                     background: !hasData ? 'var(--bg)'
-                      : stats.pnl > 0 ? 'var(--blue)'
+                      : stats.pnl > 0 ? 'var(--green)'
                       : stats.pnl < 0 ? 'var(--red)'
                       : 'var(--orange)',
                     opacity: hasData ? 1 : 0.3
