@@ -1,9 +1,37 @@
 import { useMemo, useState } from 'react'
-import { calcStats, formatMoney, formatPct, monthLabel, tradesForMonth } from '../utils.js'
-import EquityCurve from './EquityCurve.jsx'
+import { calcStats, formatMoney, formatPct, monthLabel, tradesForMonth, equityPoints } from '../utils.js'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts'
 import TradeCard from './TradeCard.jsx'
 
 const DEFAULT_CAPITAL = 13000
+
+/* ── Recharts Custom Tooltip ── */
+function ChartTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null
+  const val = payload[0].value
+  return (
+    <div className="chart-tooltip">
+      <div className="chart-tooltip-label">{label}</div>
+      <div className="chart-tooltip-value" style={{ color: val >= 0 ? '#00FF41' : '#FF3B3B' }}>
+        {val >= 0 ? '+' : ''}${Math.abs(val).toFixed(2)}
+      </div>
+    </div>
+  )
+}
+
+function AssetTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null
+  const { name, pnl, wins, count } = payload[0].payload
+  return (
+    <div className="chart-tooltip">
+      <div className="chart-tooltip-label">{name}</div>
+      <div className="chart-tooltip-value" style={{ color: pnl >= 0 ? '#00FF41' : '#FF3B3B' }}>
+        {pnl >= 0 ? '+' : ''}${Math.abs(pnl).toFixed(2)}
+      </div>
+      <div style={{ fontSize: 11, color: '#7D8590', marginTop: 2 }}>{wins}/{count} wins</div>
+    </div>
+  )
+}
 
 export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete, onClose, onReopen, onNewTrade, onToggleProtected }) {
   const [searchQuery, setSearchQuery] = useState('')
@@ -38,16 +66,31 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
     return { totalRisk, riskDollar, protectedCount, breakdown, refCapital, count: allOpenTrades.length }
   }, [allOpenTrades, capital, stats])
 
-  // Asset performance
-  const assetMap = {}
-  monthTrades.filter(t => t.closed && t.pnl !== null).forEach(t => {
-    if (!assetMap[t.crypto]) assetMap[t.crypto] = { pnl: 0, count: 0, wins: 0 }
-    assetMap[t.crypto].pnl += t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl
-    assetMap[t.crypto].count++
-    if (t.result === 'WIN') assetMap[t.crypto].wins++
-  })
-  const assets = Object.entries(assetMap).sort((a, b) => Math.abs(b[1].pnl) - Math.abs(a[1].pnl)).slice(0, 8)
-  const maxAssetPnl = assets.length > 0 ? Math.max(...assets.map(([, v]) => Math.abs(v.pnl))) : 1
+  // Equity chart data (recharts format)
+  const equityData = useMemo(() => {
+    const pts = equityPoints(monthTrades)
+    return pts.map((p, i) => {
+      const date = p.trade
+        ? new Date(p.trade.closeDate || p.trade.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+        : 'Inicio'
+      return { name: date, pnl: parseFloat(p.y.toFixed(2)), idx: i }
+    })
+  }, [monthTrades])
+
+  // Asset performance (for bar chart)
+  const assetData = useMemo(() => {
+    const assetMap = {}
+    monthTrades.filter(t => t.closed && t.pnl !== null).forEach(t => {
+      if (!assetMap[t.crypto]) assetMap[t.crypto] = { pnl: 0, count: 0, wins: 0 }
+      assetMap[t.crypto].pnl += t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl
+      assetMap[t.crypto].count++
+      if (t.result === 'WIN') assetMap[t.crypto].wins++
+    })
+    return Object.entries(assetMap)
+      .sort((a, b) => Math.abs(b[1].pnl) - Math.abs(a[1].pnl))
+      .slice(0, 8)
+      .map(([name, data]) => ({ name, ...data }))
+  }, [monthTrades])
 
   const pnlColor = stats.pnl > 0 ? 'green' : stats.pnl < 0 ? 'red' : ''
   const winRateColor = stats.winRate >= 60 ? 'green' : stats.winRate >= 40 ? 'yellow' : 'red'
@@ -61,11 +104,11 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
         </div>
       )}
 
-      {/* KPI Grid */}
+      {/* ─── KPI Strip — 4 cards ─── */}
       <div className="kpi-grid">
-        <div className="kpi-card hero">
+        <div className="kpi-card">
           <div className="kpi-label">P&L del mes</div>
-          <div className={`kpi-value lg ${pnlColor}`}>{formatMoney(stats.pnl)}</div>
+          <div className={`kpi-value ${pnlColor}`}>{formatMoney(stats.pnl)}</div>
           {capital > 0 && <div className="kpi-sub">{formatPct(stats.rentPct)} rentabilidad</div>}
         </div>
         <div className="kpi-card">
@@ -73,6 +116,20 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
           <div className={`kpi-value ${winRateColor}`}>{stats.winRate.toFixed(1)}%</div>
           <div className="kpi-sub">{stats.wins}W · {stats.losses}L · {stats.be}BE</div>
         </div>
+        <div className="kpi-card">
+          <div className="kpi-label">Operaciones</div>
+          <div className="kpi-value">{stats.total}</div>
+          <div className="kpi-sub">{openTrades.length} abiertas · {closedTrades.length} cerradas</div>
+        </div>
+        <div className="kpi-card">
+          <div className="kpi-label">Max Drawdown</div>
+          <div className="kpi-value red">{stats.maxDrawdown > 0 ? `-$${stats.maxDrawdown.toFixed(0)}` : '—'}</div>
+          <div className="kpi-sub">Caída máxima</div>
+        </div>
+      </div>
+
+      {/* ─── Secondary KPIs ─── */}
+      <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: 24 }}>
         <div className="kpi-card">
           <div className="kpi-label">Profit Factor</div>
           <div className={`kpi-value ${pfColor}`}>
@@ -88,19 +145,10 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
           {capital > 0 && <div className="kpi-sub">Inicial: {formatMoney(capital)}</div>}
         </div>
         <div className="kpi-card">
-          <div className="kpi-label">Operaciones</div>
-          <div className="kpi-value">{stats.total}</div>
-          <div className="kpi-sub">{openTrades.length} abiertas · {closedTrades.length} cerradas</div>
-        </div>
-        <div className="kpi-card">
-          <div className="kpi-label">Max Drawdown</div>
-          <div className="kpi-value red">{stats.maxDrawdown > 0 ? `-$${stats.maxDrawdown.toFixed(2)}` : '—'}</div>
-        </div>
-        <div className="kpi-card">
           <div className="kpi-label">Mejor / Peor</div>
-          <div className="flex items-center gap-2" style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 700, marginTop: 4 }}>
             <span className="text-green">{stats.bestTrade !== null ? `+$${Math.abs(stats.bestTrade).toFixed(0)}` : '—'}</span>
-            <span style={{ color: 'var(--color-text-dim)' }}>/</span>
+            <span style={{ color: 'var(--color-text-dim)', fontSize: 12 }}>/</span>
             <span className="text-red">{stats.worstTrade !== null ? `-$${Math.abs(stats.worstTrade).toFixed(0)}` : '—'}</span>
           </div>
         </div>
@@ -113,105 +161,172 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
         </div>
       </div>
 
-      {/* Risk Card */}
+      {/* ─── Risk Card (if open trades) ─── */}
       {allOpenTrades.length > 0 && (
         <RiskCard riskData={riskData} />
       )}
 
-      {/* Charts Grid */}
-      <div className="dashboard-grid">
-        {/* Equity Curve */}
+      {/* ─── Charts Grid — Equity + Assets ─── */}
+      <div className="charts-grid">
+        {/* Equity Curve (recharts) */}
         <div className="card">
           <div className="card-header">
-            <span className="card-title">Equity Curve</span>
-            <span className="text-xs font-mono" style={{ color: 'var(--color-text-dim)' }}>{monthLabel(currentMonth)}</span>
-          </div>
-          <div className="card-body" style={{ padding: '16px 20px' }}>
-            <EquityCurve trades={monthTrades} height={160} capital={capital} />
-          </div>
-        </div>
-
-        {/* Asset Performance */}
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Rendimiento por Activo</span>
+            <div>
+              <div className="card-title">Equity Curve</div>
+              <div className="card-description">{monthLabel(currentMonth)}</div>
+            </div>
           </div>
           <div className="card-body">
-            {assets.length === 0 ? (
-              <div className="empty-state" style={{ padding: '24px 0' }}>
+            {equityData.length < 2 ? (
+              <div className="empty-state" style={{ padding: '32px 0' }}>
+                <div className="empty-icon">📈</div>
                 <div className="empty-sub">Sin operaciones cerradas</div>
               </div>
             ) : (
-              <div className="asset-list">
-                {assets.map(([crypto, data]) => (
-                  <div className="asset-row" key={crypto}>
-                    <span className="asset-name">{crypto}</span>
-                    <div className="asset-bar-wrap">
-                      <div className="asset-bar" style={{
-                        width: `${(Math.abs(data.pnl) / maxAssetPnl) * 100}%`,
-                        background: data.pnl >= 0 ? 'var(--color-accent)' : 'var(--color-danger)'
-                      }} />
-                    </div>
-                    <span className={`asset-pnl ${data.pnl >= 0 ? 'text-green' : 'text-red'}`}>
-                      {formatMoney(data.pnl)}
-                    </span>
-                  </div>
-                ))}
+              <ResponsiveContainer width="100%" height={220}>
+                <AreaChart data={equityData} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="eqFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#00FF41" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#00FF41" stopOpacity={0.02} />
+                    </linearGradient>
+                    <linearGradient id="eqFillRed" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#FF3B3B" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#FF3B3B" stopOpacity={0.02} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1E2D3D" strokeOpacity={0.5} vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fill: '#484F58', fontSize: 10, fontFamily: "'JetBrains Mono'" }}
+                    axisLine={{ stroke: '#1E2D3D' }}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    tick={{ fill: '#484F58', fontSize: 10, fontFamily: "'JetBrains Mono'" }}
+                    axisLine={false}
+                    tickLine={false}
+                    tickFormatter={v => `$${v}`}
+                  />
+                  <Tooltip content={<ChartTooltip />} />
+                  <Area
+                    type="monotone"
+                    dataKey="pnl"
+                    stroke={equityData[equityData.length - 1]?.pnl >= 0 ? '#00FF41' : '#FF3B3B'}
+                    strokeWidth={2}
+                    fill={equityData[equityData.length - 1]?.pnl >= 0 ? 'url(#eqFill)' : 'url(#eqFillRed)'}
+                    dot={false}
+                    activeDot={{ r: 4, fill: '#00FF41', stroke: '#0D1117', strokeWidth: 2 }}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+        </div>
+
+        {/* Asset Performance (recharts bar) */}
+        <div className="card">
+          <div className="card-header">
+            <div>
+              <div className="card-title">Por Activo</div>
+              <div className="card-description">PnL por criptomoneda</div>
+            </div>
+          </div>
+          <div className="card-body">
+            {assetData.length === 0 ? (
+              <div className="empty-state" style={{ padding: '32px 0' }}>
+                <div className="empty-sub">Sin operaciones cerradas</div>
               </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={assetData} margin={{ top: 8, right: 8, left: -10, bottom: 0 }} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1E2D3D" strokeOpacity={0.3} horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tick={{ fill: '#484F58', fontSize: 10, fontFamily: "'JetBrains Mono'" }}
+                    axisLine={{ stroke: '#1E2D3D' }}
+                    tickLine={false}
+                    tickFormatter={v => `$${v}`}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    tick={{ fill: '#7D8590', fontSize: 11, fontFamily: "'JetBrains Mono'", fontWeight: 600 }}
+                    axisLine={false}
+                    tickLine={false}
+                    width={48}
+                  />
+                  <Tooltip content={<AssetTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
+                  <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={20}>
+                    {assetData.map((entry, i) => (
+                      <Cell key={i} fill={entry.pnl >= 0 ? '#00FF41' : '#FF3B3B'} fillOpacity={0.7} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             )}
           </div>
         </div>
       </div>
 
-      {/* Recent Trades Compact */}
+      {/* ─── Recent Trades Table ─── */}
       {closedTrades.length > 0 && (
-        <div className="card mb-6">
+        <div className="card" style={{ marginBottom: 24 }}>
           <div className="card-header">
-            <span className="card-title">Últimas Operaciones</span>
-            <span className="text-xs font-mono" style={{ color: 'var(--color-text-dim)' }}>{closedTrades.length} cerradas</span>
+            <div>
+              <div className="card-title">Últimas Operaciones</div>
+              <div className="card-description">{closedTrades.length} cerradas este mes</div>
+            </div>
           </div>
-          <div style={{ padding: '4px 0' }}>
-            {closedTrades.slice(0, 5).map(t => (
-              <div key={t.id} className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--color-border)' }}>
-                <div className="flex items-center gap-2">
-                  <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 13, color: 'var(--color-text-bright)' }}>{t.crypto}</span>
-                  <span className={`badge badge-${t.type === 'LONG' ? 'long' : 'short'}`}>{t.type}</span>
-                  <span className={`badge badge-${(t.result || '').toLowerCase()}`}>
-                    {t.result === 'WIN' ? '✓' : t.result === 'LOSS' ? '✗' : '≈'} {t.result}
-                  </span>
-                </div>
-                <span className={`trade-pnl ${t.result === 'WIN' ? 'green' : t.result === 'LOSS' ? 'red' : 'yellow'}`} style={{ fontSize: 13 }}>
-                  {t.pnl !== null ? formatMoney(t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl) : '—'}
-                </span>
-              </div>
-            ))}
+          <div className="card-body-flush">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Activo</th>
+                  <th>Tipo</th>
+                  <th>Resultado</th>
+                  <th>TF</th>
+                  <th>Margen</th>
+                  <th style={{ textAlign: 'right' }}>PnL</th>
+                </tr>
+              </thead>
+              <tbody>
+                {closedTrades.slice(0, 8).map(t => (
+                  <tr key={t.id}>
+                    <td style={{ fontWeight: 700, color: 'var(--color-text-bright)' }}>{t.crypto}</td>
+                    <td><span className={`badge badge-${t.type === 'LONG' ? 'long' : 'short'}`}>{t.type}</span></td>
+                    <td>
+                      <span className={`badge badge-${(t.result || '').toLowerCase()}`}>
+                        {t.result === 'WIN' ? '✓ WIN' : t.result === 'LOSS' ? '✗ LOSS' : '≈ BE'}
+                      </span>
+                    </td>
+                    <td style={{ color: 'var(--color-text-muted)' }}>{t.tf}</td>
+                    <td style={{ color: 'var(--color-text-muted)' }}>${t.margin?.toFixed(0)}</td>
+                    <td style={{ textAlign: 'right', fontWeight: 700, color: t.result === 'WIN' ? 'var(--color-accent)' : t.result === 'LOSS' ? 'var(--color-danger)' : 'var(--color-warning)' }}>
+                      {t.pnl !== null ? formatMoney(t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl) : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
 
-      {/* Search */}
-      <div className="mb-4 mt-4">
-        <div className="relative" style={{ maxWidth: 380 }}>
-          <input
-            className="form-control pl-4"
-            style={{ height: 40 }}
-            placeholder="🔍 Buscar operación por activo..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
-          {isSearching && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer"
-              style={{ color: 'var(--color-text-dim)', fontSize: 14, padding: '2px 4px' }}
-            >✕</button>
-          )}
-        </div>
+      {/* ─── Search ─── */}
+      <div style={{ marginBottom: 16, marginTop: 8 }}>
+        <input
+          className="form-control"
+          style={{ maxWidth: 360, height: 38 }}
+          placeholder="🔍 Buscar operación por activo..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+        />
       </div>
 
       {/* Search Results */}
       {isSearching && (
-        <div className="mt-3">
+        <div style={{ marginTop: 12 }}>
           <div className="section-header">
             <span className="section-title">Resultados para "{searchQuery.trim().toUpperCase()}"</span>
             <span className="count-badge">{searchResults.length}</span>
@@ -234,7 +349,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
       {!isSearching && (
         <>
           {openTrades.length > 0 && (
-            <div className="mt-6">
+            <div style={{ marginTop: 24 }}>
               <div className="section-header">
                 <span className="section-title">Operaciones Abiertas</span>
                 <span className="count-badge">{openTrades.length}</span>
@@ -248,7 +363,7 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
           )}
 
           {closedTrades.length > 0 && (
-            <div className="mt-6">
+            <div style={{ marginTop: 24 }}>
               <div className="section-header">
                 <span className="section-title">Historial del mes</span>
                 <span className="count-badge">{closedTrades.length}</span>
@@ -264,11 +379,11 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
       )}
 
       {!isSearching && monthTrades.length === 0 && (
-        <div className="empty-state mt-10">
+        <div className="empty-state" style={{ marginTop: 48 }}>
           <div className="empty-icon">📊</div>
           <div className="empty-title">Sin operaciones este mes</div>
           <div className="empty-sub">Registra tu primera operación para comenzar</div>
-          <button className="btn btn-primary mt-4" onClick={onNewTrade}>+ Nueva Operación</button>
+          <button className="btn btn-primary" style={{ marginTop: 16 }} onClick={onNewTrade}>+ Nueva Operación</button>
         </div>
       )}
     </div>
@@ -281,64 +396,48 @@ function RiskCard({ riskData }) {
   const pct = Math.min(r, 100)
   const overLimit = r > 20
   const color = r < 5 ? '#00FF41' : r < 10 ? '#FFD700' : r < 20 ? '#FF8C00' : '#FF3B3B'
-  const label = r < 5 ? '🟢 Riesgo bajo' : r < 10 ? '🟡 Riesgo moderado' : r < 20 ? '🟠 Riesgo alto' : '🔴 LÍMITE SUPERADO'
+  const label = r < 5 ? '🟢 Riesgo bajo' : r < 10 ? '🟡 Moderado' : r < 20 ? '🟠 Alto' : '🔴 LÍMITE'
 
   return (
-    <div className="card mb-6" style={{ borderLeft: `3px solid ${color}` }}>
+    <div className="card" style={{ marginBottom: 24, borderLeftWidth: 3, borderLeftColor: color }}>
       <div className="card-header">
-        <span className="card-title">💰 Riesgo Total Actual</span>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700, color }}>{r.toFixed(1)}%</span>
+        <div>
+          <div className="card-title">Riesgo Total Actual</div>
+          <div className="card-description">{riskData.count} posiciones abiertas</div>
+        </div>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 18, fontWeight: 700, color }}>{r.toFixed(1)}%</span>
       </div>
       <div className="card-body">
         {/* Risk bar */}
-        <div className="mb-4">
-          <div className="flex justify-between items-center mb-2">
-            <span style={{ fontSize: 12, color: overLimit ? '#ef4444' : 'var(--color-text-dim)', fontWeight: overLimit ? 700 : 400 }}>{label}</span>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <span style={{ fontSize: 12, color: overLimit ? '#FF3B3B' : 'var(--color-text-dim)', fontWeight: overLimit ? 700 : 400 }}>{label}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#FF3B3B', fontFamily: 'var(--font-mono)' }}>
+              -${riskData.riskDollar.toLocaleString('es-ES', { maximumFractionDigits: 0 })} max loss
+            </span>
           </div>
-          <div style={{ background: 'var(--color-surface-3)', height: 8, borderRadius: 4, overflow: 'hidden', position: 'relative' }}>
-            <div style={{ position: 'absolute', left: '20%', top: 0, bottom: 0, width: 1, background: 'rgba(255,255,255,0.15)', zIndex: 1 }} />
+          <div style={{ background: 'var(--color-surface-3)', height: 6, borderRadius: 3, overflow: 'hidden', position: 'relative' }}>
+            <div style={{ position: 'absolute', left: '20%', top: 0, bottom: 0, width: 1, background: 'rgba(255,255,255,0.1)' }} />
             <div style={{
-              width: `${pct}%`, height: '100%', background: color, borderRadius: 4,
-              transition: 'width 0.3s, background 0.3s',
+              width: `${pct}%`, height: '100%', background: color, borderRadius: 3,
+              transition: 'width 0.3s',
               animation: overLimit ? 'riskPulse 1s ease-in-out infinite' : 'none'
             }} />
-          </div>
-          <div className="flex justify-between mt-2">
-            <span style={{ fontSize: 12, color: 'var(--color-text-dim)' }}>Pérdida máxima si sale todo mal</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#ef4444', fontFamily: 'var(--font-mono)' }}>
-              -${riskData.riskDollar.toLocaleString('es-ES', { maximumFractionDigits: 0 })}
-            </span>
           </div>
         </div>
 
         {overLimit && (
-          <div className="alert alert-warning mb-4" style={{ marginBottom: 16 }}>
+          <div className="alert alert-warning">
             ⚠️ Riesgo por encima del 20% — considera cerrar o proteger alguna posición
           </div>
         )}
 
-        {/* Summary row */}
-        <div className="flex gap-8 flex-wrap mb-4">
-          <div>
-            <div style={{ fontSize: 12, color: 'var(--color-text-dim)' }}>Abiertas</div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 700, color: 'var(--color-text-bright)' }}>{riskData.count}</div>
-          </div>
-          <div>
-            <div style={{ fontSize: 12, color: 'var(--color-text-dim)' }}>Riesgo total</div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 700, color }}>{riskData.totalRisk.toFixed(1)}%</div>
-          </div>
-          <div>
-            <div style={{ fontSize: 12, color: 'var(--color-text-dim)' }}>Protegidas</div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 700, color: 'var(--color-accent)' }}>{riskData.protectedCount}</div>
-          </div>
-        </div>
-
         {/* Breakdown tags */}
-        <div className="flex flex-wrap gap-2">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           {riskData.breakdown.map((item, i) => (
             <span key={i} className="badge" style={{
-              background: item.protected ? 'rgba(0,255,65,0.08)' : 'var(--color-surface-3)',
-              borderColor: item.protected ? 'rgba(0,255,65,0.2)' : 'var(--color-border)',
+              background: item.protected ? 'rgba(0,255,65,0.06)' : 'var(--color-surface-3)',
+              borderColor: item.protected ? 'rgba(0,255,65,0.15)' : 'var(--color-border)',
               color: item.protected ? 'var(--color-accent)' : 'var(--color-text-muted)',
             }}>
               {item.crypto}: {item.protected ? '🛡️ 0%' : `${item.risk}%`}

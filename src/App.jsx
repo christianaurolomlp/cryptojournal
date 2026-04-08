@@ -505,12 +505,10 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
       {/* ── Sidebar ── */}
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-brand">
-          <div className="flex items-center gap-3">
-            <div style={{ width: 36, height: 36, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, background: 'var(--color-accent-dim)', border: '1px solid rgba(0,255,65,0.2)', color: 'var(--color-accent)' }}>⚡</div>
-            <div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, color: 'var(--color-accent)', letterSpacing: '0.05em' }}>CryptoJournal</div>
-              <div style={{ fontSize: 11, color: 'var(--color-text-dim)' }}>War Room <SyncBadge syncing={syncing} /></div>
-            </div>
+          <span className="brand-icon">⚡</span>
+          <div className="brand-text">
+            <div className="brand-name">CryptoJournal</div>
+            <div className="brand-sub">War Room <SyncBadge syncing={syncing} /></div>
           </div>
         </div>
 
