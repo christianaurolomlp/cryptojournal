@@ -369,55 +369,153 @@ export default function App() {
       setVoiceText(`"${transcript}"`)
 
       try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': anthropicKey,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true'
-          },
-          body: JSON.stringify({
-            model: 'claude-3-haiku-20240307',
-            max_tokens: 256,
-            system: `Extrae datos de trading cripto del texto en español. Devuelve SOLO JSON válido sin markdown:
-{"crypto":"BTC","type":"LONG","timeframe":"15m","margin":500,"risk":1,"leverage":50}
-Usa null si falta un campo. type debe ser "LONG" o "SHORT". crypto debe ser el ticker en mayúsculas.
-timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1W","1M"`,
-            messages: [{ role: 'user', content: transcript }]
-          })
-        })
-
-        if (!response.ok) {
-          const err = await response.json().catch(() => ({}))
-          throw new Error(err.error?.message || `HTTP ${response.status}`)
+        // ── Local regex fallback parser ──────────────────────────────────────
+        function localParse(text) {
+          const t = text.toLowerCase()
+          // Direction
+          const type = /\b(short|bajista|venta|vendo|cort[oó])\b/.test(t) ? 'SHORT' : 'LONG'
+          // Crypto normalization
+          const cryptoMap = {
+            bitcoin: 'BTC', btc: 'BTC', ethereum: 'ETH', eth: 'ETH',
+            solana: 'SOL', sol: 'SOL', ripple: 'XRP', xrp: 'XRP',
+            cardano: 'ADA', ada: 'ADA', doge: 'DOGE', dogecoin: 'DOGE',
+            pepe: 'PEPE', bonk: 'BONK', shib: 'SHIB', shibainu: 'SHIB',
+            bnb: 'BNB', binance: 'BNB', avalanche: 'AVAX', avax: 'AVAX',
+            link: 'LINK', chainlink: 'LINK', dot: 'DOT', polkadot: 'DOT',
+            atom: 'ATOM', cosmos: 'ATOM', near: 'NEAR', ton: 'TON',
+            trump: 'TRUMP', icp: 'ICP', hondo: 'HBAR', hbar: 'HBAR',
+            oro: 'GOLD', gold: 'GOLD', plata: 'SILVER', silver: 'SILVER',
+            xrp: 'XRP', ondo: 'ONDO', pengu: 'PENGU', tao: 'TAO',
+          }
+          let crypto = 'BTC'
+          for (const [k, v] of Object.entries(cryptoMap)) {
+            if (t.includes(k)) { crypto = v; break }
+          }
+          // Timeframe
+          const tfMap = [
+            [/\b(un minuto|1 minuto|1m)\b/, '1m'],
+            [/\b(tres minutos?|3 minutos?|3m)\b/, '3m'],
+            [/\b(cinco minutos?|5 minutos?|5m)\b/, '5m'],
+            [/\b(quince|15 minutos?|15m)\b/, '15m'],
+            [/\b(treinta|30 minutos?|30m)\b/, '30m'],
+            [/\b(una hora|1 hora|1h)\b/, '1h'],
+            [/\b(2 horas?|dos horas?|2h)\b/, '2h'],
+            [/\b(4 horas?|cuatro horas?|4h)\b/, '4h'],
+            [/\b(8 horas?|ocho horas?|8h)\b/, '8h'],
+            [/\b(diario|1d|un d[íi]a)\b/, '1D'],
+          ]
+          let tf = '15m'
+          for (const [rx, val] of tfMap) { if (rx.test(t)) { tf = val; break } }
+          // In "el tres" / "en el 3" → 3m
+          if (/\ben el (tres|3)\b/.test(t)) tf = '3m'
+          if (/\ben el (cinco|5)\b/.test(t)) tf = '5m'
+          if (/\ben el (quince|15)\b/.test(t)) tf = '15m'
+          // Margin
+          let margin = null
+          const mMatch = t.match(/(\d+)\s*(k|mil)?\s*(de\s+)?(margen|margin|dólares?|usd)?/)
+          if (mMatch) {
+            let n = parseInt(mMatch[1])
+            if (mMatch[2]) n *= 1000
+            if (n >= 10 && n <= 100000) margin = n
+          }
+          // Risk
+          let risk = 1
+          const rMatch = t.match(/(\d+(?:[.,]\d+)?)\s*(%|por ciento|porciento)/)
+          if (rMatch) risk = parseFloat(rMatch[1].replace(',', '.'))
+          // Leverage
+          let lev = 50
+          const lMatch = t.match(/(\d+)\s*x\b/) || t.match(/\b(x|con)\s*(\d+)\b/)
+          if (lMatch) lev = parseInt(lMatch[1] || lMatch[2])
+          return { crypto, type, tf, margin, risk, lev }
         }
 
-        const data = await response.json()
-        const rawText = data.content?.[0]?.text || ''
-        const jsonMatch = rawText.match(/\{[\s\S]*\}/)
-        if (!jsonMatch) throw new Error('No se pudo parsear la respuesta')
+        let prefill
+        if (anthropicKey) {
+          // ── Claude Haiku (smart parse) ──────────────────────────────────────
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': anthropicKey,
+              'anthropic-version': '2023-06-01',
+              'anthropic-dangerous-direct-browser-access': 'true'
+            },
+            body: JSON.stringify({
+              model: 'claude-3-haiku-20240307',
+              max_tokens: 300,
+              system: `Eres un parser experto de operaciones de trading cripto. Aurolo habla en español natural y rápido.
+Extrae los datos y devuelve SOLO JSON sin markdown:
+{"crypto":"BTC","type":"LONG","tf":"1h","margin":500,"risk":1,"lev":50,"notes":""}
 
-        const parsed = JSON.parse(jsonMatch[0])
-        const prefill = {
-          crypto: parsed.crypto || 'BTC',
-          type: parsed.type === 'SHORT' ? 'SHORT' : 'LONG',
-          tf: parsed.timeframe || '15m',
-          margin: parsed.margin || '',
-          risk: parsed.risk || 1,
-          lev: parsed.leverage || 50
+REGLAS ESTRICTAS:
+- crypto: ticker EN MAYÚSCULAS. bitcoin→BTC, ethereum/eth→ETH, solana→SOL, ripple→XRP, cardano→ADA, doge/dogecoin→DOGE, pepe→PEPE, bonk→BONK, shib→SHIB, bnb→BNB, avalanche/avax→AVAX, link→LINK, atom/cosmos→ATOM, near→NEAR, ton→TON, hondo/hbar→HBAR, oro/gold→GOLD, trump→TRUMP, icp→ICP, ondo→ONDO, pengu→PENGU, tao→TAO, xrp→XRP
+- type: "LONG" o "SHORT". long/compra/alcista/sube→LONG, short/venta/bajista/baja/cae→SHORT
+- tf: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1W". "en el tres"→"3m", "en el quince"→"15m", "1 hora"→"1h", "4 horas"→"4h", "diario"→"1D"
+- margin: dólares numéricos. "mil"→1000, "dos mil"→2000, "500"→500. null si no menciona
+- risk: % de riesgo. "1 por ciento"→1, "dos"→2. Default: 1
+- lev: apalancamiento. "50x"→50, "con 20"→20. Default: 50
+- notes: cualquier comentario extra o contexto relevante. "" si nada
+
+EJEMPLOS:
+"long en bitcoin en 1 hora 500 de margen" → {"crypto":"BTC","type":"LONG","tf":"1h","margin":500,"risk":1,"lev":50,"notes":""}
+"short eth en el quince con 2 por ciento de riesgo" → {"crypto":"ETH","type":"SHORT","tf":"15m","margin":null,"risk":2,"lev":50,"notes":""}
+"long solana 4 horas mil de margen 20x" → {"crypto":"SOL","type":"LONG","tf":"4h","margin":1000,"risk":1,"lev":20,"notes":""}
+"entro long en xrp diario señal fuerte" → {"crypto":"XRP","type":"LONG","tf":"1D","margin":null,"risk":1,"lev":50,"notes":"señal fuerte"}`,
+              messages: [{ role: 'user', content: transcript }]
+            })
+          })
+
+          if (!response.ok) throw new Error(`API ${response.status}`)
+          const data = await response.json()
+          const raw = data.content?.[0]?.text || ''
+          const jsonMatch = raw.match(/\{[\s\S]*\}/)
+          if (!jsonMatch) throw new Error('Sin JSON en respuesta')
+          const p = JSON.parse(jsonMatch[0])
+          prefill = {
+            crypto: p.crypto || 'BTC',
+            type: p.type === 'SHORT' ? 'SHORT' : 'LONG',
+            tf: p.tf || '15m',
+            margin: p.margin || '',
+            risk: p.risk ?? 1,
+            lev: p.lev || 50,
+            notes: p.notes || ''
+          }
+        } else {
+          // ── Local fallback (no API key needed) ──────────────────────────────
+          prefill = { ...localParse(transcript), notes: '' }
         }
 
         setVoiceStatus(VOICE_SUCCESS)
-        setVoiceText(`${prefill.type} ${prefill.crypto} · ${prefill.tf} · Margen: ${prefill.margin ? '$' + prefill.margin : '?'} · Riesgo: ${prefill.risk}% · ${prefill.lev}x`)
+        setVoiceText(`${prefill.type} ${prefill.crypto} · ${prefill.tf}${prefill.margin ? ' · $' + prefill.margin : ''} · ${prefill.risk}% riesgo · ${prefill.lev}x`)
         setVoicePrefill(prefill)
         setShowNewTrade(true)
 
-        setTimeout(() => setVoiceStatus(VOICE_IDLE), 5000)
+        setTimeout(() => setVoiceStatus(VOICE_IDLE), 6000)
       } catch (err) {
-        setVoiceStatus(VOICE_ERROR)
-        setVoiceText(`Error al procesar: ${err.message}`)
-        setTimeout(() => setVoiceStatus(VOICE_IDLE), 5000)
+        // Try local parse as last resort
+        try {
+          function localParseEmerg(text) {
+            const t = text.toLowerCase()
+            const type = /\b(short|bajista|venta)\b/.test(t) ? 'SHORT' : 'LONG'
+            const cryptoMap = { bitcoin:'BTC',btc:'BTC',ethereum:'ETH',eth:'ETH',solana:'SOL',sol:'SOL',ripple:'XRP',xrp:'XRP',doge:'DOGE',pepe:'PEPE',bonk:'BONK',shib:'SHIB',bnb:'BNB',avax:'AVAX',link:'LINK',atom:'ATOM',near:'NEAR',ton:'TON',trump:'TRUMP',icp:'ICP',hondo:'HBAR',hbar:'HBAR',oro:'GOLD',gold:'GOLD',ondo:'ONDO',pengu:'PENGU',tao:'TAO' }
+            let crypto = 'BTC'
+            for (const [k,v] of Object.entries(cryptoMap)) { if(t.includes(k)){crypto=v;break} }
+            let tf='15m'
+            if(/1\s*hora|1h/.test(t))tf='1h'; else if(/4\s*hora|4h/.test(t))tf='4h'; else if(/el tres|3m/.test(t))tf='3m'; else if(/quince|15m/.test(t))tf='15m'; else if(/diario|1d/.test(t))tf='1D'
+            const mMatch=t.match(/(\d{3,})/); const margin=mMatch?parseInt(mMatch[1]):null
+            return {crypto,type,tf,margin:margin||'',risk:1,lev:50,notes:''}
+          }
+          const prefill = localParseEmerg(transcript)
+          setVoiceStatus(VOICE_SUCCESS)
+          setVoiceText(`${prefill.type} ${prefill.crypto} · ${prefill.tf} (local) · ${prefill.margin ? '$'+prefill.margin : 'sin margen'}`)
+          setVoicePrefill(prefill)
+          setShowNewTrade(true)
+          setTimeout(() => setVoiceStatus(VOICE_IDLE), 6000)
+        } catch {
+          setVoiceStatus(VOICE_ERROR)
+          setVoiceText(`No entendí: "${transcript.slice(0,40)}" — intenta de nuevo`)
+          setTimeout(() => setVoiceStatus(VOICE_IDLE), 5000)
+        }
       }
     }
 
