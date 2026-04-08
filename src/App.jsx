@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useTheme } from './hooks/useTheme'
 import { VIEWS } from './constants.js'
 import { store, apiStore, isApiConfigured, uid, seedIfEmpty } from './store.js'
 import { currentMonthKey, monthLabel, prevMonth, nextMonth } from './utils.js'
@@ -133,6 +134,7 @@ function SyncBadge({ syncing }) {
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
+  const { theme, toggleTheme } = useTheme()
   const [trades, setTrades] = useState([])
   const [caps, setCaps] = useState({})
   const [anthropicKey, setAnthropicKey] = useState(() => store.getAnthropicKey())
@@ -527,6 +529,27 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
 
         <div className="sidebar-footer">
           <button
+            onClick={toggleTheme}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              width: '100%',
+              padding: '8px 10px',
+              border: 'none',
+              borderRadius: '8px',
+              background: 'transparent',
+              color: 'var(--text-secondary)',
+              fontSize: '13px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              fontFamily: 'var(--font)',
+              marginBottom: '6px',
+            }}
+          >
+            {theme === 'light' ? '🌙 Modo oscuro' : '☀️ Modo claro'}
+          </button>
+          <button
             className="btn btn-primary"
             style={{ width: '100%', justifyContent: 'center' }}
             onClick={() => { setVoicePrefill(null); setShowNewTrade(true); setSidebarOpen(false) }}
@@ -602,6 +625,7 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
               trades={trades}
               caps={caps}
               currentMonth={currentMonth}
+              theme={theme}
               onEdit={t => setEditTrade(t)}
               onDelete={t => setDeleteTrade(t)}
               onClose={t => setCloseTrade(t)}

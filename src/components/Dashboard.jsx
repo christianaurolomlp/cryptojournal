@@ -33,7 +33,13 @@ function AssetTooltip({ active, payload }) {
   )
 }
 
-export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete, onClose, onReopen, onNewTrade, onToggleProtected }) {
+export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, onDelete, onClose, onReopen, onNewTrade, onToggleProtected }) {
+  const isDark = theme === 'dark'
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : '#E5E5EA'
+  const axisColor = isDark ? '#8B949E' : '#8E8E93'
+  const labelColor = isDark ? '#8B949E' : '#6D6D72'
+  const cursorFill = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)'
+
   const [searchQuery, setSearchQuery] = useState('')
   const capital = caps[currentMonth] || 0
   const monthTrades = useMemo(() => tradesForMonth(trades, currentMonth), [trades, currentMonth])
@@ -195,15 +201,15 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
                       <stop offset="100%" stopColor="#FF3B30" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E5EA" strokeOpacity={0.5} vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.5} vertical={false} />
                   <XAxis
                     dataKey="name"
-                    tick={{ fill: '#8E8E93', fontSize: 10, fontFamily: "var(--font)" }}
-                    axisLine={{ stroke: '#E5E5EA' }}
+                    tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }}
+                    axisLine={{ stroke: gridColor }}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fill: '#8E8E93', fontSize: 10, fontFamily: "var(--font)" }}
+                    tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }}
                     axisLine={false}
                     tickLine={false}
                     tickFormatter={v => `$${v}`}
@@ -240,23 +246,23 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
             ) : (
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={assetData} margin={{ top: 8, right: 8, left: -10, bottom: 0 }} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E5EA" strokeOpacity={0.3} horizontal={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.3} horizontal={false} />
                   <XAxis
                     type="number"
-                    tick={{ fill: '#8E8E93', fontSize: 10, fontFamily: "var(--font)" }}
-                    axisLine={{ stroke: '#E5E5EA' }}
+                    tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }}
+                    axisLine={{ stroke: gridColor }}
                     tickLine={false}
                     tickFormatter={v => `$${v}`}
                   />
                   <YAxis
                     type="category"
                     dataKey="name"
-                    tick={{ fill: '#6D6D72', fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }}
+                    tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }}
                     axisLine={false}
                     tickLine={false}
                     width={48}
                   />
-                  <Tooltip content={<AssetTooltip />} cursor={{ fill: 'rgba(0,0,0,0.02)' }} />
+                  <Tooltip content={<AssetTooltip />} cursor={{ fill: cursorFill }} />
                   <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={20}>
                     {assetData.map((entry, i) => (
                       <Cell key={i} fill={entry.pnl >= 0 ? '#34C759' : '#FF3B30'} fillOpacity={0.7} />

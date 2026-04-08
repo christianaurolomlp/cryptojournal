@@ -237,3 +237,33 @@ body {
   .sidebar { width: 200px; }
   .kpi-grid { grid-template-columns: repeat(2,1fr); }
 }
+
+/* ─── Dark Theme ─────────────────────────── */
+[data-theme="dark"] {
+  --bg: #0D1117;
+  --bg-card: #161B22;
+  --border: rgba(255,255,255,0.08);
+  --text: #E6EDF3;
+  --text-secondary: #8B949E;
+  --text-muted: #6E7681;
+  --green: #3FB950;
+  --green-soft: rgba(63,185,80,0.12);
+  --red: #F85149;
+  --red-soft: rgba(248,81,73,0.12);
+  --blue: #58A6FF;
+  --blue-soft: rgba(88,166,255,0.12);
+  --orange: #D29922;
+  --orange-soft: rgba(210,153,34,0.12);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+[data-theme="dark"] .form-input { background: #0D1117; border-color: rgba(255,255,255,0.12); }
+[data-theme="dark"] .form-input:focus { background: #161B22; }
+[data-theme="dark"] .month-btn { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .month-btn:hover { background: rgba(255,255,255,0.12); }
+[data-theme="dark"] .capital-badge { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .btn-secondary { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+[data-theme="dark"] .nav-item:hover { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .data-table tr:hover td { background: rgba(255,255,255,0.03); }
