@@ -169,7 +169,7 @@ export default function TradeForm({ initial, prefill, capital, onSave, onClose, 
                 {(() => {
                   const r = parseFloat(form.risk) || 0
                   const pct = Math.min(r / 10 * 100, 100)
-                  const color = r < 2 ? '#00FF41' : r < 5 ? '#FFD700' : r < 10 ? '#FF8C00' : '#FF3B3B'
+                  const color = r < 2 ? '#34C759' : r < 5 ? '#FF9500' : r < 10 ? '#FF9500' : '#FF3B30'
                   return (
                     <div style={{ marginTop: 6, background: 'var(--surface3)', height: 6, overflow: 'hidden' }}>
                       <div style={{

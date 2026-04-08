@@ -12,7 +12,7 @@ function ChartTooltip({ active, payload, label }) {
   return (
     <div className="chart-tooltip">
       <div className="chart-tooltip-label">{label}</div>
-      <div className="chart-tooltip-value" style={{ color: val >= 0 ? '#00FF41' : '#FF3B3B' }}>
+      <div className="chart-tooltip-value" style={{ color: val >= 0 ? '#34C759' : '#FF3B30' }}>
         {val >= 0 ? '+' : ''}${Math.abs(val).toFixed(2)}
       </div>
     </div>
@@ -25,10 +25,10 @@ function AssetTooltip({ active, payload }) {
   return (
     <div className="chart-tooltip">
       <div className="chart-tooltip-label">{name}</div>
-      <div className="chart-tooltip-value" style={{ color: pnl >= 0 ? '#00FF41' : '#FF3B3B' }}>
+      <div className="chart-tooltip-value" style={{ color: pnl >= 0 ? '#34C759' : '#FF3B30' }}>
         {pnl >= 0 ? '+' : ''}${Math.abs(pnl).toFixed(2)}
       </div>
-      <div style={{ fontSize: 11, color: '#7D8590', marginTop: 2 }}>{wins}/{count} wins</div>
+      <div style={{ fontSize: 11, color: '#8E8E93', marginTop: 2 }}>{wins}/{count} wins</div>
     </div>
   )
 }
@@ -187,23 +187,23 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
                 <AreaChart data={equityData} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="eqFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#00FF41" stopOpacity={0.2} />
-                      <stop offset="100%" stopColor="#00FF41" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="#34C759" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#34C759" stopOpacity={0.02} />
                     </linearGradient>
                     <linearGradient id="eqFillRed" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#FF3B3B" stopOpacity={0.2} />
-                      <stop offset="100%" stopColor="#FF3B3B" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="#FF3B30" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#FF3B30" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E2D3D" strokeOpacity={0.5} vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E5EA" strokeOpacity={0.5} vertical={false} />
                   <XAxis
                     dataKey="name"
-                    tick={{ fill: '#484F58', fontSize: 10, fontFamily: "'JetBrains Mono'" }}
-                    axisLine={{ stroke: '#1E2D3D' }}
+                    tick={{ fill: '#8E8E93', fontSize: 10, fontFamily: "'SF Mono'" }}
+                    axisLine={{ stroke: '#E5E5EA' }}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fill: '#484F58', fontSize: 10, fontFamily: "'JetBrains Mono'" }}
+                    tick={{ fill: '#8E8E93', fontSize: 10, fontFamily: "'SF Mono'" }}
                     axisLine={false}
                     tickLine={false}
                     tickFormatter={v => `$${v}`}
@@ -212,11 +212,11 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
                   <Area
                     type="monotone"
                     dataKey="pnl"
-                    stroke={equityData[equityData.length - 1]?.pnl >= 0 ? '#00FF41' : '#FF3B3B'}
+                    stroke={equityData[equityData.length - 1]?.pnl >= 0 ? '#34C759' : '#FF3B30'}
                     strokeWidth={2}
                     fill={equityData[equityData.length - 1]?.pnl >= 0 ? 'url(#eqFill)' : 'url(#eqFillRed)'}
                     dot={false}
-                    activeDot={{ r: 4, fill: '#00FF41', stroke: '#0D1117', strokeWidth: 2 }}
+                    activeDot={{ r: 4, fill: '#34C759', stroke: '#FFFFFF', strokeWidth: 2 }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -240,26 +240,26 @@ export default function Dashboard({ trades, caps, currentMonth, onEdit, onDelete
             ) : (
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={assetData} margin={{ top: 8, right: 8, left: -10, bottom: 0 }} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E2D3D" strokeOpacity={0.3} horizontal={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E5EA" strokeOpacity={0.3} horizontal={false} />
                   <XAxis
                     type="number"
-                    tick={{ fill: '#484F58', fontSize: 10, fontFamily: "'JetBrains Mono'" }}
-                    axisLine={{ stroke: '#1E2D3D' }}
+                    tick={{ fill: '#8E8E93', fontSize: 10, fontFamily: "'SF Mono'" }}
+                    axisLine={{ stroke: '#E5E5EA' }}
                     tickLine={false}
                     tickFormatter={v => `$${v}`}
                   />
                   <YAxis
                     type="category"
                     dataKey="name"
-                    tick={{ fill: '#7D8590', fontSize: 11, fontFamily: "'JetBrains Mono'", fontWeight: 600 }}
+                    tick={{ fill: '#8E8E93', fontSize: 11, fontFamily: "'SF Mono'", fontWeight: 600 }}
                     axisLine={false}
                     tickLine={false}
                     width={48}
                   />
-                  <Tooltip content={<AssetTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
+                  <Tooltip content={<AssetTooltip />} cursor={{ fill: 'rgba(0,0,0,0.02)' }} />
                   <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={20}>
                     {assetData.map((entry, i) => (
-                      <Cell key={i} fill={entry.pnl >= 0 ? '#00FF41' : '#FF3B3B'} fillOpacity={0.7} />
+                      <Cell key={i} fill={entry.pnl >= 0 ? '#34C759' : '#FF3B30'} fillOpacity={0.7} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -395,7 +395,7 @@ function RiskCard({ riskData }) {
   const r = riskData.totalRisk
   const pct = Math.min(r, 100)
   const overLimit = r > 20
-  const color = r < 5 ? '#00FF41' : r < 10 ? '#FFD700' : r < 20 ? '#FF8C00' : '#FF3B3B'
+  const color = r < 5 ? '#34C759' : r < 10 ? '#FF9500' : r < 20 ? '#FF9500' : '#FF3B30'
   const label = r < 5 ? '🟢 Riesgo bajo' : r < 10 ? '🟡 Moderado' : r < 20 ? '🟠 Alto' : '🔴 LÍMITE'
 
   return (
@@ -411,13 +411,13 @@ function RiskCard({ riskData }) {
         {/* Risk bar */}
         <div style={{ marginBottom: 16 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <span style={{ fontSize: 12, color: overLimit ? '#FF3B3B' : 'var(--color-text-dim)', fontWeight: overLimit ? 700 : 400 }}>{label}</span>
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#FF3B3B', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: 12, color: overLimit ? '#FF3B30' : 'var(--color-text-dim)', fontWeight: overLimit ? 700 : 400 }}>{label}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#FF3B30', fontFamily: 'var(--font-mono)' }}>
               -${riskData.riskDollar.toLocaleString('es-ES', { maximumFractionDigits: 0 })} max loss
             </span>
           </div>
           <div style={{ background: 'var(--color-surface-3)', height: 6, borderRadius: 3, overflow: 'hidden', position: 'relative' }}>
-            <div style={{ position: 'absolute', left: '20%', top: 0, bottom: 0, width: 1, background: 'rgba(255,255,255,0.1)' }} />
+            <div style={{ position: 'absolute', left: '20%', top: 0, bottom: 0, width: 1, background: 'rgba(0,0,0,0.06)' }} />
             <div style={{
               width: `${pct}%`, height: '100%', background: color, borderRadius: 3,
               transition: 'width 0.3s',

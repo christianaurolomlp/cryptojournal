@@ -320,7 +320,7 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
             <div>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700, color: 'var(--color-accent)', letterSpacing: '0.08em' }}>CRYPTO JOURNAL</div>
               <div style={{ fontSize: 11, color: 'var(--color-text-dim)', marginTop: 2, fontFamily: 'var(--font-mono)' }}>
-                v2.0 · War Room · {isApiConfigured() ? 'Cloud sync ✓' : 'Local storage'}
+                v2.0 · CryptoJournal · {isApiConfigured() ? 'Cloud sync ✓' : 'Local storage'}
               </div>
             </div>
           </div>
