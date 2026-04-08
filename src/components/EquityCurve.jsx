@@ -137,7 +137,7 @@ export default function EquityCurve({ trades, height = 140, capital = 0 }) {
             cy={coords[coords.length - 1].y}
             r="4"
             fill={strokeColor}
-            stroke="var(--surface)"
+            stroke="var(--color-surface)"
             strokeWidth="2"
           />
         )}

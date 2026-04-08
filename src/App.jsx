@@ -28,11 +28,11 @@ function MigrationModal({ count, onMigrate, onSkip }) {
           <h2 className="modal-title">📦 Migrar datos locales</h2>
         </div>
         <div className="modal-body">
-          <p style={{ fontSize: 14, color: 'var(--text2)', lineHeight: 1.5 }}>
+          <p style={{ fontSize: 14, color: 'var(--color-text-muted)', lineHeight: 1.5 }}>
             Se encontraron <strong>{count}</strong> operaciones guardadas en este navegador. 
             ¿Quieres migrarlas a la base de datos?
           </p>
-          <p style={{ fontSize: 13, color: 'var(--text3)', marginTop: 10 }}>
+          <p style={{ fontSize: 13, color: 'var(--color-text-dim)', marginTop: 10 }}>
             Después de migrar, los datos estarán seguros en la nube y accesibles desde cualquier dispositivo.
           </p>
         </div>
@@ -106,7 +106,7 @@ function VoiceBanner({ status, text, onClose }) {
         {text && <div className="voice-banner-sub">{text}</div>}
       </div>
       {(status === VOICE_SUCCESS || status === VOICE_ERROR) && (
-        <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: 14 }}>✕</button>
+        <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--color-text-dim)', cursor: 'pointer', fontSize: 14 }}>✕</button>
       )}
     </div>
   )
@@ -118,15 +118,15 @@ function SyncBadge({ syncing }) {
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: 4,
-      fontSize: 11, color: syncing ? 'var(--yellow)' : 'var(--green)',
+      fontSize: 11, color: syncing ? 'var(--color-warning)' : 'var(--color-accent)',
       marginLeft: 8, opacity: 0.7
     }}>
       <span style={{
         width: 6, height: 6, borderRadius: '50%',
-        background: syncing ? 'var(--yellow)' : 'var(--green)',
+        background: syncing ? 'var(--color-warning)' : 'var(--color-accent)',
         animation: syncing ? 'pulse 1s infinite' : 'none'
       }} />
-      {syncing ? 'Sincronizando...' : 'Sincronizado'}
+      {syncing ? 'Sincronizando...' : 'Sync'}
     </span>
   )
 }
@@ -468,10 +468,10 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)', background: 'var(--bg)' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--color-text-dim)', background: 'var(--color-bg)' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 16, fontFamily: 'var(--font-mono)', color: 'var(--green)', letterSpacing: '0.15em', marginBottom: 12 }}>CRYPTO JOURNAL</div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text3)', animation: 'pulse 1s infinite' }}>INITIALIZING...</div>
+          <div style={{ fontSize: 16, fontFamily: 'var(--font-mono)', color: 'var(--color-accent)', letterSpacing: '0.15em', marginBottom: 12 }}>CRYPTO JOURNAL</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--color-text-dim)', animation: 'pulse 1s infinite' }}>INITIALIZING...</div>
         </div>
       </div>
     )
@@ -479,10 +479,10 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
 
   if (apiError) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--text3)', background: 'var(--bg)' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'var(--color-text-dim)', background: 'var(--color-bg)' }}>
         <div style={{ textAlign: 'center', maxWidth: 380, padding: '0 24px' }}>
-          <div style={{ fontSize: 16, fontFamily: 'var(--font-mono)', color: 'var(--red)', letterSpacing: '0.1em', marginBottom: 16 }}>CONNECTION ERROR</div>
-          <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text3)', marginBottom: 24, lineHeight: 1.8 }}>Server cold start detected. Retry in a few seconds.</div>
+          <div style={{ fontSize: 16, fontFamily: 'var(--font-mono)', color: 'var(--color-danger)', letterSpacing: '0.1em', marginBottom: 16 }}>CONNECTION ERROR</div>
+          <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--color-text-dim)', marginBottom: 24, lineHeight: 1.8 }}>Server cold start detected. Retry in a few seconds.</div>
           <button
             onClick={() => { setApiError(false); setLoading(true); loadData() }}
             className="btn btn-primary"
@@ -505,10 +505,12 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
       {/* ── Sidebar ── */}
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-brand">
-          <div className="brand-icon">⚡</div>
-          <div>
-            <div className="brand-text">CRYPTO JOURNAL</div>
-            <div className="brand-sub">WAR ROOM <SyncBadge syncing={syncing} /></div>
+          <div className="flex items-center gap-3">
+            <div style={{ width: 36, height: 36, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, background: 'var(--color-accent-dim)', border: '1px solid rgba(0,255,65,0.2)', color: 'var(--color-accent)' }}>⚡</div>
+            <div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700, color: 'var(--color-accent)', letterSpacing: '0.05em' }}>CryptoJournal</div>
+              <div style={{ fontSize: 11, color: 'var(--color-text-dim)' }}>War Room <SyncBadge syncing={syncing} /></div>
+            </div>
           </div>
         </div>
 
@@ -571,7 +573,7 @@ timeframe ejemplos: "1m","3m","5m","15m","30m","1h","2h","4h","8h","12h","1D","1
               onClick={() => { setSyncing(true); loadData() }}
               disabled={syncing}
               title="Recargar datos desde la base de datos"
-              style={{ background: 'none', border: '1px solid var(--border)', borderRadius: 5, padding: '4px 10px', color: 'var(--text2)', cursor: syncing ? 'default' : 'pointer', fontSize: 13, opacity: syncing ? 0.5 : 1 }}
+              style={{ background: 'none', border: '1px solid var(--color-border)', borderRadius: 6, padding: '4px 10px', color: 'var(--color-text-muted)', cursor: syncing ? 'default' : 'pointer', fontSize: 13, opacity: syncing ? 0.5 : 1 }}
             >
               {syncing ? '⏳' : '↻'}
             </button>

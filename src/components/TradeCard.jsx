@@ -39,7 +39,7 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
             : <span className="badge badge-open">Abierta</span>
           }
           {!trade.closed && trade.protected && (
-            <span className="badge" style={{ background: 'var(--green)', color: '#fff', fontSize: 10 }}>🛡️ Protegida</span>
+            <span className="badge" style={{ background: 'var(--color-accent)', color: '#fff', fontSize: 10 }}>🛡️ Protegida</span>
           )}
         </div>
         {trade.closed && pnlValue !== null && (
@@ -79,7 +79,7 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
           return (
             <div className="meta-item">
               <span>Abierta hace:</span>
-              <strong style={{ color: diffD >= 3 ? 'var(--orange)' : 'inherit' }}>{label}</strong>
+              <strong style={{ color: diffD >= 3 ? 'var(--color-orange)' : 'inherit' }}>{label}</strong>
             </div>
           )
         })()}
@@ -98,9 +98,9 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
             <button
               className="btn btn-sm"
               style={{
-                background: trade.protected ? 'var(--green)' : 'var(--surface3)',
-                color: trade.protected ? '#fff' : 'var(--text2)',
-                border: trade.protected ? '1px solid var(--green)' : '1px solid var(--border)'
+                background: trade.protected ? 'var(--color-accent)' : 'var(--color-surface-3)',
+                color: trade.protected ? '#fff' : 'var(--color-text-muted)',
+                border: trade.protected ? '1px solid var(--color-accent)' : '1px solid var(--color-border)'
               }}
               onClick={() => onToggleProtected(trade)}
               title="SL en entrada — riesgo 0"

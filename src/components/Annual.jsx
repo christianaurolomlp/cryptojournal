@@ -20,7 +20,6 @@ export default function Annual({ trades, caps, onMonthClick }) {
     [monthKeys, trades, caps]
   )
 
-  // Annual stats
   const annualStats = useMemo(() => {
     const all = monthStats.flatMap(m => tradesForMonth(trades, m.key))
     return calcStats(all, 0)
@@ -34,47 +33,44 @@ export default function Annual({ trades, caps, onMonthClick }) {
 
   return (
     <div className="page">
-      {/* Year navigation */}
       <div className="year-nav">
         <button className="month-nav-btn" onClick={() => setYear(y => y - 1)}>◀</button>
         <h1 className="year-label">{year}</h1>
         <button className="month-nav-btn" onClick={() => setYear(y => y + 1)}>▶</button>
       </div>
 
-      {/* Annual stats */}
-      <div className="stats-grid" style={{ marginBottom: 24 }}>
-        <div className="stat-card hero">
-          <div className="stat-label">P&L Anual {year}</div>
-          <div className={`stat-value display ${annualStats.pnl > 0 ? 'green' : annualStats.pnl < 0 ? 'red' : ''}`}>
+      {/* Annual KPIs */}
+      <div className="kpi-grid">
+        <div className="kpi-card hero">
+          <div className="kpi-label">P&L Anual {year}</div>
+          <div className={`kpi-value lg ${annualStats.pnl > 0 ? 'green' : annualStats.pnl < 0 ? 'red' : ''}`}>
             {formatMoney(annualStats.pnl)}
           </div>
-          {annualRent !== null && (
-            <div className="stat-sub">{formatPct(annualRent)} rentabilidad media</div>
-          )}
+          {annualRent !== null && <div className="kpi-sub">{formatPct(annualRent)} rentabilidad media</div>}
         </div>
-        <div className="stat-card">
-          <div className="stat-label">Operaciones</div>
-          <div className="stat-value">{annualStats.total}</div>
-          <div className="stat-sub">{annualStats.totalClosed} cerradas</div>
+        <div className="kpi-card">
+          <div className="kpi-label">Operaciones</div>
+          <div className="kpi-value">{annualStats.total}</div>
+          <div className="kpi-sub">{annualStats.totalClosed} cerradas</div>
         </div>
-        <div className="stat-card">
-          <div className="stat-label">Win Rate Anual</div>
-          <div className={`stat-value ${annualStats.winRate >= 60 ? 'green' : annualStats.winRate >= 40 ? 'yellow' : 'red'}`}>
+        <div className="kpi-card">
+          <div className="kpi-label">Win Rate Anual</div>
+          <div className={`kpi-value ${annualStats.winRate >= 60 ? 'green' : annualStats.winRate >= 40 ? 'yellow' : 'red'}`}>
             {annualStats.winRate.toFixed(1)}%
           </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-label">Profit Factor</div>
-          <div className="stat-value">
+        <div className="kpi-card">
+          <div className="kpi-label">Profit Factor</div>
+          <div className="kpi-value">
             {annualStats.profitFactor === Infinity ? '∞' : annualStats.profitFactor.toFixed(2)}
           </div>
         </div>
       </div>
 
       {/* Monthly bar chart */}
-      <div className="card" style={{ marginBottom: 20 }}>
+      <div className="card mb-5">
         <div className="card-header">
-          <span className="card-title">📊 P&L Mensual {year}</span>
+          <span className="card-title">P&L Mensual {year}</span>
         </div>
         <div className="card-body">
           <div className="bar-chart">
@@ -84,21 +80,14 @@ export default function Annual({ trades, caps, onMonthClick }) {
               const barH = hasData ? Math.max(pct * 96, 2) : 2
               return (
                 <div className="bar-wrap" key={key} onClick={() => onMonthClick(key)} style={{ cursor: 'pointer' }}>
-                  <div
-                    className="bar"
-                    style={{
-                      height: `${barH}px`,
-                      background: !hasData
-                        ? 'var(--surface3)'
-                        : stats.pnl > 0
-                        ? 'var(--green)'
-                        : stats.pnl < 0
-                        ? 'var(--red)'
-                        : 'var(--yellow)',
-                      opacity: hasData ? 1 : 0.3
-                    }}
-                    title={`${MONTHS_ES[i]}: ${formatMoney(stats.pnl)}`}
-                  />
+                  <div className="bar" style={{
+                    height: `${barH}px`,
+                    background: !hasData ? 'var(--color-surface-3)'
+                      : stats.pnl > 0 ? 'var(--color-accent)'
+                      : stats.pnl < 0 ? 'var(--color-danger)'
+                      : 'var(--color-warning)',
+                    opacity: hasData ? 1 : 0.3
+                  }} title={`${MONTHS_ES[i]}: ${formatMoney(stats.pnl)}`} />
                   <span className="bar-label">{MONTHS_SHORT[i]}</span>
                 </div>
               )
@@ -107,24 +96,20 @@ export default function Annual({ trades, caps, onMonthClick }) {
         </div>
       </div>
 
-      {/* Monthly detail */}
-      <div className="card">
+      {/* Monthly detail table */}
+      <div className="card" style={{ overflow: 'hidden' }}>
         <div className="card-header">
           <span className="card-title">Detalle Mensual</span>
         </div>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid var(--border)' }}>
+              <tr>
                 {['Mes', 'Trades', 'Win Rate', 'P&L', 'Rentabilidad'].map(h => (
                   <th key={h} style={{
-                    padding: '10px 16px',
-                    textAlign: 'left',
-                    fontSize: 11,
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.06em',
-                    color: 'var(--text3)'
+                    padding: '12px 18px', textAlign: 'left', fontSize: 11, fontWeight: 600,
+                    textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--color-text-dim)',
+                    borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)'
                   }}>{h}</th>
                 ))}
               </tr>
@@ -134,41 +119,31 @@ export default function Annual({ trades, caps, onMonthClick }) {
                 const rent = capital > 0 ? (stats.pnl / capital) * 100 : null
                 const hasData = stats.total > 0
                 return (
-                  <tr
-                    key={key}
+                  <tr key={key}
                     onClick={() => onMonthClick(key)}
-                    style={{
-                      borderBottom: '1px solid var(--border)',
-                      cursor: 'pointer',
-                      opacity: hasData ? 1 : 0.5,
-                      transition: 'background 0.15s'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--surface2)'}
+                    style={{ borderBottom: '1px solid var(--color-border)', cursor: 'pointer', opacity: hasData ? 1 : 0.4, transition: 'background 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--color-surface-2)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <td style={{ padding: '12px 16px', fontWeight: 500, color: 'var(--text)' }}>
-                      {MONTHS_ES[i]}
-                    </td>
-                    <td style={{ padding: '12px 16px', fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text2)' }}>
-                      {stats.total}
-                    </td>
-                    <td style={{ padding: '12px 16px', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+                    <td style={{ padding: '14px 18px', fontWeight: 600, color: 'var(--color-text-bright)' }}>{MONTHS_ES[i]}</td>
+                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--color-text-muted)' }}>{stats.total}</td>
+                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
                       {stats.totalClosed > 0 ? (
-                        <span style={{ color: stats.winRate >= 60 ? 'var(--green)' : stats.winRate >= 40 ? 'var(--yellow)' : 'var(--red)' }}>
+                        <span style={{ color: stats.winRate >= 60 ? 'var(--color-accent)' : stats.winRate >= 40 ? 'var(--color-warning)' : 'var(--color-danger)' }}>
                           {stats.winRate.toFixed(1)}%
                         </span>
                       ) : '—'}
                     </td>
-                    <td style={{ padding: '12px 16px', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700 }}>
+                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700 }}>
                       {stats.total > 0 ? (
-                        <span style={{ color: stats.pnl > 0 ? 'var(--green)' : stats.pnl < 0 ? 'var(--red)' : 'var(--text3)' }}>
+                        <span style={{ color: stats.pnl > 0 ? 'var(--color-accent)' : stats.pnl < 0 ? 'var(--color-danger)' : 'var(--color-text-dim)' }}>
                           {formatMoney(stats.pnl)}
                         </span>
-                      ) : <span style={{ color: 'var(--text3)' }}>—</span>}
+                      ) : <span style={{ color: 'var(--color-text-dim)' }}>—</span>}
                     </td>
-                    <td style={{ padding: '12px 16px', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
                       {rent !== null ? (
-                        <span style={{ color: rent > 0 ? 'var(--green)' : rent < 0 ? 'var(--red)' : 'var(--text3)' }}>
+                        <span style={{ color: rent > 0 ? 'var(--color-accent)' : rent < 0 ? 'var(--color-danger)' : 'var(--color-text-dim)' }}>
                           {formatPct(rent)}
                         </span>
                       ) : '—'}
