@@ -86,6 +86,14 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
     })
   }, [monthTrades])
 
+  // Unique date ticks for X-axis (show first occurrence of each date only)
+  const uniqueDateTicks = useMemo(() => {
+    const seen = new Set()
+    return equityData
+      .filter(p => { if (!seen.has(p.name)) { seen.add(p.name); return true; } return false; })
+      .map(p => p.idx)
+  }, [equityData])
+
   // Asset performance (for bar chart)
   const assetData = useMemo(() => {
     const assetMap = {}
@@ -206,8 +214,11 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.5} vertical={false} />
                   <XAxis
-                    dataKey="name"
-                    interval="preserveStartEnd"
+                    dataKey="idx"
+                    type="number"
+                    domain={[0, equityData.length - 1]}
+                    ticks={uniqueDateTicks}
+                    tickFormatter={(idx) => equityData[idx]?.name || ''}
                     tick={{ fill: axisColor, fontSize: 11, fontFamily: "var(--font)" }}
                     axisLine={{ stroke: gridColor }}
                     tickLine={false}
