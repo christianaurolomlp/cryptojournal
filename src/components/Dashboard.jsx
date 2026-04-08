@@ -254,10 +254,10 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height={180}>
-                  <BarChart data={assetData} margin={{ top: 4, right: 8, left: 10, bottom: 0 }} layout="vertical">
+                  <BarChart data={assetData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.3} horizontal={false} />
                     <XAxis type="number" tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }} axisLine={{ stroke: gridColor }} tickLine={false} tickFormatter={v => `$${v}`} />
-                    <YAxis type="category" dataKey="name" tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }} axisLine={false} tickLine={false} width={56} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }} axisLine={false} tickLine={false} width={72} />
                     <Tooltip content={<AssetTooltip />} cursor={{ fill: cursorFill }} />
                     <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={18}>
                       {assetData.map((entry, i) => (
