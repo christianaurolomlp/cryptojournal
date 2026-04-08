@@ -144,7 +144,7 @@ body {
 .kpi-card.hero { text-align: center; padding: 20px 18px; }
 
 /* ─── Charts layout ──────────────────────── */
-.charts-grid { display: grid; grid-template-columns: 1fr 380px; gap: 12px; margin-bottom: 12px; align-items: start; }
+.charts-grid { display: grid; grid-template-columns: 1fr 380px; gap: 12px; margin-bottom: 12px; align-items: stretch; }
 
 /* ─── Table ────────────────────────────── */
 .data-table { width: 100%; border-collapse: collapse; }
@@ -760,3 +760,7 @@ body { letter-spacing: -0.011em; }
 @supports (font-variation-settings: normal) {
   body { font-family: 'Inter var', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
 }
+
+.equity-card { display: flex; flex-direction: column; }
+.equity-card .card-body { flex: 1; display: flex; flex-direction: column; min-height: 240px; padding-bottom: 10px; }
+.equity-card .card-body .recharts-wrapper { flex: 1; }
