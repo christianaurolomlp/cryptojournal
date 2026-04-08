@@ -267,3 +267,130 @@ body {
 [data-theme="dark"] .btn-secondary:hover { background: rgba(255,255,255,0.12); }
 [data-theme="dark"] .nav-item:hover { background: rgba(255,255,255,0.06); }
 [data-theme="dark"] .data-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+/* ─── App Layout aliases ─────────────────── */
+.app-layout { display: flex; height: 100vh; overflow: hidden; }
+
+/* ─── Topbar ──────────────────────────────── */
+.topbar {
+  height: 56px; flex-shrink: 0;
+  background: var(--bg-card); border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+
+/* ─── Month nav ───────────────────────────── */
+.month-nav { display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; }
+.month-label { font-size: 15px; font-weight: 600; color: var(--text); }
+.month-nav-btn {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: none; background: var(--bg); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 13px;
+  color: var(--text-secondary); font-family: var(--font);
+}
+.month-nav-btn:hover { background: var(--border); }
+
+/* ─── Capital badge ───────────────────────── */
+.capital-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 20px;
+  background: var(--bg); border: 1px solid var(--border);
+  font-size: 13px; font-weight: 500; color: var(--text-secondary);
+  cursor: pointer; font-family: var(--font);
+}
+.capital-badge strong { color: var(--text); font-weight: 600; }
+.capital-badge.no-cap { border-color: var(--orange); color: var(--orange); }
+
+/* ─── Buttons ─────────────────────────────── */
+.btn { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; font-family: var(--font); border: none; border-radius: 8px; font-weight: 500; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-ghost { background: transparent; color: var(--text-secondary); padding: 5px 10px; font-size: 13px; }
+.btn-ghost:hover { background: var(--bg); color: var(--text); }
+.btn-voice { padding: 5px 12px; border-radius: 8px; font-size: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text-secondary); cursor: pointer; font-family: var(--font); }
+.btn-voice.listening { background: var(--red-soft); color: var(--red); border-color: var(--red); }
+.btn-voice.processing { background: var(--blue-soft); color: var(--blue); border-color: var(--blue); }
+.btn-warning { background: var(--orange-soft); color: var(--orange); }
+
+/* ─── Hamburger ───────────────────────────── */
+.hamburger { display: flex; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; width: 18px; height: 2px; background: var(--text-secondary); border-radius: 1px; }
+
+/* ─── Page layout ─────────────────────────── */
+.page { padding: 20px; max-width: 1200px; }
+.page-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+
+/* ─── Form control ────────────────────────── */
+.form-control {
+  width: 100%; padding: 9px 11px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: 14px; font-family: var(--font);
+  background: var(--bg); color: var(--text);
+  outline: none; transition: border-color 120ms;
+}
+.form-control:focus { border-color: var(--blue); background: var(--bg-card); }
+.form-hint { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+/* ─── Hero / empty state ──────────────────── */
+.hero { text-align: center; padding: 60px 20px; }
+.empty-state { text-align: center; padding: 40px 20px; }
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+.empty-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; color: var(--text-muted); }
+
+/* ─── Alert ───────────────────────────────── */
+.alert { padding: 10px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 12px; }
+.alert-warning { background: var(--orange-soft); color: var(--orange); }
+
+/* ─── KPI extra ───────────────────────────── */
+.count-badge { display: inline-flex; align-items: center; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--bg); color: var(--text-muted); margin-left: 4px; }
+
+/* ─── Distribution bar ───────────────────── */
+.distribution-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 1px; margin: 6px 0; }
+.dist-segment { height: 100%; border-radius: 2px; }
+.progress-row { margin-bottom: 8px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 3px; }
+.progress-val { font-weight: 600; color: var(--text); }
+.progress-bar-wrap { height: 5px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 3px; background: var(--blue); }
+
+/* ─── Card variants ───────────────────────── */
+.card-body-flush { padding: 0; }
+.card-description { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.meta-item { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+/* ─── Badges extra ────────────────────────── */
+.badge-lev { background: var(--blue-soft); color: var(--blue); }
+.badge-tf { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+.badge-open { background: var(--orange-soft); color: var(--orange); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+.info { color: var(--blue); }
+
+/* ─── Chart tooltip ───────────────────────── */
+.chart-tooltip { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; box-shadow: var(--shadow-md); }
+.chart-tooltip-label { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+.chart-tooltip-value { font-size: 14px; font-weight: 700; color: var(--text); }
+
+/* ─── Tailwind utility aliases ───────────────
+   (Used by existing components — minimal subset) */
+.flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-end { align-items: flex-end; }
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2,1fr); }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-5 { gap: 20px; }
+.mb-5 { margin-bottom: 20px; }
+.mb-6 { margin-bottom: 24px; }
+.mt-4 { margin-top: 16px; }
+
+/* ─── Voice banner ────────────────────────── */
+.voice-banner-text { font-size: 14px; font-weight: 600; color: var(--text); }
+.voice-banner-sub { font-size: 12px; color: var(--text-muted); }
+
+/* ─── Main content scroll area ───────────── */
+.main-content > main { flex: 1; overflow-y: auto; }
