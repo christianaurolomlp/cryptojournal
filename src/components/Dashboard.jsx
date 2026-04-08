@@ -253,13 +253,13 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
                   <div className="empty-sub">Sin operaciones cerradas</div>
                 </div>
               ) : (
-                <ResponsiveContainer width="100%" height={180}>
+                <ResponsiveContainer width="100%" height={Math.max(180, assetData.length * 28)}>
                   <BarChart data={assetData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.3} horizontal={false} />
                     <XAxis type="number" tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }} axisLine={{ stroke: gridColor }} tickLine={false} tickFormatter={v => `$${v}`} />
-                    <YAxis type="category" dataKey="name" tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }} axisLine={false} tickLine={false} width={72} />
+                    <YAxis type="category" dataKey="name" interval={0} tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }} axisLine={false} tickLine={false} width={72} />
                     <Tooltip content={<AssetTooltip />} cursor={{ fill: cursorFill }} />
-                    <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={18}>
+                    <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={20}>
                       {assetData.map((entry, i) => (
                         <Cell key={i} fill={entry.pnl >= 0 ? '#34C759' : '#FF3B30'} fillOpacity={0.75} />
                       ))}
