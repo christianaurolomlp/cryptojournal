@@ -20,7 +20,14 @@ function defaultForm(prefill = {}) {
 
 export default function TradeForm({ initial, prefill, capital, onSave, onClose, isEdit = false }) {
   const [form, setForm] = useState(() => {
-    if (initial) return { ...defaultForm(), ...initial, margin: initial.margin ?? '' }
+    if (initial) return {
+      ...defaultForm(),
+      ...initial,
+      margin: initial.margin ?? '',
+      pnl: initial.pnl ?? null,
+      result: initial.result ?? null,
+      closeDate: initial.closeDate ?? null
+    }
     return defaultForm(prefill)
   })
 
@@ -56,9 +63,9 @@ export default function TradeForm({ initial, prefill, capital, onSave, onClose, 
       date: form.date,
       notes: form.notes,
       closed: initial?.closed || false,
-      result: initial?.result || null,
-      pnl: initial?.pnl ?? null,
-      closeDate: initial?.closeDate || null
+      result: form.result ?? initial?.result ?? null,
+      pnl: form.pnl != null ? parseFloat(form.pnl) : (initial?.pnl ?? null),
+      closeDate: form.closeDate ?? initial?.closeDate ?? null
     }
     onSave(trade)
   }
@@ -226,6 +233,45 @@ export default function TradeForm({ initial, prefill, capital, onSave, onClose, 
                     )}
                   </div>
                 </div>
+              )}
+
+              {/* PnL editable (solo en edición de op. cerrada) */}
+              {isEdit && initial?.closed && (
+                <>
+                  <div className="form-group">
+                    <label className="form-label">PnL (USD)</label>
+                    <input
+                      className="form-control"
+                      type="number"
+                      step="any"
+                      placeholder="0.00"
+                      value={form.pnl ?? ''}
+                      onChange={e => set('pnl', e.target.value === '' ? null : e.target.value)}
+                    />
+                    <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>Valor absoluto — el signo lo determina el resultado (WIN/LOSS)</div>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Resultado</label>
+                    <select
+                      className="form-control"
+                      value={form.result ?? initial?.result ?? ''}
+                      onChange={e => set('result', e.target.value)}
+                    >
+                      <option value="WIN">WIN</option>
+                      <option value="LOSS">LOSS</option>
+                      <option value="BE">BE</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Fecha cierre</label>
+                    <input
+                      className="form-control"
+                      type="date"
+                      value={form.closeDate ?? initial?.closeDate ?? ''}
+                      onChange={e => set('closeDate', e.target.value)}
+                    />
+                  </div>
+                </>
               )}
 
               {/* Notas */}
