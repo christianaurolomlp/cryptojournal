@@ -258,10 +258,10 @@ body {
 
 /* ─── Dark Theme (Linear-inspired) ───────── */
 [data-theme="dark"] {
-  --bg: #000000;
-  --bg-card: #0a0a0b;
-  --card-elevated: #111112;
-  --sidebar: #050506;
+  --bg: #0c0c0c;
+  --bg-card: #141414;
+  --card-elevated: #1c1c1c;
+  --sidebar: #080808;
   --border: rgba(255,255,255,0.06);
   --text: #f7f8f8;
   --text-secondary: #d0d6e0;
