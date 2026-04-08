@@ -6,6 +6,38 @@ const PORT = process.env.PORT || 4173;
 const API_BACKEND = 'https://cryptojournal-api-production.up.railway.app';
 const API_KEY = 'd4665c7f7a075109e9a41f1ad3bdd7cd131e91f1cd62110032df842239dd28df';
 
+// Delete all trades of a month (handled here since backend API may not have this endpoint)
+app.delete('/api/trades/month/:yearMonth', async (req, res) => {
+  try {
+    const { yearMonth } = req.params; // "2026-01"
+    const fetch = (await import('node-fetch')).default;
+    const headers = { 'X-API-Key': API_KEY, 'Content-Type': 'application/json' };
+    
+    // Get all trades
+    const tradesResp = await fetch(`${API_BACKEND}/api/trades`, { headers });
+    const trades = await tradesResp.json();
+    
+    // Filter trades matching the month
+    const toDelete = trades.filter(t => {
+      const d = t.date || t.openDate || '';
+      return d.startsWith(yearMonth);
+    });
+    
+    // Delete each one
+    let deleted = 0;
+    for (const t of toDelete) {
+      try {
+        await fetch(`${API_BACKEND}/api/trades/${t.id}`, { method: 'DELETE', headers });
+        deleted++;
+      } catch (e) { /* continue */ }
+    }
+    
+    res.json({ ok: true, deleted, month: yearMonth });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Simple API proxy (no external dependency needed)
 app.use('/api', async (req, res) => {
   try {
