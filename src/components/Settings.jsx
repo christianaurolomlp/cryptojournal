@@ -1,7 +1,125 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MONTHS_ES } from '../constants.js'
 import { store, saveApiConfig, isApiConfigured, apiStore } from '../store.js'
 import { monthLabel, currentMonthKey } from '../utils.js'
+
+const MONTH_NAMES_ES = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE']
+
+function MonthCleaner({ onDataReload }) {
+  const [tradesByMonth, setTradesByMonth] = useState({})
+  const [confirmMonth, setConfirmMonth] = useState(null)
+  const [deleting, setDeleting] = useState(null)
+  const [deleted, setDeleted] = useState(null)
+
+  useEffect(() => {
+    loadTrades()
+  }, [])
+
+  async function loadTrades() {
+    try {
+      let trades = []
+      if (isApiConfigured()) {
+        trades = await apiStore.getTrades()
+      } else {
+        trades = store.getTrades()
+      }
+      const grouped = {}
+      for (const t of trades) {
+        const d = t.date || t.openDate || ''
+        const key = d.slice(0, 7) // "2026-01"
+        if (key) {
+          grouped[key] = (grouped[key] || 0) + 1
+        }
+      }
+      setTradesByMonth(grouped)
+    } catch (e) {
+      console.error('Error loading trades for MonthCleaner:', e)
+    }
+  }
+
+  async function deleteMonth(yearMonth) {
+    setDeleting(yearMonth)
+    try {
+      const resp = await fetch(`/api/trades/month/${yearMonth}`, { method: 'DELETE' })
+      const data = await resp.json()
+      if (data.ok || data.deleted !== undefined) {
+        setDeleted(yearMonth)
+        setTimeout(() => setDeleted(null), 2000)
+        setConfirmMonth(null)
+        // Reload trades
+        await loadTrades()
+        if (onDataReload) onDataReload()
+      } else {
+        alert('Error al eliminar: ' + (data.error || 'desconocido'))
+      }
+    } catch (e) {
+      alert('Error de conexión: ' + e.message)
+    }
+    setDeleting(null)
+  }
+
+  const sortedMonths = Object.keys(tradesByMonth).sort().reverse()
+
+  if (sortedMonths.length === 0) {
+    return (
+      <div style={{ fontSize: 13, color: 'var(--text-muted)', padding: '8px 0' }}>
+        No hay operaciones para eliminar.
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {sortedMonths.map(ym => {
+        const [y, m] = ym.split('-')
+        const monthName = MONTH_NAMES_ES[parseInt(m, 10) - 1] || m
+        const count = tradesByMonth[ym]
+        const isConfirming = confirmMonth === ym
+        const isDeleting = deleting === ym
+        const wasDeleted = deleted === ym
+
+        return (
+          <div key={ym} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '10px 14px', borderRadius: 'var(--radius, 12px)',
+            background: 'var(--bg)', border: '1px solid var(--border)'
+          }}>
+            <div>
+              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>
+                {monthName} {y}
+              </span>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 8 }}>
+                — {count} operacion{count !== 1 ? 'es' : ''}
+              </span>
+            </div>
+            {wasDeleted ? (
+              <span style={{ fontSize: 12, color: 'var(--green)', fontWeight: 600 }}>✓ Eliminado</span>
+            ) : isConfirming ? (
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <span style={{ fontSize: 11, color: 'var(--red)', maxWidth: 180 }}>
+                  ¿Eliminar {count} ops de {monthName} {y}? Irreversible.
+                </span>
+                <button className="btn-danger" onClick={() => deleteMonth(ym)} disabled={isDeleting}
+                  style={{ padding: '4px 10px', fontSize: 12 }}>
+                  {isDeleting ? '...' : 'Confirmar'}
+                </button>
+                <button className="btn btn-ghost" onClick={() => setConfirmMonth(null)}
+                  style={{ padding: '4px 8px', fontSize: 12 }}>
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <button className="btn-danger" onClick={() => setConfirmMonth(ym)}
+                style={{ padding: '5px 12px', fontSize: 12 }}>
+                Eliminar
+              </button>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropicKeyChange, onDataReload }) {
   const [keyInput, setKeyInput] = useState(anthropicKey)
@@ -271,6 +389,19 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
         </div>
       </div>
 
+      {/* Eliminar mes completo */}
+      {isApiConfigured() && (
+        <div className="settings-section">
+          <div className="settings-section-header">Eliminar Mes Completo</div>
+          <div className="settings-body">
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 14 }}>
+              Elimina todas las operaciones de un mes. Esta acción es irreversible.
+            </p>
+            <MonthCleaner onDataReload={onDataReload} />
+          </div>
+        </div>
+      )}
+
       {/* Data */}
       <div className="settings-section">
         <div className="settings-section-header">Datos</div>
@@ -318,9 +449,9 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
               display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22
             }}>⚡</div>
             <div>
-              <div style={{ fontFamily: 'var(--font)', fontSize: 14, fontWeight: 700, color: 'var(--blue)', letterSpacing: '0.08em' }}>CRYPTO JOURNAL</div>
+              <div style={{ fontFamily: 'var(--font)', fontSize: 14, fontWeight: 700, color: 'var(--blue)', letterSpacing: '0.08em' }}>BITÁCORA</div>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2, fontFamily: 'var(--font)' }}>
-                v2.0 · Journal · {isApiConfigured() ? 'Cloud sync ✓' : 'Local storage'}
+                v2.0 · Trading Journal · {isApiConfigured() ? 'Cloud sync ✓' : 'Local storage'}
               </div>
             </div>
           </div>

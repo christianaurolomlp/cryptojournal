@@ -606,10 +606,10 @@ EJEMPLOS:
       {/* ── Sidebar ── */}
       <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-brand">
-          <span className="brand-icon">⚡</span>
+          <span className="brand-icon">⚓</span>
           <div className="brand-text">
-            <div className="brand-name">CryptoJournal</div>
-            <div className="brand-sub">Journal <SyncBadge syncing={syncing} /></div>
+            <div className="brand-name">BITÁCORA</div>
+            <div className="brand-sub">Trading Journal <SyncBadge syncing={syncing} /></div>
           </div>
         </div>
 

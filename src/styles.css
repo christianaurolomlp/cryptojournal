@@ -177,9 +177,21 @@ body {
 .btn-secondary:hover { background: var(--border); }
 
 .btn-danger {
-  padding: 8px 16px; border: none; border-radius: 8px;
-  background: var(--red-soft); color: var(--red);
-  font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font);
+  background: var(--red-soft, rgba(255,59,48,0.1));
+  color: var(--red, #FF3B30);
+  border: 1px solid var(--red, #FF3B30);
+  border-radius: var(--radius, 12px);
+  padding: 6px 14px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+  transition: all 0.15s;
+}
+.btn-danger:hover {
+  background: var(--red, #FF3B30);
+  color: white;
+}
+.btn-danger:disabled {
+  opacity: 0.5; cursor: default;
 }
 
 /* ─── Modal ─────────────────────────────── */
@@ -246,9 +258,10 @@ body {
 
 /* ─── Dark Theme (Linear-inspired) ───────── */
 [data-theme="dark"] {
-  --bg: #08090a;
-  --bg-card: #0f1011;
-  --card-elevated: #191a1b;
+  --bg: #000000;
+  --bg-card: #0a0a0b;
+  --card-elevated: #111112;
+  --sidebar: #050506;
   --border: rgba(255,255,255,0.06);
   --text: #f7f8f8;
   --text-secondary: #d0d6e0;
@@ -842,3 +855,36 @@ body { letter-spacing: -0.011em; }
 
 /* 10. Year label in stats — big number treatment */
 .year-label { letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+
+/* ─── iOS Apple polish ────────────────────── */
+
+/* Blur en sidebar/header iOS style */
+.sidebar {
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+}
+
+/* Scrollbar personalizada (iOS-like, invisible por defecto) */
+* { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.2) transparent; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* Selección de texto iOS */
+::selection { background: rgba(0,122,255,0.2); color: inherit; }
+
+/* Inputs más iOS */
+input, select, textarea {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Focus rings iOS */
+*:focus-visible {
+  outline: 2px solid var(--blue, #007AFF);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
