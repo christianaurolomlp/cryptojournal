@@ -1,5 +1,33 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { HelpCircle } from 'lucide-react'
 import { calcStats, calcStatsByTf, formatMoney, formatPct, tradesForMonth, monthLabel } from '../utils.js'
+
+
+function InfoTip({ text }) {
+  const [show, setShow] = useState(false)
+  return (
+    <span
+      style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', marginLeft: 4, cursor: 'help', verticalAlign: 'middle' }}
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
+      <HelpCircle size={13} strokeWidth={1.8} style={{ color: 'var(--text-muted)', opacity: 0.7 }} />
+      {show && (
+        <span style={{
+          position: 'absolute', bottom: '120%', left: '50%', transform: 'translateX(-50%)',
+          background: 'var(--text)', color: 'var(--bg-card)',
+          padding: '5px 8px', borderRadius: 6, fontSize: 11, fontWeight: 400,
+          whiteSpace: 'nowrap', zIndex: 100, lineHeight: 1.4,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          pointerEvents: 'none',
+        }}>
+          {text}
+          <span style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', border: '4px solid transparent', borderTopColor: 'var(--text)' }} />
+        </span>
+      )}
+    </span>
+  )
+}
 
 export default function Stats({ trades, caps, currentMonth }) {
   const capital = caps[currentMonth] || 0
@@ -27,14 +55,14 @@ export default function Stats({ trades, caps, currentMonth }) {
           {capital > 0 && <div className="kpi-sub">{formatPct(stats.rentPct)} rentabilidad</div>}
         </div>
         <div className="kpi-card">
-          <div className="kpi-label">Win Rate</div>
+          <div className="kpi-label">Win Rate <InfoTip text="Wins ÷ (Wins + Losses), excluyendo BE" /></div>
           <div className={`kpi-value ${stats.winRate >= 60 ? 'green' : stats.winRate >= 40 ? 'yellow' : 'red'}`}>
             {stats.winRate.toFixed(1)}%
           </div>
           <div className="kpi-sub">{stats.wins}W / {stats.losses}L / {stats.be}BE</div>
         </div>
         <div className="kpi-card">
-          <div className="kpi-label">Profit Factor</div>
+          <div className="kpi-label">Profit Factor <InfoTip text="Ganancias brutas ÷ Pérdidas brutas. Mayor de 1 = rentable" /></div>
           <div className={`kpi-value ${stats.profitFactor >= 2 ? 'green' : stats.profitFactor >= 1 ? 'yellow' : 'red'}`}>
             {stats.profitFactor === Infinity ? '∞' : stats.profitFactor.toFixed(2)}
           </div>
@@ -45,11 +73,11 @@ export default function Stats({ trades, caps, currentMonth }) {
           <div className="kpi-sub">{stats.totalClosed} cerradas</div>
         </div>
         <div className="kpi-card">
-          <div className="kpi-label">Promedio Ganancia</div>
+          <div className="kpi-label">Avg Ganancia <InfoTip text="Media de PnL en operaciones WIN" /></div>
           <div className="kpi-value green">{formatMoney(stats.avgWin)}</div>
         </div>
         <div className="kpi-card">
-          <div className="kpi-label">Promedio Pérdida</div>
+          <div className="kpi-label">Avg Pérdida <InfoTip text="Media de PnL en operaciones LOSS" /></div>
           <div className="kpi-value red">{formatMoney(-stats.avgLoss)}</div>
         </div>
         <div className="kpi-card">
@@ -65,7 +93,7 @@ export default function Stats({ trades, caps, currentMonth }) {
       {/* Expectativa Matemática (EV) */}
       {totalClosed > 0 && (
         <div className="stats-section">
-          <div className="stats-section-title">Expectativa Matemática</div>
+          <div className="stats-section-title">Expectativa Matemática <InfoTip text="¿Cuánto ganas en promedio por operación si mantienes el sistema?" /></div>
           <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
             {(() => {
               const wr = stats.winRate / 100
@@ -75,21 +103,21 @@ export default function Stats({ trades, caps, currentMonth }) {
               return (
                 <>
                   <div className="kpi-card hero">
-                    <div className="kpi-label">EV por Operación</div>
+                    <div className="kpi-label">EV por Operación <InfoTip text="Expectativa por trade: (WR × Avg Win) − (LR × Avg Loss)" /></div>
                     <div className={`kpi-value lg ${evColor}`}>{formatMoney(ev)}</div>
                     <div className="kpi-sub">
                       ({(wr * 100).toFixed(0)}% × {formatMoney(stats.avgWin)}) − ({(lr * 100).toFixed(0)}% × {formatMoney(stats.avgLoss)})
                     </div>
                   </div>
                   <div className="kpi-card">
-                    <div className="kpi-label">Ratio W/L</div>
+                    <div className="kpi-label">Ratio W/L <InfoTip text="Avg ganancia ÷ Avg pérdida. Mayor de 1 = ganas más de lo que pierdes" /></div>
                     <div className={`kpi-value ${stats.avgLoss > 0 ? (stats.avgWin / stats.avgLoss >= 1 ? 'green' : 'red') : ''}`}>
                       {stats.avgLoss > 0 ? (stats.avgWin / stats.avgLoss).toFixed(2) : '∞'}
                     </div>
                     <div className="kpi-sub">Avg Win / Avg Loss</div>
                   </div>
                   <div className="kpi-card">
-                    <div className="kpi-label">EV × Operaciones</div>
+                    <div className="kpi-label">EV × Operaciones <InfoTip text="Expectativa total si repites el mismo sistema N veces" /></div>
                     <div className={`kpi-value ${evColor}`}>{formatMoney(ev * totalClosed)}</div>
                     <div className="kpi-sub">Expectativa total ({totalClosed} ops)</div>
                   </div>
@@ -121,7 +149,7 @@ export default function Stats({ trades, caps, currentMonth }) {
         <div className="progress-row">
           <span className="progress-label" style={{ color: 'var(--green)' }}>LONG</span>
           <div className="progress-bar-wrap">
-            <div className="progress-bar" style={{ width: `${(stats.longs.count / maxLongShort) * 100}%`, background: 'var(--blue)' }} />
+            <div className="progress-bar" style={{ width: `${(stats.longs.count / maxLongShort) * 100}%`, background: 'var(--green)' }} />
           </div>
           <span className="progress-val">{stats.longs.count} ops</span>
         </div>
@@ -133,7 +161,7 @@ export default function Stats({ trades, caps, currentMonth }) {
           <span className="progress-val">{stats.shorts.count} ops</span>
         </div>
         <div className="grid grid-cols-2 gap-3 mt-4">
-          <div className="kpi-card" style={{ borderLeft: '3px solid var(--blue)' }}>
+          <div className="kpi-card" style={{ borderLeft: '3px solid var(--green)' }}>
             <div className="kpi-label">LONG</div>
             <div className={`kpi-value ${stats.longs.pnl >= 0 ? 'green' : 'red'}`}>{formatMoney(stats.longs.pnl)}</div>
             <div className="kpi-sub">WR: {stats.longs.winRate.toFixed(1)}%</div>
@@ -166,7 +194,7 @@ export default function Stats({ trades, caps, currentMonth }) {
       {/* Timeframe Performance */}
       {tfStats.length > 0 && (
         <div className="stats-section">
-          <div className="stats-section-title">Rendimiento por Temporalidad</div>
+          <div className="stats-section-title">Rendimiento por Temporalidad <InfoTip text="Stats agrupadas por timeframe de entrada" /></div>
           <div className="card" style={{ overflow: 'hidden' }}>
             <div className="tf-table-wrap">
               <table className="tf-table">
