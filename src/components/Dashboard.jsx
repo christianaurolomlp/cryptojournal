@@ -237,47 +237,80 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
           </div>
         </div>
 
-        {/* Asset Performance (recharts bar) */}
-        <div className="card">
-          <div className="card-header">
-            <div>
-              <div className="card-title">Por Activo</div>
-              <div className="card-description">PnL por criptomoneda</div>
+        {/* Right column — stacked cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* Asset Performance */}
+          <div className="card" style={{ flex: 1 }}>
+            <div className="card-header">
+              <div>
+                <div className="card-title">Por Activo</div>
+                <div className="card-description">PnL por criptomoneda</div>
+              </div>
+            </div>
+            <div className="card-body">
+              {assetData.length === 0 ? (
+                <div className="empty-state" style={{ padding: '24px 0' }}>
+                  <div className="empty-sub">Sin operaciones cerradas</div>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart data={assetData} margin={{ top: 4, right: 8, left: 10, bottom: 0 }} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.3} horizontal={false} />
+                    <XAxis type="number" tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }} axisLine={{ stroke: gridColor }} tickLine={false} tickFormatter={v => `$${v}`} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }} axisLine={false} tickLine={false} width={56} />
+                    <Tooltip content={<AssetTooltip />} cursor={{ fill: cursorFill }} />
+                    <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={18}>
+                      {assetData.map((entry, i) => (
+                        <Cell key={i} fill={entry.pnl >= 0 ? '#34C759' : '#FF3B30'} fillOpacity={0.75} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
-          <div className="card-body">
-            {assetData.length === 0 ? (
-              <div className="empty-state" style={{ padding: '32px 0' }}>
-                <div className="empty-sub">Sin operaciones cerradas</div>
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={assetData} margin={{ top: 8, right: 8, left: 10, bottom: 0 }} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.3} horizontal={false} />
-                  <XAxis
-                    type="number"
-                    tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }}
-                    axisLine={{ stroke: gridColor }}
-                    tickLine={false}
-                    tickFormatter={v => `$${v}`}
-                  />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }}
-                    axisLine={false}
-                    tickLine={false}
-                    width={56}
-                  />
-                  <Tooltip content={<AssetTooltip />} cursor={{ fill: cursorFill }} />
-                  <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={20}>
-                    {assetData.map((entry, i) => (
-                      <Cell key={i} fill={entry.pnl >= 0 ? '#34C759' : '#FF3B30'} fillOpacity={0.7} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            )}
+
+          {/* Distribución WIN/LOSS/BE */}
+          <div className="card">
+            <div className="card-header">
+              <div className="card-title">Distribución</div>
+            </div>
+            <div className="card-body" style={{ paddingTop: 12 }}>
+              {/* Visual bars */}
+              {stats.total > 0 && (
+                <>
+                  <div style={{ display: 'flex', gap: 4, height: 8, borderRadius: 4, overflow: 'hidden', marginBottom: 12 }}>
+                    {stats.wins > 0 && <div style={{ flex: stats.wins, background: 'var(--green)', opacity: 0.8 }} />}
+                    {stats.be > 0 && <div style={{ flex: stats.be, background: 'var(--orange)', opacity: 0.8 }} />}
+                    {stats.losses > 0 && <div style={{ flex: stats.losses, background: 'var(--red)', opacity: 0.8 }} />}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--green)', display: 'inline-block' }} />
+                        WIN
+                      </span>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--green)' }}>{stats.wins} <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-muted)' }}>({stats.total > 0 ? Math.round(stats.wins/stats.total*100) : 0}%)</span></span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--orange)', display: 'inline-block' }} />
+                        BE
+                      </span>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--orange)' }}>{stats.be} <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-muted)' }}>({stats.total > 0 ? Math.round(stats.be/stats.total*100) : 0}%)</span></span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--red)', display: 'inline-block' }} />
+                        LOSS
+                      </span>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--red)' }}>{stats.losses} <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-muted)' }}>({stats.total > 0 ? Math.round(stats.losses/stats.total*100) : 0}%)</span></span>
+                    </div>
+                  </div>
+                </>
+              )}
+              {stats.total === 0 && <div className="empty-sub">Sin datos</div>}
+            </div>
           </div>
         </div>
       </div>
