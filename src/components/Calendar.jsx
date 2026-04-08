@@ -105,10 +105,10 @@ export default function Calendar({ trades, currentMonth }) {
               const pnl = closed.reduce((a, t) => a + (t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl), 0)
 
               return (
-                <div key={dateStr} className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--color-border)' }}>
+                <div key={dateStr} className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--border)' }}>
                   <div className="flex items-center gap-4">
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--color-text-bright)' }}>{dateStr}</span>
-                    <span style={{ fontSize: 12, color: 'var(--color-text-dim)' }}>
+                    <span style={{ fontFamily: 'var(--font)', fontSize: 13, color: 'var(--text)' }}>{dateStr}</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                       {closed.length} cerradas{open.length > 0 ? ` · ${open.length} abiertas` : ''}
                     </span>
                   </div>

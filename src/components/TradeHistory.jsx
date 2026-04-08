@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 
-const RESULT_COLORS = { WIN: 'var(--color-accent)', LOSS: 'var(--color-danger)', BE: 'var(--color-warning)' }
+const RESULT_COLORS = { WIN: 'var(--blue)', LOSS: 'var(--red)', BE: 'var(--orange)' }
 const RESULT_LABELS = { WIN: 'WIN', LOSS: 'LOSS', BE: 'BE' }
 
 export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReopen }) {
@@ -102,15 +102,15 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
       {/* Summary */}
       <div className="kpi-grid mb-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))' }}>
         {[
-          { label: 'Total', value: stats.total, color: 'var(--color-text-bright)' },
+          { label: 'Total', value: stats.total, color: 'var(--text)' },
           { label: 'Abiertas', value: stats.open, color: 'var(--color-info)' },
-          { label: 'Win', value: stats.wins, color: 'var(--color-accent)' },
-          { label: 'Loss', value: stats.losses, color: 'var(--color-danger)' },
-          { label: 'Win Rate', value: stats.wr != null ? `${stats.wr}%` : '—', color: stats.wr >= 50 ? 'var(--color-accent)' : 'var(--color-danger)' },
-          { label: 'PnL', value: `${stats.pnl >= 0 ? '+' : ''}$${stats.pnl.toFixed(0)}`, color: stats.pnl >= 0 ? 'var(--color-accent)' : 'var(--color-danger)' },
+          { label: 'Win', value: stats.wins, color: 'var(--blue)' },
+          { label: 'Loss', value: stats.losses, color: 'var(--red)' },
+          { label: 'Win Rate', value: stats.wr != null ? `${stats.wr}%` : '—', color: stats.wr >= 50 ? 'var(--blue)' : 'var(--red)' },
+          { label: 'PnL', value: `${stats.pnl >= 0 ? '+' : ''}$${stats.pnl.toFixed(0)}`, color: stats.pnl >= 0 ? 'var(--blue)' : 'var(--red)' },
         ].map(s => (
           <div key={s.label} className="kpi-card" style={{ textAlign: 'center', padding: '14px 12px' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 18, fontWeight: 700, color: s.color }}>{s.value}</div>
+            <div style={{ fontFamily: 'var(--font)', fontSize: 18, fontWeight: 700, color: s.color }}>{s.value}</div>
             <div className="kpi-sub" style={{ marginTop: 2 }}>{s.label}</div>
           </div>
         ))}
@@ -132,8 +132,8 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
                   {['Fecha', 'Activo', 'Dir', 'TF', 'Lev', 'Margen', 'Riesgo', 'PnL', 'Resultado', ''].map(h => (
                     <th key={h} style={{
                       textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600,
-                      color: 'var(--color-text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em',
-                      borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)',
+                      color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em',
+                      borderBottom: '1px solid var(--border)', background: 'var(--bg)',
                       whiteSpace: 'nowrap'
                     }}>{h}</th>
                   ))}
@@ -141,35 +141,35 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
               </thead>
               <tbody>
                 {filtered.map((t, i) => (
-                  <tr key={t.id} style={{ borderBottom: '1px solid var(--color-border)', transition: 'background 0.1s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--color-surface-2)'}
+                  <tr key={t.id} style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.1s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--bg)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <td style={{ padding: '12px 16px', color: 'var(--color-text-muted)', whiteSpace: 'nowrap', fontFamily: 'var(--font-mono)' }}>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-muted)', whiteSpace: 'nowrap', fontFamily: 'var(--font)' }}>
                       {t.date || '—'}
                       {t.closeDate && t.closeDate !== t.date && (
-                        <span style={{ fontSize: 10, color: 'var(--color-text-dim)', display: 'block' }}>→ {t.closeDate}</span>
+                        <span style={{ fontSize: 10, color: 'var(--text-muted)', display: 'block' }}>→ {t.closeDate}</span>
                       )}
                     </td>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: 'var(--color-text-bright)', fontFamily: 'var(--font-mono)' }}>
+                    <td style={{ padding: '12px 16px', fontWeight: 700, color: 'var(--text)', fontFamily: 'var(--font)' }}>
                       {t.crypto?.toUpperCase() || '—'}
                     </td>
                     <td style={{ padding: '12px 16px' }}>
                       <span className={`badge badge-${t.type === 'LONG' ? 'long' : 'short'}`}>{t.type}</span>
                     </td>
-                    <td style={{ padding: '12px 16px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>{t.tf || '—'}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>{t.lev ? `${t.lev}x` : '—'}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>{t.margin ? `$${t.margin}` : '—'}</td>
-                    <td style={{ padding: '12px 16px', color: 'var(--color-text-muted)', fontFamily: 'var(--font-mono)' }}>{t.risk ? `${t.risk}%` : '—'}</td>
-                    <td style={{ padding: '12px 16px', fontWeight: 600, whiteSpace: 'nowrap', fontFamily: 'var(--font-mono)' }}>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>{t.tf || '—'}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>{t.lev ? `${t.lev}x` : '—'}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>{t.margin ? `$${t.margin}` : '—'}</td>
+                    <td style={{ padding: '12px 16px', color: 'var(--text-muted)', fontFamily: 'var(--font)' }}>{t.risk ? `${t.risk}%` : '—'}</td>
+                    <td style={{ padding: '12px 16px', fontWeight: 600, whiteSpace: 'nowrap', fontFamily: 'var(--font)' }}>
                       {t.pnl != null && t.closed
                         ? (() => {
                             const displayPnl = t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl
-                            return <span style={{ color: displayPnl >= 0 ? 'var(--color-accent)' : 'var(--color-danger)' }}>
+                            return <span style={{ color: displayPnl >= 0 ? 'var(--blue)' : 'var(--red)' }}>
                               {displayPnl >= 0 ? '+' : ''}${displayPnl.toFixed(0)}
                             </span>
                           })()
-                        : <span style={{ color: 'var(--color-text-dim)' }}>—</span>
+                        : <span style={{ color: 'var(--text-muted)' }}>—</span>
                       }
                     </td>
                     <td style={{ padding: '12px 16px' }}>
@@ -186,7 +186,7 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
                         {!t.closed && (
                           <button onClick={() => onClose(t)} className="btn btn-primary btn-sm" title="Cerrar">Cerrar</button>
                         )}
-                        <button onClick={() => onDelete(t)} className="btn btn-ghost btn-sm" title="Eliminar" style={{ color: 'var(--color-danger)', opacity: 0.7 }}>🗑</button>
+                        <button onClick={() => onDelete(t)} className="btn btn-ghost btn-sm" title="Eliminar" style={{ color: 'var(--red)', opacity: 0.7 }}>🗑</button>
                       </div>
                     </td>
                   </tr>
@@ -203,7 +203,7 @@ export default function TradeHistory({ trades, onEdit, onDelete, onClose, onReop
 function FilterField({ label, flex, children }) {
   return (
     <div style={{ flex }}>
-      <label style={{ fontSize: 11, color: 'var(--color-text-dim)', display: 'block', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>{label}</label>
+      <label style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>{label}</label>
       {children}
     </div>
   )

@@ -81,26 +81,26 @@ export default function Stats({ trades, caps, currentMonth }) {
       <div className="stats-section">
         <div className="stats-section-title">Long vs Short</div>
         <div className="progress-row">
-          <span className="progress-label" style={{ color: 'var(--color-accent)' }}>LONG</span>
+          <span className="progress-label" style={{ color: 'var(--blue)' }}>LONG</span>
           <div className="progress-bar-wrap">
-            <div className="progress-bar" style={{ width: `${(stats.longs.count / maxLongShort) * 100}%`, background: 'var(--color-accent)' }} />
+            <div className="progress-bar" style={{ width: `${(stats.longs.count / maxLongShort) * 100}%`, background: 'var(--blue)' }} />
           </div>
           <span className="progress-val">{stats.longs.count} ops</span>
         </div>
         <div className="progress-row">
-          <span className="progress-label" style={{ color: 'var(--color-danger)' }}>SHORT</span>
+          <span className="progress-label" style={{ color: 'var(--red)' }}>SHORT</span>
           <div className="progress-bar-wrap">
-            <div className="progress-bar" style={{ width: `${(stats.shorts.count / maxLongShort) * 100}%`, background: 'var(--color-danger)' }} />
+            <div className="progress-bar" style={{ width: `${(stats.shorts.count / maxLongShort) * 100}%`, background: 'var(--red)' }} />
           </div>
           <span className="progress-val">{stats.shorts.count} ops</span>
         </div>
         <div className="grid grid-cols-2 gap-3 mt-4">
-          <div className="kpi-card" style={{ borderLeft: '3px solid var(--color-accent)' }}>
+          <div className="kpi-card" style={{ borderLeft: '3px solid var(--blue)' }}>
             <div className="kpi-label">LONG</div>
             <div className={`kpi-value ${stats.longs.pnl >= 0 ? 'green' : 'red'}`}>{formatMoney(stats.longs.pnl)}</div>
             <div className="kpi-sub">WR: {stats.longs.winRate.toFixed(1)}%</div>
           </div>
-          <div className="kpi-card" style={{ borderLeft: '3px solid var(--color-danger)' }}>
+          <div className="kpi-card" style={{ borderLeft: '3px solid var(--red)' }}>
             <div className="kpi-label">SHORT</div>
             <div className={`kpi-value ${stats.shorts.pnl >= 0 ? 'green' : 'red'}`}>{formatMoney(stats.shorts.pnl)}</div>
             <div className="kpi-sub">WR: {stats.shorts.winRate.toFixed(1)}%</div>
@@ -113,14 +113,14 @@ export default function Stats({ trades, caps, currentMonth }) {
         <div className="stats-section">
           <div className="stats-section-title">Distribución de Resultados</div>
           <div className="distribution-bar">
-            {wins > 0 && <div className="dist-segment" style={{ width: `${winPct}%`, background: 'var(--color-accent)' }} title={`WIN: ${wins}`} />}
-            {be > 0 && <div className="dist-segment" style={{ width: `${bePct}%`, background: 'var(--color-warning)' }} title={`BE: ${be}`} />}
-            {losses > 0 && <div className="dist-segment" style={{ width: `${lossPct}%`, background: 'var(--color-danger)' }} title={`LOSS: ${losses}`} />}
+            {wins > 0 && <div className="dist-segment" style={{ width: `${winPct}%`, background: 'var(--blue)' }} title={`WIN: ${wins}`} />}
+            {be > 0 && <div className="dist-segment" style={{ width: `${bePct}%`, background: 'var(--orange)' }} title={`BE: ${be}`} />}
+            {losses > 0 && <div className="dist-segment" style={{ width: `${lossPct}%`, background: 'var(--red)' }} title={`LOSS: ${losses}`} />}
           </div>
           <div className="flex gap-5 flex-wrap">
-            <LegendItem color="var(--color-accent)" label={`WIN: ${wins} (${winPct.toFixed(1)}%)`} />
-            {be > 0 && <LegendItem color="var(--color-warning)" label={`BE: ${be} (${bePct.toFixed(1)}%)`} />}
-            <LegendItem color="var(--color-danger)" label={`LOSS: ${losses} (${lossPct.toFixed(1)}%)`} />
+            <LegendItem color="var(--blue)" label={`WIN: ${wins} (${winPct.toFixed(1)}%)`} />
+            {be > 0 && <LegendItem color="var(--orange)" label={`BE: ${be} (${bePct.toFixed(1)}%)`} />}
+            <LegendItem color="var(--red)" label={`LOSS: ${losses} (${lossPct.toFixed(1)}%)`} />
           </div>
         </div>
       )}
@@ -179,7 +179,7 @@ function LegendItem({ color, label }) {
   return (
     <div className="flex items-center gap-2">
       <div style={{ width: 10, height: 10, borderRadius: 3, background: color }} />
-      <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>{label}</span>
+      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{label}</span>
     </div>
   )
 }

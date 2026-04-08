@@ -7,18 +7,18 @@ export default function DeleteModal({ trade, onConfirm, onClose }) {
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body">
-          <p style={{ color: 'var(--color-text-muted)', marginBottom: 16, fontSize: 14 }}>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 16, fontSize: 14 }}>
             ¿Estás seguro que deseas eliminar esta operación? Esta acción no se puede deshacer.
           </p>
-          <div style={{ padding: '12px 14px', background: 'var(--color-danger-dim)', border: '1px solid rgba(255,59,59,0.2)', borderLeft: '3px solid var(--color-danger)' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 15, color: 'var(--color-text)', marginBottom: 4 }}>
+          <div style={{ padding: '12px 14px', background: 'var(--red-soft)', border: '1px solid rgba(255,59,48,0.15)', borderLeft: '3px solid var(--red)' }}>
+            <div style={{ fontFamily: 'var(--font)', fontWeight: 700, fontSize: 15, color: 'var(--color-text)', marginBottom: 4 }}>
               {trade.type} {trade.crypto}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--color-text-dim)' }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
               {trade.tf} · Margen ${trade.margin} · {trade.lev}x · {trade.date}
             </div>
             {trade.closed && (
-              <div style={{ fontSize: 12, color: 'var(--color-text-dim)', marginTop: 2 }}>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
                 Resultado: {trade.result} {trade.pnl ? `· $${Math.abs(trade.pnl)}` : ''}
               </div>
             )}

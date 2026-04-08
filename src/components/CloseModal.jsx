@@ -32,11 +32,11 @@ export default function CloseModal({ trade, onSave, onClose }) {
         </div>
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
-            <div style={{ marginBottom: 12, padding: '10px 12px', background: 'var(--color-surface-2)', border: '1px solid var(--color-border)' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 15, color: 'var(--color-text)' }}>
+            <div style={{ marginBottom: 12, padding: '10px 12px', background: 'var(--bg)', border: '1px solid var(--border)' }}>
+              <span style={{ fontFamily: 'var(--font)', fontWeight: 700, fontSize: 15, color: 'var(--color-text)' }}>
                 {trade.type} {trade.crypto}
               </span>
-              <span style={{ fontSize: 12, color: 'var(--color-text-dim)', marginLeft: 10 }}>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 10 }}>
                 {trade.tf} · Margen ${trade.margin}
               </span>
             </div>

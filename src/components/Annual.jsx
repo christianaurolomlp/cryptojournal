@@ -82,10 +82,10 @@ export default function Annual({ trades, caps, onMonthClick }) {
                 <div className="bar-wrap" key={key} onClick={() => onMonthClick(key)} style={{ cursor: 'pointer' }}>
                   <div className="bar" style={{
                     height: `${barH}px`,
-                    background: !hasData ? 'var(--color-surface-3)'
-                      : stats.pnl > 0 ? 'var(--color-accent)'
-                      : stats.pnl < 0 ? 'var(--color-danger)'
-                      : 'var(--color-warning)',
+                    background: !hasData ? 'var(--bg)'
+                      : stats.pnl > 0 ? 'var(--blue)'
+                      : stats.pnl < 0 ? 'var(--red)'
+                      : 'var(--orange)',
                     opacity: hasData ? 1 : 0.3
                   }} title={`${MONTHS_ES[i]}: ${formatMoney(stats.pnl)}`} />
                   <span className="bar-label">{MONTHS_SHORT[i]}</span>
@@ -108,8 +108,8 @@ export default function Annual({ trades, caps, onMonthClick }) {
                 {['Mes', 'Trades', 'Win Rate', 'P&L', 'Rentabilidad'].map(h => (
                   <th key={h} style={{
                     padding: '12px 18px', textAlign: 'left', fontSize: 11, fontWeight: 600,
-                    textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--color-text-dim)',
-                    borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)'
+                    textTransform: 'uppercase', letterSpacing: '0.04em', color: 'var(--text-muted)',
+                    borderBottom: '1px solid var(--border)', background: 'var(--bg)'
                   }}>{h}</th>
                 ))}
               </tr>
@@ -121,29 +121,29 @@ export default function Annual({ trades, caps, onMonthClick }) {
                 return (
                   <tr key={key}
                     onClick={() => onMonthClick(key)}
-                    style={{ borderBottom: '1px solid var(--color-border)', cursor: 'pointer', opacity: hasData ? 1 : 0.4, transition: 'background 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--color-surface-2)'}
+                    style={{ borderBottom: '1px solid var(--border)', cursor: 'pointer', opacity: hasData ? 1 : 0.4, transition: 'background 0.15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--bg)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <td style={{ padding: '14px 18px', fontWeight: 600, color: 'var(--color-text-bright)' }}>{MONTHS_ES[i]}</td>
-                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--color-text-muted)' }}>{stats.total}</td>
-                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+                    <td style={{ padding: '14px 18px', fontWeight: 600, color: 'var(--text)' }}>{MONTHS_ES[i]}</td>
+                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font)', fontSize: 13, color: 'var(--text-muted)' }}>{stats.total}</td>
+                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font)', fontSize: 13 }}>
                       {stats.totalClosed > 0 ? (
-                        <span style={{ color: stats.winRate >= 60 ? 'var(--color-accent)' : stats.winRate >= 40 ? 'var(--color-warning)' : 'var(--color-danger)' }}>
+                        <span style={{ color: stats.winRate >= 60 ? 'var(--blue)' : stats.winRate >= 40 ? 'var(--orange)' : 'var(--red)' }}>
                           {stats.winRate.toFixed(1)}%
                         </span>
                       ) : '—'}
                     </td>
-                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 700 }}>
+                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font)', fontSize: 13, fontWeight: 700 }}>
                       {stats.total > 0 ? (
-                        <span style={{ color: stats.pnl > 0 ? 'var(--color-accent)' : stats.pnl < 0 ? 'var(--color-danger)' : 'var(--color-text-dim)' }}>
+                        <span style={{ color: stats.pnl > 0 ? 'var(--blue)' : stats.pnl < 0 ? 'var(--red)' : 'var(--text-muted)' }}>
                           {formatMoney(stats.pnl)}
                         </span>
-                      ) : <span style={{ color: 'var(--color-text-dim)' }}>—</span>}
+                      ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
                     </td>
-                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
+                    <td style={{ padding: '14px 18px', fontFamily: 'var(--font)', fontSize: 13 }}>
                       {rent !== null ? (
-                        <span style={{ color: rent > 0 ? 'var(--color-accent)' : rent < 0 ? 'var(--color-danger)' : 'var(--color-text-dim)' }}>
+                        <span style={{ color: rent > 0 ? 'var(--blue)' : rent < 0 ? 'var(--red)' : 'var(--text-muted)' }}>
                           {formatPct(rent)}
                         </span>
                       ) : '—'}

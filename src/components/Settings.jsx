@@ -131,10 +131,10 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
   }
 
   const statusColors = {
-    connected: 'var(--color-accent)',
-    disconnected: 'var(--color-text-dim)',
-    testing: 'var(--color-warning)',
-    error: 'var(--color-danger)'
+    connected: 'var(--blue)',
+    disconnected: 'var(--text-muted)',
+    testing: 'var(--orange)',
+    error: 'var(--red)'
   }
   const statusLabels = {
     connected: '✓ Conectado',
@@ -156,7 +156,7 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
           </span>
         </div>
         <div className="settings-body">
-          <p style={{ fontSize: 13, color: 'var(--color-text-dim)', marginBottom: 14 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 14 }}>
             Conecta con el servidor para guardar tus datos de forma segura en la nube. Sin conexión, se usa localStorage.
           </p>
           <div className="form-group" style={{ marginBottom: 10 }}>
@@ -202,7 +202,7 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
       <div className="settings-section">
         <div className="settings-section-header">API de Anthropic (Comandos de Voz)</div>
         <div className="settings-body">
-          <p style={{ fontSize: 13, color: 'var(--color-text-dim)', marginBottom: 14 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 14 }}>
             Necesaria para procesar comandos de voz con IA. Obtén tu key en <a href="https://console.anthropic.com" target="_blank" rel="noreferrer" style={{ color: 'var(--color-info)' }}>console.anthropic.com</a>
           </p>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -233,7 +233,7 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
       <div className="settings-section">
         <div className="settings-section-header">Capital Mensual</div>
         <div className="settings-body">
-          <p style={{ fontSize: 13, color: 'var(--color-text-dim)', marginBottom: 14 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 14 }}>
             Define el capital inicial de cada mes para calcular rentabilidad y riesgo en dólares.
           </p>
           <div className="capital-months">
@@ -262,7 +262,7 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
                   </div>
                 ) : (
                   <span className="capital-month-val" onClick={() => startEditCap(key)}>
-                    {caps[key] ? `$${caps[key].toLocaleString('es-ES')}` : <span style={{ color: 'var(--color-text-dim)', fontFamily: 'var(--font-ui)', fontSize: 13 }}>Sin definir — click para editar</span>}
+                    {caps[key] ? `$${caps[key].toLocaleString('es-ES')}` : <span style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', fontSize: 13 }}>Sin definir — click para editar</span>}
                   </span>
                 )}
               </div>
@@ -296,7 +296,7 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
           </div>
           <div className="settings-row">
             <div>
-              <div className="settings-label" style={{ color: 'var(--color-danger)' }}>Eliminar todos los datos</div>
+              <div className="settings-label" style={{ color: 'var(--red)' }}>Eliminar todos los datos</div>
               <div className="settings-sub">Borra todo de localStorage. Irreversible.</div>
             </div>
             <button className="btn btn-danger" onClick={clearAllData}>
@@ -318,9 +318,9 @@ export default function Settings({ caps, onCapsChange, anthropicKey, onAnthropic
               display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22
             }}>⚡</div>
             <div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 14, fontWeight: 700, color: 'var(--color-accent)', letterSpacing: '0.08em' }}>CRYPTO JOURNAL</div>
-              <div style={{ fontSize: 11, color: 'var(--color-text-dim)', marginTop: 2, fontFamily: 'var(--font-mono)' }}>
-                v2.0 · War Room · {isApiConfigured() ? 'Cloud sync ✓' : 'Local storage'}
+              <div style={{ fontFamily: 'var(--font)', fontSize: 14, fontWeight: 700, color: 'var(--blue)', letterSpacing: '0.08em' }}>CRYPTO JOURNAL</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2, fontFamily: 'var(--font)' }}>
+                v2.0 · Journal · {isApiConfigured() ? 'Cloud sync ✓' : 'Local storage'}
               </div>
             </div>
           </div>
