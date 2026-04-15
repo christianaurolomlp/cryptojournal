@@ -1963,3 +1963,53 @@ aside.sidebar,
   border-right: none !important;
   box-shadow: none !important;
 }
+
+/* ── Cards Layer3 exacto: gris neutro #1E1F24, sin azul ── */
+:root {
+  --card-bg: rgba(30,31,36,0.90);
+  --card-body: rgba(22,23,28,0.85);
+}
+[data-theme="dark"] {
+  --card-bg: rgba(30,31,36,0.90);
+  --card-body: rgba(22,23,28,0.85);
+}
+
+/* Todas las cards/panels: gris neutro Layer3 */
+.card,
+.stat-card,
+.kpi-card,
+.right-card,
+.hero-banner,
+.chart-card,
+.risk-card,
+[class*="card"],
+[class*="panel"],
+[class*="section"] {
+  background: rgba(30,31,36,0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-color: rgba(255,255,255,0.07) !important;
+}
+
+/* Card body (inner dark section) */
+.card-body,
+[class*="card-body"],
+[class*="inner"] {
+  background: rgba(20,21,26,0.80) !important;
+}
+
+/* Nav item active: más sutil, sin parecer separado */
+.nav-item.active,
+.nav-item:hover {
+  background: rgba(255,255,255,0.06) !important;
+  border-radius: 8px !important;
+}
+.nav-item {
+  background: transparent !important;
+}
+
+/* Hero card: un toque azul sutil como Layer3 */
+.hero-banner {
+  background: rgba(28,34,52,0.92) !important;
+  border-color: rgba(56,216,245,0.12) !important;
+}
