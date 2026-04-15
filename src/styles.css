@@ -1867,3 +1867,43 @@ a.btn-primary {
   border-color: rgba(74,222,128,0.30) !important;
   box-shadow: 0 0 40px rgba(74,222,128,0.12), 0 4px 24px rgba(0,0,0,0.4) !important;
 }
+
+/* ── Badge shields navales ── */
+.badge-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 12px !important;
+  padding: 8px 0 !important;
+}
+.badge-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+  padding: 8px 4px !important;
+  border-radius: 12px !important;
+  transition: background 0.15s ease !important;
+  background: transparent !important;
+  border: none !important;
+}
+.badge-item:hover {
+  background: rgba(255,255,255,0.05) !important;
+}
+.badge-shield {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.badge-item .badge-name {
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  color: rgba(255,255,255,0.4) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  line-height: 1.2 !important;
+}
+.badge-item.unlocked .badge-name {
+  color: rgba(255,255,255,0.85) !important;
+}
