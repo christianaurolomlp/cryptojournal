@@ -1,3 +1,5 @@
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
+import ReactDOM from 'react-dom'
 // Gamification system — XP, Badges, Streak Calendar
 
 // Niveles de progresión del trader — simples, motivadores, sin rangos navales
@@ -380,28 +382,64 @@ const SHIELD_MAP = {
   swing: Shield_swing,
 }
 
+// ── Portal Tooltip ──────────────────────────────────────────────────────────
+function BadgeTooltip({ text, x, y }) {
+  if (!text) return null
+  const style = {
+    position: 'fixed',
+    left: Math.min(Math.max(x - 110, 8), window.innerWidth - 236),
+    top: y - 8,
+    transform: 'translateY(-100%)',
+    background: 'rgba(10,12,22,0.97)',
+    color: '#fff',
+    fontSize: 12,
+    padding: '8px 12px',
+    borderRadius: 10,
+    border: '1px solid rgba(255,255,255,0.14)',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.6)',
+    maxWidth: 220,
+    zIndex: 999999,
+    pointerEvents: 'none',
+    lineHeight: 1.5,
+    textAlign: 'center',
+    whiteSpace: 'normal',
+  }
+  return ReactDOM.createPortal(<div style={style}>{text}</div>, document.body)
+}
+
+
 export function BadgeGrid({ trades }) {
+  const [tooltip, setTooltip] = useState({ text: '', x: 0, y: 0 })
+
+  const showTip = useCallback((e, text) => {
+    const r = e.currentTarget.getBoundingClientRect()
+    setTooltip({ text, x: r.left + r.width / 2, y: r.top })
+  }, [])
+  const hideTip = useCallback(() => setTooltip({ text: '', x: 0, y: 0 }), [])
+
   return (
-    <div className="badge-grid">
-      {ALL_BADGES.map(b => {
-        const ok = b.req(trades)
-        const ShieldComp = SHIELD_MAP[b.id]
-        return (
-          <div
-            key={b.id}
-            className={`badge-item ${ok ? 'unlocked' : 'locked'}`}
-            data-tip={ok ? '✅ ' + b.achieved : '🔒 ' + b.desc}
-          >
-            <div className="badge-shield">
-              {ShieldComp ? <ShieldComp unlocked={ok} /> : <span style={{fontSize:32}}>{ok ? b.emoji : '???'}</span>}
+    <>
+      <BadgeTooltip text={tooltip.text} x={tooltip.x} y={tooltip.y} />
+      <div className="badge-grid">
+        {ALL_BADGES.map(b => {
+          const ok = b.req(trades)
+          const ShieldComp = SHIELD_MAP[b.id]
+          const tipText = ok ? '✅ ' + b.achieved : '🔒 ' + b.desc
+          return (
+            <div
+              key={b.id}
+              className={`badge-item ${ok ? 'unlocked' : 'locked'}`}
+              onMouseEnter={e => showTip(e, tipText)}
+              onMouseLeave={hideTip}
+            >
+              <div className="badge-shield">
+                {ShieldComp ? <ShieldComp unlocked={ok} /> : <span style={{fontSize:32}}>{ok ? b.emoji : '???'}</span>}
+              </div>
             </div>
-            <div className="badge-name" style={ok ? { color: b.color } : {}}>
-              {ok ? b.name : '???'}
-            </div>
-          </div>
-        )
-      })}
-    </div>
+          )
+        })}
+      </div>
+    </>
   )
 }
 
