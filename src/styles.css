@@ -410,8 +410,8 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 [data-theme="light"] .badge-tf { background: rgba(0,0,0,0.06); }
 
 /* ═══ BUTTONS ══════════════════════════════ */
-.btn { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; font-family: var(--font); border: none; border-radius: 8px; font-weight: 500; transition: all 0.15s ease; }
-.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; font-family: var(--font); border: none; border-radius: 6px; font-weight: 500; transition: all 0.15s ease; }
+.btn-sm { padding: 4px 9px; font-size: 11px; }
 
 .btn-primary {
   display: inline-flex; align-items: center; justify-content: center; gap: 5px;
@@ -645,7 +645,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 6px;
 }
 [data-theme="light"] .trade-notes { background: rgba(0,0,0,0.04); }
-.trade-actions { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+.trade-actions { display: flex; gap: 5px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; }
 [data-theme="light"] .trade-actions { border-top: 1px solid rgba(0,0,0,0.06); }
 .meta-item { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
 
