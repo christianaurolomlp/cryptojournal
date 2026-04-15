@@ -526,9 +526,9 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .modal {
-  background: #161924;
-  border: 1px solid #2A2D3A;
-  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
   padding: 24px;
   width: 100%; max-width: 460px; max-height: 90vh; overflow-y: auto;
@@ -846,7 +846,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 }
 
 @media (max-width: 768px) {
-  .sidebar { position: fixed; left: -260px; top: 0; bottom: 0; z-index: 100; transition: left 0.25s ease; width: 240px; }
+  .sidebar { position: fixed; left: -280px; top: 0; bottom: 0; z-index: 100; transition: left 0.25s ease; width: var(--sidebar-width); }
   .sidebar.open { left: 0; }
   .hamburger { display: flex; }
   .topbar { padding: 0 12px; gap: 8px; }
@@ -1032,7 +1032,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 /* ── Trade cards with gradient borders by result ── */
 .trade-card.win {
   background:
-    linear-gradient(#161924, #161924) padding-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
     linear-gradient(180deg, rgba(74,222,128,0.35) 0%, rgba(42,45,58,0.5) 60%) border-box !important;
   border: 1px solid transparent !important;
   border-left: 3px solid #4ADE80 !important;
@@ -1040,7 +1040,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 }
 .trade-card.loss {
   background:
-    linear-gradient(#161924, #161924) padding-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
     linear-gradient(180deg, rgba(239,68,68,0.35) 0%, rgba(42,45,58,0.5) 60%) border-box !important;
   border: 1px solid transparent !important;
   border-left: 3px solid #EF4444 !important;
@@ -1048,7 +1048,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 }
 .trade-card.open {
   background:
-    linear-gradient(#161924, #161924) padding-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
     linear-gradient(180deg, rgba(99,102,241,0.3) 0%, rgba(42,45,58,0.5) 60%) border-box !important;
   border: 1px solid transparent !important;
   border-left: 3px solid #6366F1 !important;
@@ -1100,7 +1100,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 /* ── Settings section gradient border ── */
 .settings-section {
   background:
-    linear-gradient(#161924, #161924) padding-box,
+    linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
     linear-gradient(135deg, rgba(99,102,241,0.15), rgba(42,45,58,0.8)) border-box !important;
   border: 1px solid transparent !important;
 }
@@ -1116,10 +1116,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .badge-lev { box-shadow: 0 0 8px rgba(99,102,241,0.2); }
 
 /* ── Page background with glow ── */
-.page, .page-content {
-  background: radial-gradient(ellipse 70% 40% at 50% -10%, rgba(18,120,183,0.05) 0%, transparent 60%), #0a0a0f !important;
-}
-.main-content { background: #0a0a0f !important; }
+/* removed old override */
 
 /* ═══════════════════════════════════════════════
    GAMING / WEB3 REDESIGN — NEW COMPONENTS
@@ -1286,8 +1283,8 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 }
 
 /* ── Page ambient glow ── */
-.page, .page-content { background: var(--bg) !important; }
-.main-content { background: var(--bg) !important; }
+.page, .page-content { background: var(--bg); }
+.main-content { background: var(--bg); }
 
 /* ── Streak calendar v2 ── */
 .streak-wrapper { border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
