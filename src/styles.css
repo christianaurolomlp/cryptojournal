@@ -2042,3 +2042,40 @@ aside.sidebar,
   background: rgba(22,28,46,0.55) !important;
   border: 1px solid rgba(56,216,245,0.10) !important;
 }
+
+/* ── URGENTE: restaurar border-radius en todos los cards ── */
+.card,
+.stat-card,
+.kpi-card,
+.right-card,
+.chart-card,
+.risk-card,
+.hero-banner,
+.capital-hero-card,
+[class*="card"],
+[class*="panel"] > *,
+.trade-item,
+.trade-row,
+[class*="trade"] {
+  border-radius: 14px !important;
+}
+
+/* Right panel: padding para que no toque el borde derecho */
+.page-right-panel {
+  padding: 0 16px 0 0 !important;
+}
+
+/* Trade list items */
+.trade-item,
+[class*="trade-item"],
+[class*="trade-row"],
+[class*="TradeItem"] {
+  border-radius: 12px !important;
+}
+
+/* Search input */
+input[type="search"],
+[class*="search"],
+[class*="Search"] {
+  border-radius: 10px !important;
+}
