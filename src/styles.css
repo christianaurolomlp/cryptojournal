@@ -1907,3 +1907,41 @@ a.btn-primary {
 .badge-item.unlocked .badge-name {
   color: rgba(255,255,255,0.85) !important;
 }
+
+/* ── Badges sin nombre abajo ── */
+.badge-item .badge-name,
+.badge-item .badge-emoji + div {
+  display: none !important;
+}
+.badge-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 8px !important;
+}
+.badge-item {
+  padding: 6px !important;
+}
+
+/* ── Tooltip siempre encima ── */
+[data-tip] {
+  position: relative;
+}
+[data-tip]:hover::after {
+  content: attr(data-tip);
+  position: fixed !important;
+  z-index: 99999 !important;
+  bottom: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: rgba(15,18,28,0.97) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  white-space: normal !important;
+  max-width: 220px !important;
+  text-align: center !important;
+  line-height: 1.5 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+  pointer-events: none !important;
+}
