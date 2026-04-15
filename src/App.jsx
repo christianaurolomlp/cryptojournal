@@ -4,7 +4,7 @@ import { VIEWS } from './constants.js'
 import { LayoutDashboard, CalendarDays, BarChart2, CalendarRange, History, Settings as SettingsIcon, Plus, Mic, MicOff, Zap, RefreshCw, Moon, Sun } from 'lucide-react'
 import { store, apiStore, isApiConfigured, uid, seedIfEmpty } from './store.js'
 import { currentMonthKey, monthLabel, prevMonth, nextMonth, calcStats, tradesForMonth } from './utils.js'
-import { XPBar, BadgeGrid, StreakCalendar } from './components/Gamification.jsx'
+import { XPBar, BadgeGrid } from './components/Gamification.jsx'
 import Dashboard from './components/Dashboard.jsx'
 import Calendar from './components/Calendar.jsx'
 import Stats from './components/Stats.jsx'
@@ -647,7 +647,7 @@ EJEMPLOS:
 
         <BadgeGrid trades={trades} />
 
-        <StreakCalendar trades={trades} currentMonth={currentMonth} />
+
 
         <div className="sidebar-footer">
           <button
