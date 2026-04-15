@@ -705,18 +705,7 @@ EJEMPLOS:
           </div>
 
           <div className="topbar-right">
-            {/* Palette picker */}
-            <div className="palette-picker">
-              {PALETTES.map(p => (
-                <div
-                  key={p.id}
-                  className={`palette-dot${palette === p.id ? ' active' : ''}`}
-                  data-p={p.id}
-                  title={p.label}
-                  onClick={() => { setPalette(p.id); localStorage.setItem('cj-palette', p.id) }}
-                />
-              ))}
-            </div>
+            {/* Palette picker removed */}
 
             {/* Refresh button — recargar datos desde la API */}
             <button
