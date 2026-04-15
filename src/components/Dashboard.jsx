@@ -109,19 +109,71 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
   const winRateColor = stats.winRate >= 60 ? 'green' : stats.winRate >= 40 ? 'yellow' : 'red'
   const pfColor = stats.profitFactor >= 2 ? 'green' : stats.profitFactor >= 1 ? 'yellow' : 'red'
 
-  // Best asset insight
-  const winningAsset = useMemo(() => {
-    const map = {}
-    monthTrades.filter(t => t.closed).forEach(t => {
-      if (!map[t.crypto]) map[t.crypto] = { wins: 0, total: 0 }
-      map[t.crypto].total++
-      if (t.result === 'WIN') map[t.crypto].wins++
+  // Insight del día — rota entre varios tipos según el día del mes
+  const insight = useMemo(() => {
+    const closed = monthTrades.filter(t => t.closed)
+    if (closed.length < 2) return null
+
+    // Build asset map
+    const assetMap = {}
+    closed.forEach(t => {
+      if (!assetMap[t.crypto]) assetMap[t.crypto] = { wins: 0, losses: 0, total: 0, pnl: 0 }
+      assetMap[t.crypto].total++
+      assetMap[t.crypto].pnl += parseFloat(t.pnl) || 0
+      if (t.result === 'WIN') assetMap[t.crypto].wins++
+      else if (t.result === 'LOSS') assetMap[t.crypto].losses++
     })
-    const entries = Object.entries(map).filter(([, v]) => v.total >= 2)
-    if (!entries.length) return null
-    const best = entries.sort((a, b) => (b[1].wins / b[1].total) - (a[1].wins / a[1].total))[0]
-    return { asset: best[0], wr: Math.round(best[1].wins / best[1].total * 100) }
-  }, [monthTrades])
+    const assets = Object.entries(assetMap).filter(([, v]) => v.total >= 2)
+
+    // Best win-rate asset
+    const bestWR = assets.length ? assets.sort((a,b) => (b[1].wins/b[1].total)-(a[1].wins/a[1].total))[0] : null
+    // Most traded
+    const mostTraded = assets.length ? [...assets].sort((a,b) => b[1].total-a[1].total)[0] : null
+    // Best PnL asset
+    const bestPnl = assets.length ? [...assets].sort((a,b) => b[1].pnl-a[1].pnl)[0] : null
+    // Worst asset
+    const worstAsset = assets.length ? [...assets].sort((a,b) => a[1].pnl-b[1].pnl)[0] : null
+
+    // Win/loss streak
+    const sorted = [...closed].sort((a,b) => new Date(a.closeDate||a.date)-new Date(b.closeDate||b.date))
+    let curStreak = 0, curType = null
+    sorted.forEach(t => {
+      if (t.result === curType) curStreak++
+      else { curType = t.result; curStreak = 1 }
+    })
+
+    // Avg trades per active day
+    const activeDays = new Set(closed.map(t => (t.closeDate||t.date||'').slice(0,10))).size
+    const avgPerDay = activeDays > 0 ? (closed.length / activeDays).toFixed(1) : null
+
+    // Rotate by day of month
+    const dayOfMonth = new Date().getDate()
+    const pool = []
+
+    if (bestWR && bestWR[1].wins/bestWR[1].total >= 0.5)
+      pool.push({ icon:'🎯', label:'MEJOR ACTIVO', text: `<b style="color:#F59E0B">${bestWR[0]}</b> es tu activo más rentable este mes con un <b style="color:#22c55e">${Math.round(bestWR[1].wins/bestWR[1].total*100)}%</b> de win rate en ${bestWR[1].total} trades.` })
+
+    if (worstAsset && worstAsset[1].pnl < 0)
+      pool.push({ icon:'⚠️', label:'PUNTO DÉBIL', text: `<b style="color:#F7931A">${worstAsset[0]}</b> es donde más pierdes este mes (${worstAsset[1].wins}W/${worstAsset[1].losses}L). Considera reducir tamaño o pausar.` })
+
+    if (curStreak >= 2 && curType === 'WIN')
+      pool.push({ icon:'🔥', label:'EN RACHA', text: `Llevas <b style="color:#22c55e">${curStreak} wins consecutivos</b>. Mantén el mismo proceso, el mercado está respondiendo.` })
+
+    if (curStreak >= 2 && curType === 'LOSS')
+      pool.push({ icon:'🛑', label:'ALERTA RACHA', text: `Llevas <b style="color:#ef4444">${curStreak} pérdidas seguidas</b>. Revisa tu sesgo antes del siguiente trade.` })
+
+    if (mostTraded && mostTraded[1].total >= 3)
+      pool.push({ icon:'📊', label:'MÁS OPERADO', text: `Este mes has operado <b style="color:#8B5CF6">${mostTraded[0]}</b> ${mostTraded[1].total} veces. Es tu activo principal — asegúrate de tener un edge claro en él.` })
+
+    if (stats.winRate > 0 && stats.profitFactor >= 2)
+      pool.push({ icon:'💎', label:'TRADING SÓLIDO', text: `Con un profit factor de <b style="color:#06B6D4">${stats.profitFactor.toFixed(2)}</b> y win rate del ${stats.winRate.toFixed(0)}%, tu sistema está funcionando. Sigue el proceso.` })
+
+    if (avgPerDay && parseFloat(avgPerDay) > 4)
+      pool.push({ icon:'⚡', label:'SOBRETRADING', text: `Haces un promedio de <b style="color:#F59E0B">${avgPerDay} trades/día</b> activo. Un volumen alto puede indicar sobretrading. Considera si cada trade tiene un edge real.` })
+
+    if (!pool.length) return null
+    return pool[dayOfMonth % pool.length]
+  }, [monthTrades, stats])
 
   return (
     <div className="page">
@@ -132,18 +184,13 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
       )}
 
       {/* ─── Insight + Quick Add ─── */}
-      {winningAsset && (
+      {insight && (
         <div className="insight-card">
           <div className="insight-header">
-            <span className="insight-icon">💡</span>
-            <span className="insight-title">Insight del día</span>
+            <span className="insight-icon">{insight.icon}</span>
+            <span className="insight-title">{insight.label}</span>
           </div>
-          <div className="insight-text">
-            Tu mejor activo este mes es{' '}
-            <strong style={{ color: '#F59E0B' }}>{winningAsset.asset}</strong>{' '}
-            con un <strong style={{ color: '#22c55e' }}>{winningAsset.wr}%</strong> de win rate.
-            Considera asignarle más capital.
-          </div>
+          <div className="insight-text" dangerouslySetInnerHTML={{ __html: insight.text }} />
         </div>
       )}
 

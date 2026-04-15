@@ -1,12 +1,13 @@
 // Gamification system — XP, Badges, Streak Calendar
 
+// Rangos de marino/navegante — el Capitán es Aurolo, no el trader
 const LEVELS = [
-  { name: 'Grumete',            min: 0,     max: 500,      color: '#6B7280' },
-  { name: 'Marinero',           min: 500,   max: 1500,     color: '#10B981' },
-  { name: 'Contramaestre',      min: 1500,  max: 3000,     color: '#06B6D4' },
-  { name: 'Teniente',           min: 3000,  max: 6000,     color: '#8B5CF6' },
-  { name: 'Capitán Táctico',    min: 6000,  max: 10000,    color: '#F59E0B' },
-  { name: 'Almirante Estratega',min: 10000, max: Infinity, color: '#EC4899' },
+  { name: 'Grumete',        min: 0,     max: 500,      color: '#6B7280', icon: '🪝' },
+  { name: 'Marinero',       min: 500,   max: 1500,     color: '#10B981', icon: '⚓' },
+  { name: 'Navegante',      min: 1500,  max: 3500,     color: '#06B6D4', icon: '🧭' },
+  { name: 'Piloto Naval',   min: 3500,  max: 7000,     color: '#8B5CF6', icon: '🗺️' },
+  { name: 'Contramaestre',  min: 7000,  max: 12000,    color: '#F59E0B', icon: '⚡' },
+  { name: 'Primer Oficial', min: 12000, max: Infinity, color: '#EC4899', icon: '🌟' },
 ]
 
 function calcXP(trades) {
@@ -29,7 +30,7 @@ export function XPBar({ trades }) {
     <div className="xp-bar-container">
       <div className="xp-header">
         <span className="xp-level" style={{ color: level.color }}>
-          {level.name}
+          {level.icon} {level.name}
         </span>
         <span className="xp-points">{xp.toLocaleString()} XP</span>
       </div>
@@ -114,47 +115,58 @@ export function BadgeGrid({ trades }) {
 
 // ─── Streak Calendar ─────────────────────────────────────────────────────────
 
-export function StreakCalendar({ trades }) {
+export function StreakCalendar({ trades, currentMonth }) {
   const today = new Date()
   const todayKey = today.toISOString().split('T')[0]
 
-  // 28 days = 4 weeks, fill to start on Monday
-  const days = Array.from({ length: 28 }, (_, i) => {
-    const d = new Date(today)
-    d.setDate(today.getDate() - (27 - i))
-    const key = d.toISOString().split('T')[0]
-    const dt = trades.filter(t => (t.closeDate || t.date || '').startsWith(key))
-    const hasWin  = dt.some(t => t.result === 'WIN')
-    const hasLoss = dt.some(t => t.result === 'LOSS')
-    const dayNum = d.getDate()
-    const mon = d.toLocaleString('es-ES', { month: 'short' })
-    return { key, hasWin, hasLoss, isToday: key === todayKey, count: dt.length, label: `${dayNum} ${mon}` }
-  })
+  // currentMonth format: "YYYY-MM"
+  const [year, month] = currentMonth ? currentMonth.split('-').map(Number) : [today.getFullYear(), today.getMonth() + 1]
+  const daysInMonth = new Date(year, month, 0).getDate()
 
-  // Days of week headers
+  // Get day of week of 1st (0=Sun…6=Sat → convert to Mon-first: Mon=0)
+  const firstDow = (new Date(year, month - 1, 1).getDay() + 6) % 7
+  // Pad with empty cells at start
+  const cells = [
+    ...Array.from({ length: firstDow }, (_, i) => ({ key: `empty-${i}`, empty: true })),
+    ...Array.from({ length: daysInMonth }, (_, i) => {
+      const d = i + 1
+      const key = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+      const dt = trades.filter(t => (t.closeDate || t.date || '').startsWith(key))
+      return {
+        key, empty: false, day: d,
+        hasWin:  dt.some(t => t.result === 'WIN'),
+        hasLoss: dt.some(t => t.result === 'LOSS'),
+        isToday: key === todayKey,
+        count:   dt.length,
+      }
+    })
+  ]
+
   const DOW = ['L','M','X','J','V','S','D']
+  const monthName = new Date(year, month - 1, 1).toLocaleString('es-ES', { month: 'long' })
 
   return (
     <div className="streak-wrapper">
-      <div className="streak-cal-title">Actividad — 4 semanas</div>
+      <div className="streak-cal-title">Actividad — {monthName}</div>
       <div className="streak-dow">
         {DOW.map(d => <span key={d}>{d}</span>)}
       </div>
       <div className="streak-cal">
-        {days.map(d => {
+        {cells.map(d => {
+          if (d.empty) return <div key={d.key} className="streak-day empty" />
           let cls = 'streak-day'
           if (d.hasWin && !d.hasLoss) cls += ' win'
           else if (d.hasLoss && !d.hasWin) cls += ' loss'
           else if (d.count > 0) cls += ' mixed'
           if (d.isToday) cls += ' today'
-          return <div key={d.key} className={cls} title={`${d.label}${d.count > 0 ? ` — ${d.count} trade(s)` : ''}`} />
+          return <div key={d.key} className={cls} title={`${d.day} — ${d.count > 0 ? d.count + ' trade(s)' : 'sin trades'}`} />
         })}
       </div>
       <div className="streak-legend">
         <span><span className="sl-dot win" />Win</span>
         <span><span className="sl-dot loss" />Loss</span>
         <span><span className="sl-dot mixed" />Mixto</span>
-        <span><span className="sl-dot" />Sin trade</span>
+        <span><span className="sl-dot" />Sin op.</span>
       </div>
     </div>
   )

@@ -649,13 +649,9 @@ EJEMPLOS:
 
         <BadgeGrid trades={trades} />
 
-        <StreakCalendar trades={trades} />
+        <StreakCalendar trades={trades} currentMonth={currentMonth} />
 
         <div className="sidebar-footer">
-          <button className="nav-item" onClick={toggleTheme}>
-            {theme === 'light' ? <Moon size={18} strokeWidth={1.8} /> : <Sun size={18} strokeWidth={1.8} />}
-            {theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
-          </button>
           <button
             className="btn-primary-full"
             onClick={() => { setVoicePrefill(null); setShowNewTrade(true); setSidebarOpen(false) }}
