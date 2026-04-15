@@ -92,35 +92,30 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
 
       {!compact && (
         <div className="trade-actions">
-          <button className="btn btn-ghost btn-sm" onClick={() => onEdit(trade)}>
+          <button className="ta-btn ta-edit" onClick={() => onEdit(trade)} title="Editar">
             ✎ Editar
           </button>
           {!trade.closed && onToggleProtected && (
             <button
-              className="btn btn-sm"
-              style={{
-                background: trade.protected ? 'var(--blue)' : 'var(--bg)',
-                color: trade.protected ? '#fff' : 'var(--text-muted)',
-                border: trade.protected ? '1px solid var(--blue)' : '1px solid var(--border)'
-              }}
+              className={`ta-btn ${trade.protected ? 'ta-protect-on' : 'ta-protect-off'}`}
               onClick={() => onToggleProtected(trade)}
               title="SL en entrada — riesgo 0"
             >
-              {trade.protected ? '✅ Protegida' : '🛡️ Proteger'}
+              {trade.protected ? '✅ Prot.' : '🛡️ Prot.'}
             </button>
           )}
           {!trade.closed && (
-            <button className="btn btn-primary btn-sm" onClick={() => onClose(trade)}>
+            <button className="ta-btn ta-close" onClick={() => onClose(trade)} title="Cerrar trade">
               ✓ Cerrar
             </button>
           )}
           {trade.closed && (
-            <button className="btn btn-warning btn-sm" onClick={() => onReopen(trade)}>
+            <button className="ta-btn ta-reopen" onClick={() => onReopen(trade)} title="Reabrir">
               ↩ Reabrir
             </button>
           )}
-          <button className="btn btn-danger btn-sm" onClick={() => onDelete(trade)}>
-            ✕ Eliminar
+          <button className="ta-btn ta-delete" onClick={() => onDelete(trade)} title="Eliminar">
+            ✕ Elim.
           </button>
         </div>
       )}
