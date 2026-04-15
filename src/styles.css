@@ -1795,3 +1795,11 @@ a.btn-primary {
   scrollbar-width: none;
 }
 .page-right-panel::-webkit-scrollbar { display: none; }
+
+/* ── Equity curve — menos gap arriba ── */
+.equity-card {
+  margin-top: -4px !important;
+}
+.page-main {
+  gap: 10px !important;
+}
