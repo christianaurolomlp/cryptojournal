@@ -1945,3 +1945,10 @@ a.btn-primary {
   box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
   pointer-events: none !important;
 }
+
+/* ── Fondo Layer3 exacto: #101114 ── */
+:root { --bg: #101114; }
+[data-theme="dark"] { --bg: #101114; }
+body {
+  background: radial-gradient(ellipse 100% 55% at 50% -8%, rgba(17,84,185,0.35) 0%, transparent 60%), #101114 !important;
+}
