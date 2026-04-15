@@ -7,16 +7,16 @@
 
 :root {
   /* ── Layer3 exact design tokens ── */
-  --bg:            #0D0D0F;   /* body / todo el fondo */
-  --bg-card:       #1A1A1F;   /* cards, superficies elevadas */
-  --bg-card-hover: #1E1E24;   /* hover de cards */
-  --bg-elevated:   #141418;   /* superficies anidadas */
-  --bg-input:      #1A1A1F;   /* inputs, search */
-  --card-elevated: #141418;
-  --sidebar:       #0D0D0F;   /* igual que bg — sin distinción */
-  --border:        #2A2A2E;   /* bordes de cards */
+  --bg:            #111318;   /* body / todo el fondo */
+  --bg-card:       #1C2130;   /* cards, superficies elevadas */
+  --bg-card-hover: #232B3E;   /* hover de cards */
+  --bg-elevated:   #202840;   /* superficies anidadas */
+  --bg-input:      #1C2130;   /* inputs, search */
+  --card-elevated: #202840;
+  --sidebar:       #0D1117;   /* igual que bg — sin distinción */
+  --border:        rgba(255,255,255,0.07);   /* bordes de cards */
   --border-subtle: rgba(255,255,255,0.05);
-  --border-input:  #3A3A3E;
+  --border-input:  rgba(255,255,255,0.12);
   --text:          #FFFFFF;   /* texto principal */
   --text-secondary:#C8C8CC;   /* texto secundario */
   --text-muted:    #8A8A8E;   /* texto muted */
@@ -36,7 +36,7 @@
   --pink:          #EC4899;
   --pink-glow:     rgba(236,72,153,0.3);
   --gold:          #F5C842;
-  --nav-active-bg: #1E1E24;   /* item activo sidebar */
+  --nav-active-bg: #1A2540;   /* item activo sidebar */
   --badge-bg:      #2A2A2E;   /* badges secundarios */
   --sidebar-width: 260px;
   --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -331,7 +331,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   overflow: hidden;
   animation: fadeInUp 0.3s ease both;
   transition: background 0.15s ease, border-color 0.15s ease;
@@ -356,7 +356,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   padding: 20px 20px 18px;
   animation: fadeInUp 0.3s ease both;
   transition: background 0.15s ease, border-color 0.15s ease;
@@ -1241,7 +1241,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .app-layout { position: relative; }
 
 /* ── Space Mono for all numbers ── */
-.kpi-value, .trade-pnl, .stat-value-lg, .capital-badge strong, .bar-value, .equity-tooltip-pnl { font-family: var(--mono) !important; }
+.trade-pnl, .stat-value-lg, .capital-badge strong, .bar-value, .equity-tooltip-pnl { font-variant-numeric: tabular-nums; }
 
 /* ── Glow on positive/negative ── */
 .kpi-value.positive, .green, .text-positive, .trade-pnl.green { text-shadow: 0 0 14px rgba(34,197,94,0.4); }
