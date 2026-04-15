@@ -4,6 +4,7 @@ import { VIEWS } from './constants.js'
 import { LayoutDashboard, CalendarDays, BarChart2, CalendarRange, History, Settings as SettingsIcon, Plus, Mic, MicOff, Zap, RefreshCw, Moon, Sun } from 'lucide-react'
 import { store, apiStore, isApiConfigured, uid, seedIfEmpty } from './store.js'
 import { currentMonthKey, monthLabel, prevMonth, nextMonth } from './utils.js'
+import { XPBar, BadgeGrid, StreakCalendar } from './components/Gamification.jsx'
 import Dashboard from './components/Dashboard.jsx'
 import Calendar from './components/Calendar.jsx'
 import Stats from './components/Stats.jsx'
@@ -597,6 +598,7 @@ EJEMPLOS:
 
   return (
     <div className="app-layout">
+      <div className="bg-ambient" />
       {/* Overlay for mobile sidebar */}
       <div
         className={`sidebar-overlay ${sidebarOpen ? 'show' : ''}`}
@@ -620,6 +622,8 @@ EJEMPLOS:
           </div>
         )}
 
+        <XPBar trades={trades} />
+
         <nav className="sidebar-nav">
           {navItems.map(item => {
             const Icon = item.icon
@@ -635,6 +639,10 @@ EJEMPLOS:
             )
           })}
         </nav>
+
+        <BadgeGrid trades={trades} />
+
+        <StreakCalendar trades={trades} />
 
         <div className="sidebar-footer">
           <button className="nav-item" onClick={toggleTheme}>

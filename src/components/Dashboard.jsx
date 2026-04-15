@@ -109,6 +109,20 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
   const winRateColor = stats.winRate >= 60 ? 'green' : stats.winRate >= 40 ? 'yellow' : 'red'
   const pfColor = stats.profitFactor >= 2 ? 'green' : stats.profitFactor >= 1 ? 'yellow' : 'red'
 
+  // Best asset insight
+  const winningAsset = useMemo(() => {
+    const map = {}
+    monthTrades.filter(t => t.closed).forEach(t => {
+      if (!map[t.crypto]) map[t.crypto] = { wins: 0, total: 0 }
+      map[t.crypto].total++
+      if (t.result === 'WIN') map[t.crypto].wins++
+    })
+    const entries = Object.entries(map).filter(([, v]) => v.total >= 2)
+    if (!entries.length) return null
+    const best = entries.sort((a, b) => (b[1].wins / b[1].total) - (a[1].wins / a[1].total))[0]
+    return { asset: best[0], wr: Math.round(best[1].wins / best[1].total * 100) }
+  }, [monthTrades])
+
   return (
     <div className="page">
       {!capital && (
@@ -116,6 +130,30 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
           ⚠ No hay capital definido para {monthLabel(currentMonth)}. Configúralo para calcular rentabilidad.
         </div>
       )}
+
+      {/* ─── Insight + Quick Add ─── */}
+      {winningAsset && (
+        <div className="insight-card">
+          <div className="insight-header">
+            <span className="insight-icon">💡</span>
+            <span className="insight-title">Insight del día</span>
+          </div>
+          <div className="insight-text">
+            Tu mejor activo este mes es{' '}
+            <strong style={{ color: '#F59E0B' }}>{winningAsset.asset}</strong>{' '}
+            con un <strong style={{ color: '#22c55e' }}>{winningAsset.wr}%</strong> de win rate.
+            Considera asignarle más capital.
+          </div>
+        </div>
+      )}
+
+      <div className="quick-add-card" style={{ position: 'relative' }}>
+        <div className="quick-add-text">
+          <div className="quick-add-title">+ Registrar operación</div>
+          <div className="quick-add-sub">Cada trade suma XP al diario naval ⚓</div>
+        </div>
+        <button className="quick-add-btn" onClick={onNewTrade}>Nueva operación →</button>
+      </div>
 
       {/* ─── KPI Strip — 4 cards ─── */}
       <div className="kpi-grid">

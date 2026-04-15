@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ═══════════════════════════════════════════
    LAYER3 DESIGN SYSTEM
@@ -6,30 +6,35 @@
 ═══════════════════════════════════════════ */
 
 :root {
-  --bg: #0D0F14;
-  --bg-card: #161924;
-  --bg-card-hover: #1A1D28;
-  --bg-input: #161924;
-  --card-elevated: #1C1F28;
-  --sidebar: #0D0F14;
-  --border: #2A2D3A;
-  --border-input: #2A2D3A;
+  --bg: #0a0a0f;
+  --bg-card: #111116;
+  --bg-card-hover: #16161d;
+  --bg-elevated: #1a1a24;
+  --bg-input: #111116;
+  --card-elevated: #1a1a24;
+  --sidebar: #0d0d14;
+  --border: rgba(255,255,255,0.08);
+  --border-input: rgba(255,255,255,0.12);
   --text: #FFFFFF;
-  --text-secondary: #A0A3B1;
-  --text-muted: #6B7080;
-  --accent: #6366F1;
-  --accent-soft: rgba(99,102,241,0.15);
-  --cyan: #6366F1;
-  --blue: #6366F1;
-  --blue-soft: rgba(99,102,241,0.15);
-  --green: #4ADE80;
-  --green-soft: rgba(74,222,128,0.12);
-  --red: #EF4444;
+  --text-secondary: #8A8F9B;
+  --text-muted: #4A4F5C;
+  --accent: #8B5CF6;
+  --accent-soft: rgba(139,92,246,0.15);
+  --cyan: #06B6D4;
+  --cyan-glow: rgba(6,182,212,0.35);
+  --blue: #06B6D4;
+  --blue-soft: rgba(6,182,212,0.15);
+  --green: #22c55e;
+  --green-soft: rgba(34,197,94,0.12);
+  --red: #ef4444;
   --red-soft: rgba(239,68,68,0.12);
   --orange: #F59E0B;
   --orange-soft: rgba(245,158,11,0.12);
+  --pink: #EC4899;
+  --pink-glow: rgba(236,72,153,0.3);
+  --gold: #F59E0B;
   --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --radius: 12px;
+  --radius: 14px;
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
   --shadow: 0 2px 12px rgba(0,0,0,0.2);
   --shadow-md: 0 4px 24px rgba(0,0,0,0.3);
@@ -66,25 +71,26 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0D0F14;
-  --bg-card: #161924;
-  --bg-card-hover: #1A1D28;
-  --bg-input: #161924;
-  --card-elevated: #1C1F28;
-  --sidebar: #0D0F14;
-  --border: #2A2D3A;
-  --border-input: #2A2D3A;
+  --bg: #0a0a0f;
+  --bg-card: #111116;
+  --bg-card-hover: #16161d;
+  --bg-elevated: #1a1a24;
+  --bg-input: #111116;
+  --card-elevated: #1a1a24;
+  --sidebar: #0d0d14;
+  --border: rgba(255,255,255,0.08);
+  --border-input: rgba(255,255,255,0.12);
   --text: #FFFFFF;
-  --text-secondary: #A0A3B1;
-  --text-muted: #6B7080;
-  --accent: #6366F1;
-  --accent-soft: rgba(99,102,241,0.15);
-  --cyan: #6366F1;
-  --blue: #6366F1;
-  --blue-soft: rgba(99,102,241,0.15);
-  --green: #4ADE80;
-  --green-soft: rgba(74,222,128,0.12);
-  --red: #EF4444;
+  --text-secondary: #8A8F9B;
+  --text-muted: #4A4F5C;
+  --accent: #8B5CF6;
+  --accent-soft: rgba(139,92,246,0.15);
+  --cyan: #06B6D4;
+  --blue: #06B6D4;
+  --blue-soft: rgba(6,182,212,0.15);
+  --green: #22c55e;
+  --green-soft: rgba(34,197,94,0.12);
+  --red: #ef4444;
   --red-soft: rgba(239,68,68,0.12);
   --orange: #F59E0B;
   --orange-soft: rgba(245,158,11,0.12);
@@ -870,90 +876,78 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
    Glassmorphism · Glow · Gradient Borders · Depth
 ═══════════════════════════════════════════════ */
 
-/* ── Gradient border technique (background-clip trick) ── */
+/* ── Card gaming style with gradient border shimmer ── */
 .card, .kpi-card {
-  background:
-    linear-gradient(#161924, #161924) padding-box,
-    linear-gradient(135deg,
-      rgba(99,102,241,0.25) 0%,
-      rgba(42,45,58,0.8) 40%,
-      rgba(42,45,58,0.8) 60%,
-      rgba(6,182,212,0.15) 100%
-    ) border-box;
-  border: 1px solid transparent;
+  position: relative;
+  background: #111116;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
 }
+.card::before, .kpi-card::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border-radius: 15px; z-index: -1;
+  background: linear-gradient(135deg, rgba(139,92,246,0.35) 0%, rgba(255,255,255,0.04) 40%, rgba(6,182,212,0.25) 100%);
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.card:hover::before, .kpi-card:hover::before { opacity: 1; }
 .card:hover, .kpi-card:hover {
-  background:
-    linear-gradient(#1a1d28, #1a1d28) padding-box,
-    linear-gradient(135deg,
-      rgba(99,102,241,0.5) 0%,
-      rgba(42,45,58,0.9) 40%,
-      rgba(6,182,212,0.3) 100%
-    ) border-box;
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 0 30px rgba(139,92,246,0.08), 0 8px 32px rgba(0,0,0,0.5);
+  transform: translateY(-2px);
 }
 
 /* ── KPI card colored glow on value ── */
 .kpi-value.positive {
-  color: #4ADE80;
-  text-shadow: 0 0 20px rgba(74,222,128,0.4), 0 0 40px rgba(74,222,128,0.15);
+  color: #22c55e;
+  text-shadow: 0 0 14px rgba(34,197,94,0.4) !important;
 }
 .kpi-value.negative {
-  color: #EF4444;
-  text-shadow: 0 0 20px rgba(239,68,68,0.4), 0 0 40px rgba(239,68,68,0.15);
+  color: #ef4444;
+  text-shadow: 0 0 14px rgba(239,68,68,0.35) !important;
 }
 .kpi-value.info {
-  color: #6366F1;
-  text-shadow: 0 0 20px rgba(99,102,241,0.4);
+  color: #06B6D4;
+  text-shadow: 0 0 14px rgba(6,182,212,0.4);
 }
 
 /* ── Glow on KPI cards based on content ── */
 .kpi-card.profit-positive {
-  box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 0 40px rgba(74,222,128,0.06);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 0 40px rgba(34,197,94,0.06);
 }
 .kpi-card.profit-negative {
   box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 0 40px rgba(239,68,68,0.06);
 }
 
-/* ── Gradient background on cards (subtle depth) ── */
-.kpi-card {
-  background:
-    linear-gradient(160deg, rgba(28,31,40,0.8) 0%, rgba(22,25,36,1) 100%) padding-box,
-    linear-gradient(135deg,
-      rgba(99,102,241,0.2) 0%,
-      rgba(42,45,58,0.6) 50%,
-      rgba(6,182,212,0.1) 100%
-    ) border-box;
-  border: 1px solid transparent;
-  position: relative;
-}
-
 /* ── Sidebar glassmorphism ── */
 .sidebar {
-  background: rgba(13,15,20,0.85) !important;
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-right: 1px solid rgba(42,45,58,0.8) !important;
+  background: rgba(13,13,20,0.92) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-right: 1px solid rgba(255,255,255,0.07) !important;
 }
 
 /* ── Topbar glassmorphism ── */
 .topbar {
-  background: rgba(13,15,20,0.8) !important;
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(42,45,58,0.7) !important;
+  background: rgba(10,10,15,0.85) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
 }
 
 /* ── Nav items with colored icon glow on active ── */
 .nav-item.active {
-  background: rgba(28,31,40,0.9) !important;
-  box-shadow: inset 0 0 20px rgba(99,102,241,0.05), 0 0 12px rgba(99,102,241,0.08);
+  background: rgba(139,92,246,0.12) !important;
+  color: #FFFFFF !important;
+  box-shadow: inset 0 0 16px rgba(139,92,246,0.06) !important;
 }
 .nav-item.active svg {
-  color: #6366F1;
-  filter: drop-shadow(0 0 4px rgba(99,102,241,0.6));
+  color: #8B5CF6;
+  filter: drop-shadow(0 0 4px rgba(139,92,246,0.7));
 }
 .nav-item:hover svg {
   color: #FFFFFF;
@@ -961,8 +955,8 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 
 /* ── Brand icon gradient ── */
 .brand-icon {
-  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%) !important;
-  box-shadow: 0 0 16px rgba(99,102,241,0.4), 0 0 32px rgba(99,102,241,0.15);
+  background: linear-gradient(135deg, #8B5CF6, #06B6D4) !important;
+  box-shadow: 0 0 16px rgba(139,92,246,0.5) !important;
 }
 
 /* ── Sidebar widget gradient ── */
@@ -976,12 +970,12 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 
 /* ── Primary button glow ── */
 .btn-primary, .btn-primary-full {
-  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%) !important;
-  box-shadow: 0 0 20px rgba(99,102,241,0.35), 0 4px 12px rgba(0,0,0,0.3) !important;
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED) !important;
+  box-shadow: 0 0 20px rgba(139,92,246,0.4), 0 4px 12px rgba(0,0,0,0.3) !important;
   transition: box-shadow 0.2s ease, transform 0.15s ease !important;
 }
 .btn-primary:hover, .btn-primary-full:hover {
-  box-shadow: 0 0 32px rgba(99,102,241,0.55), 0 0 60px rgba(99,102,241,0.2), 0 4px 16px rgba(0,0,0,0.4) !important;
+  box-shadow: 0 0 32px rgba(139,92,246,0.6), 0 4px 16px rgba(0,0,0,0.4) !important;
   transform: translateY(-1px) !important;
 }
 
@@ -1084,8 +1078,8 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 }
 
 /* ── Green/red text glow ── */
-.green, .text-positive, .trade-pnl.green { text-shadow: 0 0 12px rgba(74,222,128,0.3); }
-.red, .text-negative, .trade-pnl.red { text-shadow: 0 0 12px rgba(239,68,68,0.3); }
+.kpi-value.positive, .green, .text-positive, .trade-pnl.green { text-shadow: 0 0 14px rgba(34,197,94,0.4) !important; }
+.kpi-value.negative, .red, .text-negative, .trade-pnl.red { text-shadow: 0 0 14px rgba(239,68,68,0.35) !important; }
 
 /* ── Equity curve line glow ── */
 .recharts-line path[stroke] { filter: drop-shadow(0 0 4px rgba(99,102,241,0.5)); }
@@ -1108,16 +1102,186 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .badge-loss { box-shadow: 0 0 8px rgba(239,68,68,0.2); }
 .badge-lev { box-shadow: 0 0 8px rgba(99,102,241,0.2); }
 
-/* ── Page background subtle grid ── */
+/* ── Page background with glow ── */
+.page, .page-content {
+  background: radial-gradient(ellipse 70% 40% at 50% -10%, rgba(139,92,246,0.05) 0%, transparent 60%), #0a0a0f !important;
+}
+.main-content { background: #0a0a0f !important; }
+
+/* ═══════════════════════════════════════════════
+   GAMING / WEB3 REDESIGN — NEW COMPONENTS
+═══════════════════════════════════════════════ */
+
+/* ── Background ambient glow + noise ── */
+.bg-ambient {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% -10%, rgba(139,92,246,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 30% at 80% 100%, rgba(6,182,212,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 25% at 50% 50%, rgba(16,185,129,0.03) 0%, transparent 60%);
+}
+.app-layout::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* ── Space Mono for numbers ── */
+.kpi-value, .trade-pnl, .stat-value-lg, .capital-badge strong, .xp-points {
+  font-family: "Space Mono", monospace !important;
+}
+
+/* ── XP Bar ── */
+.xp-bar-container { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.xp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.xp-level { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.xp-points { font-size: 12px; font-weight: 700; color: #FFF; font-family: "Space Mono", monospace; }
+.xp-track { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+.xp-fill { height: 100%; border-radius: 2px; transition: width 1s cubic-bezier(0.16,1,0.3,1); }
+.xp-next { font-size: 10px; color: #4A4F5C; }
+
+/* ── Badge grid ── */
+.badge-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; padding: 12px 14px; }
+.badge-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 6px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); cursor: default; transition: all 0.2s; }
+.badge-item.unlocked:hover { transform: scale(1.05); box-shadow: 0 0 16px rgba(255,255,255,0.08); }
+.badge-item.locked { opacity: 0.35; }
+.badge-emoji { font-size: 20px; line-height: 1.2; }
+.badge-name { font-size: 9px; font-weight: 600; text-align: center; color: #8A8F9B; }
+.badge-item.unlocked .badge-name { color: inherit; }
+
+/* ── Streak calendar ── */
+.streak-cal { display: flex; gap: 3px; flex-wrap: wrap; padding: 12px 14px; }
+.streak-cal-title { font-size: 10px; font-weight: 700; color: #4A4F5C; text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 14px 4px; }
+.streak-day { width: 16px; height: 16px; border-radius: 3px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); transition: all 0.2s; }
+.streak-day.win { background: rgba(34,197,94,0.3); border-color: rgba(34,197,94,0.4); box-shadow: 0 0 6px rgba(34,197,94,0.2); }
+.streak-day.loss { background: rgba(239,68,68,0.25); border-color: rgba(239,68,68,0.35); }
+.streak-day.mixed { background: rgba(245,158,11,0.25); border-color: rgba(245,158,11,0.35); }
+.streak-day.today { border-color: #8B5CF6 !important; box-shadow: 0 0 8px rgba(139,92,246,0.6) !important; animation: todayPulse 2s ease-in-out infinite; }
+@keyframes todayPulse { 0%,100%{box-shadow:0 0 6px rgba(139,92,246,0.5)} 50%{box-shadow:0 0 14px rgba(139,92,246,0.9)} }
+
+/* ── Crypto tags ── */
+.crypto-tag { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 700; font-family: "Space Mono", monospace; }
+.crypto-BTC { background: rgba(247,147,26,0.15); color: #F7931A; border: 1px solid rgba(247,147,26,0.3); }
+.crypto-ETH { background: rgba(98,126,234,0.15); color: #627EEA; border: 1px solid rgba(98,126,234,0.3); }
+.crypto-SOL { background: rgba(20,241,149,0.12); color: #14F195; border: 1px solid rgba(20,241,149,0.25); }
+.crypto-BNB { background: rgba(243,186,47,0.15); color: #F3BA2F; border: 1px solid rgba(243,186,47,0.3); }
+.crypto-XRP { background: rgba(0,168,204,0.12); color: #00A8CC; border: 1px solid rgba(0,168,204,0.25); }
+.crypto-tag:not(.crypto-BTC):not(.crypto-ETH):not(.crypto-SOL):not(.crypto-BNB):not(.crypto-XRP) { background: rgba(139,92,246,0.12); color: #8B5CF6; border: 1px solid rgba(139,92,246,0.25); }
+
+/* ── Trade cards gaming ── */
+.trade-card { position: relative; padding-left: 18px !important; transition: all 0.2s ease !important; }
+.trade-card::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px; border-radius: 2px; }
+.trade-card.win::before { background: linear-gradient(180deg, #22c55e, #10B981); box-shadow: 0 0 8px rgba(34,197,94,0.5); }
+.trade-card.loss::before { background: linear-gradient(180deg, #ef4444, #EC4899); box-shadow: 0 0 8px rgba(239,68,68,0.4); }
+.trade-card.be::before { background: linear-gradient(180deg, #F59E0B, #F97316); box-shadow: 0 0 8px rgba(245,158,11,0.4); }
+.trade-card.open::before { background: linear-gradient(180deg, #8B5CF6, #06B6D4); box-shadow: 0 0 8px rgba(139,92,246,0.5); }
+.trade-card:hover { transform: translateX(3px); box-shadow: -3px 0 16px rgba(139,92,246,0.12), 0 4px 20px rgba(0,0,0,0.4) !important; border-color: rgba(139,92,246,0.2) !important; }
+
+/* ── Quick add CTA ── */
+.quick-add-card { position: relative; background: linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(6,182,212,0.08) 100%); border: 1px solid rgba(139,92,246,0.25); border-radius: 14px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; overflow: hidden; }
+.quick-add-card::before { content: ""; position: absolute; inset: -1px; border-radius: 15px; z-index: -1; background: linear-gradient(135deg, rgba(139,92,246,0.4), rgba(6,182,212,0.3)); opacity: 0; transition: opacity 0.3s; }
+.quick-add-card:hover::before { opacity: 1; }
+.quick-add-text .quick-add-title { font-size: 14px; font-weight: 700; color: #FFF; }
+.quick-add-text .quick-add-sub { font-size: 12px; color: #8A8F9B; margin-top: 2px; }
+.quick-add-btn { background: linear-gradient(135deg, #8B5CF6, #06B6D4); color: #FFF; border: none; border-radius: 10px; padding: 9px 18px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 0 16px rgba(139,92,246,0.4); transition: all 0.2s; flex-shrink: 0; }
+.quick-add-btn:hover { box-shadow: 0 0 28px rgba(139,92,246,0.6); transform: scale(1.04); }
+
+/* ── Insight card ── */
+.insight-card { background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.18); border-radius: 12px; padding: 14px 18px; margin-bottom: 14px; }
+.insight-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.insight-title { font-size: 11px; font-weight: 700; color: #F59E0B; text-transform: uppercase; letter-spacing: 0.06em; }
+.insight-text { font-size: 13px; color: #8A8F9B; line-height: 1.5; }
+
+/* ── Staggered load animation ── */
+@keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.kpi-grid .kpi-card:nth-child(1) { animation: slideInUp 0.4s cubic-bezier(0.16,1,0.3,1) 0ms both; }
+.kpi-grid .kpi-card:nth-child(2) { animation: slideInUp 0.4s cubic-bezier(0.16,1,0.3,1) 50ms both; }
+.kpi-grid .kpi-card:nth-child(3) { animation: slideInUp 0.4s cubic-bezier(0.16,1,0.3,1) 100ms both; }
+.kpi-grid .kpi-card:nth-child(4) { animation: slideInUp 0.4s cubic-bezier(0.16,1,0.3,1) 150ms both; }
+.kpi-grid .kpi-card:nth-child(5) { animation: slideInUp 0.4s cubic-bezier(0.16,1,0.3,1) 200ms both; }
+.kpi-grid .kpi-card:nth-child(6) { animation: slideInUp 0.4s cubic-bezier(0.16,1,0.3,1) 250ms both; }
+.kpi-grid .kpi-card:nth-child(7) { animation: slideInUp 0.4s cubic-bezier(0.16,1,0.3,1) 300ms both; }
+.kpi-grid .kpi-card:nth-child(8) { animation: slideInUp 0.4s cubic-bezier(0.16,1,0.3,1) 350ms both; }
+
+
+/* ═══ GAMIFICATION CSS ══════════════════════════════ */
+
+/* ── XP Bar ── */
+.xp-bar-container { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.xp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.xp-level { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.xp-points { font-size: 12px; font-weight: 700; color: #FFF; font-family: var(--mono); }
+.xp-track { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; margin-bottom: 3px; }
+.xp-fill { height: 100%; border-radius: 2px; transition: width 1s cubic-bezier(0.16,1,0.3,1); }
+.xp-next { font-size: 10px; color: var(--text-muted); text-align: right; }
+
+/* ── Badge grid ── */
+.badge-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.badge-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 9px 6px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); cursor: default; transition: all 0.2s; }
+.badge-item.unlocked:hover { transform: scale(1.06); box-shadow: 0 0 16px rgba(255,255,255,0.1); }
+.badge-item.locked { opacity: 0.3; }
+.badge-emoji { font-size: 18px; line-height: 1.2; }
+.badge-name { font-size: 9px; font-weight: 600; text-align: center; color: var(--text-muted); }
+.badge-item.unlocked .badge-name { font-weight: 700; }
+
+/* ── Streak calendar ── */
+.streak-cal-title { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; padding: 8px 14px 4px; }
+.streak-cal { display: flex; gap: 3px; flex-wrap: wrap; padding: 4px 12px 12px; }
+.streak-day { width: 15px; height: 15px; border-radius: 3px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); transition: all 0.15s; }
+.streak-day.win { background: rgba(34,197,94,0.28); border-color: rgba(34,197,94,0.4); box-shadow: 0 0 5px rgba(34,197,94,0.2); }
+.streak-day.loss { background: rgba(239,68,68,0.22); border-color: rgba(239,68,68,0.35); }
+.streak-day.mixed { background: rgba(245,158,11,0.22); border-color: rgba(245,158,11,0.35); }
+.streak-day.today { border-color: #8B5CF6 !important; box-shadow: 0 0 8px rgba(139,92,246,0.65) !important; animation: todayPulse 2s ease-in-out infinite; }
+@keyframes todayPulse { 0%,100%{box-shadow:0 0 6px rgba(139,92,246,0.55)} 50%{box-shadow:0 0 14px rgba(139,92,246,0.9),0 0 24px rgba(139,92,246,0.3)} }
+
+/* ── Crypto tags ── */
+.crypto-tag { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 700; font-family: var(--mono); letter-spacing: -0.02em; }
+.crypto-BTC { background: rgba(247,147,26,0.14); color: #F7931A; border: 1px solid rgba(247,147,26,0.28); }
+.crypto-ETH { background: rgba(98,126,234,0.14); color: #627EEA; border: 1px solid rgba(98,126,234,0.28); }
+.crypto-SOL { background: rgba(20,241,149,0.11); color: #14F195; border: 1px solid rgba(20,241,149,0.22); }
+.crypto-BNB { background: rgba(243,186,47,0.14); color: #F3BA2F; border: 1px solid rgba(243,186,47,0.28); }
+.crypto-XRP { background: rgba(0,168,204,0.11); color: #00A8CC; border: 1px solid rgba(0,168,204,0.22); }
+.crypto-default { background: rgba(139,92,246,0.11); color: #8B5CF6; border: 1px solid rgba(139,92,246,0.22); }
+
+/* ── Ambient background ── */
+.bg-ambient {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 45% at 15% -5%, rgba(139,92,246,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 35% at 85% 105%, rgba(6,182,212,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 55%, rgba(16,185,129,0.03) 0%, transparent 55%);
+}
+
+/* Noise texture */
+.app-layout::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+.app-layout { position: relative; }
+
+/* ── Space Mono for all numbers ── */
+.kpi-value, .trade-pnl, .stat-value-lg, .capital-badge strong, .bar-value, .equity-tooltip-pnl { font-family: var(--mono) !important; }
+
+/* ── Glow on positive/negative ── */
+.kpi-value.positive, .green, .text-positive, .trade-pnl.green { text-shadow: 0 0 14px rgba(34,197,94,0.4); }
+.kpi-value.negative, .red, .text-negative, .trade-pnl.red { text-shadow: 0 0 12px rgba(239,68,68,0.35); }
+
+/* ── Shimmer border on card hover (pseudo-element technique) ── */
+.card, .kpi-card {
+  position: relative;
+}
+.card:hover, .kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(139,92,246,0.3) !important;
+  box-shadow: 0 0 0 1px rgba(139,92,246,0.15), 0 8px 32px rgba(0,0,0,0.5), 0 0 30px rgba(139,92,246,0.07) !important;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+}
+
+/* ── Page ambient glow ── */
 .page, .page-content {
   background:
-    radial-gradient(ellipse at 20% 0%, rgba(99,102,241,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(6,182,212,0.03) 0%, transparent 50%),
-    #0D0F14 !important;
+    radial-gradient(ellipse 70% 35% at 50% -5%, rgba(139,92,246,0.05) 0%, transparent 55%),
+    #0a0a0f !important;
 }
-
-/* ── Main content area ── */
-.main-content {
-  background: #0D0F14;
-}
-
+.main-content { background: #0a0a0f !important; }
