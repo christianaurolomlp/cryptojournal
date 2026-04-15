@@ -171,17 +171,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 }
 
 /* ── Ambient glow (Layer3 exact) ── */
-.app-layout::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse 75% 60% at 50% -10%, rgba(28,119,255,0.18) 0%, transparent 65%),
-    radial-gradient(ellipse 55% 45% at -5% 30%, rgba(113,51,245,0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 35% at 105% 70%, rgba(113,51,245,0.08) 0%, transparent 55%);
-}
+
 
 [data-theme="light"] .app-layout::before { display: none; }
 
@@ -1546,13 +1536,17 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .app-layout::before {
   content: "";
   position: fixed;
-  top: -200px;
+  top: -300px;
   left: 50%;
   transform: translateX(-50%);
-  width: 900px;
-  height: 600px;
+  width: 1100px;
+  height: 800px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(28,119,255,0.22) 0%, rgba(28,119,255,0.08) 35%, transparent 70%);
+  background: radial-gradient(ellipse at center,
+    rgba(28,119,255,0.35) 0%,
+    rgba(28,119,255,0.18) 30%,
+    rgba(28,119,255,0.05) 55%,
+    transparent 72%);
   pointer-events: none;
   z-index: 0;
 }
