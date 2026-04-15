@@ -1,13 +1,13 @@
 // Gamification system — XP, Badges, Streak Calendar
 
-// Rangos de marino/navegante — el Capitán es Aurolo, no el trader
+// Niveles de progresión del trader — simples, motivadores, sin rangos navales
 const LEVELS = [
-  { name: 'Grumete',        min: 0,     max: 500,      color: '#6B7280', icon: '🪝' },
-  { name: 'Marinero',       min: 500,   max: 1500,     color: '#10B981', icon: '⚓' },
-  { name: 'Navegante',      min: 1500,  max: 3500,     color: '#06B6D4', icon: '🧭' },
-  { name: 'Piloto Naval',   min: 3500,  max: 7000,     color: '#8B5CF6', icon: '🗺️' },
-  { name: 'Contramaestre',  min: 7000,  max: 12000,    color: '#F59E0B', icon: '⚡' },
-  { name: 'Primer Oficial', min: 12000, max: Infinity, color: '#EC4899', icon: '🌟' },
+  { name: 'Nivel 1 · Novato',    min: 0,     max: 500,      color: '#6B7280', icon: '🌱' },
+  { name: 'Nivel 2 · Aprendiz',  min: 500,   max: 1500,     color: '#10B981', icon: '📈' },
+  { name: 'Nivel 3 · Operador',  min: 1500,  max: 3500,     color: '#06B6D4', icon: '🎯' },
+  { name: 'Nivel 4 · Trader',    min: 3500,  max: 7000,     color: '#8B5CF6', icon: '💹' },
+  { name: 'Nivel 5 · Experto',   min: 7000,  max: 12000,    color: '#F59E0B', icon: '🏆' },
+  { name: 'Nivel 6 · Élite',     min: 12000, max: Infinity, color: '#EC4899', icon: '💎' },
 ]
 
 function calcXP(trades) {
