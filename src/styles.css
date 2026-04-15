@@ -1833,3 +1833,26 @@ a.btn-primary {
 .equity-card .card-body {
   min-height: 300px !important;
 }
+
+/* ══════════════════════════════════════════════════════════
+   AUDIT FIX — gap coherente + right panel sin límite altura
+   ══════════════════════════════════════════════════════════ */
+
+/* Gap equity coherente con los de arriba */
+.equity-card {
+  margin-top: -12px !important;
+}
+
+/* Right panel — sin max-height, sin overflow hidden */
+.page-right-panel {
+  max-height: none !important;
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* Right panel cards — altura natural completa */
+.page-right-panel .card {
+  height: auto !important;
+  min-height: unset !important;
+  overflow: visible !important;
+}
