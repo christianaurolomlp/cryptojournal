@@ -1373,3 +1373,66 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .ta-reopen:hover { background: rgba(245,158,11,0.2); }
 .ta-delete       { background: rgba(239,68,68,0.08); color: #ef4444; border-color: rgba(239,68,68,0.2); }
 .ta-delete:hover { background: rgba(239,68,68,0.18); }
+
+/* ═══ TEMAS DE COLOR ══════════════════════════════════════════════ */
+
+/* Tema 1: Midnight Blue (actual) — ya en :root */
+
+/* Tema 2: Layer3 Purple */
+[data-palette="layer3"] {
+  --bg: #0D0F14; --bg-card: #161924; --bg-card-hover: #1E2230;
+  --bg-elevated: #1C1F28; --bg-input: #161924; --card-elevated: #1C1F28;
+  --sidebar: #0D0F14;
+  --accent: #6366F1; --accent-soft: rgba(99,102,241,0.15);
+  --cyan: #6366F1; --cyan-glow: rgba(99,102,241,0.35);
+  --blue: #6366F1; --blue-soft: rgba(99,102,241,0.15);
+  --border: rgba(255,255,255,0.08);
+}
+
+/* Tema 3: MLP Cyan (brand original) */
+[data-palette="mlp"] {
+  --bg: #04070e; --bg-card: #080e1a; --bg-card-hover: #0d1525;
+  --bg-elevated: #0f1828; --bg-input: #080e1a; --card-elevated: #0f1828;
+  --sidebar: #030609;
+  --accent: #38d8f5; --accent-soft: rgba(56,216,245,0.12);
+  --cyan: #38d8f5; --cyan-glow: rgba(56,216,245,0.35);
+  --blue: #38d8f5; --blue-soft: rgba(56,216,245,0.12);
+  --border: rgba(56,216,245,0.1);
+}
+
+/* Tema 4: Carbon Green */
+[data-palette="carbon"] {
+  --bg: #0a0a0a; --bg-card: #111111; --bg-card-hover: #1a1a1a;
+  --bg-elevated: #1f1f1f; --bg-input: #111111; --card-elevated: #1f1f1f;
+  --sidebar: #080808;
+  --accent: #22c55e; --accent-soft: rgba(34,197,94,0.15);
+  --cyan: #22c55e; --cyan-glow: rgba(34,197,94,0.35);
+  --blue: #22c55e; --blue-soft: rgba(34,197,94,0.12);
+  --border: rgba(255,255,255,0.08);
+}
+
+/* Tema 5: Noir Gold */
+[data-palette="gold"] {
+  --bg: #0a0800; --bg-card: #141100; --bg-card-hover: #1e1900;
+  --bg-elevated: #201b00; --bg-input: #141100; --card-elevated: #201b00;
+  --sidebar: #080600;
+  --accent: #F59E0B; --accent-soft: rgba(245,158,11,0.15);
+  --cyan: #F59E0B; --cyan-glow: rgba(245,158,11,0.4);
+  --blue: #F59E0B; --blue-soft: rgba(245,158,11,0.12);
+  --border: rgba(245,158,11,0.12);
+}
+
+/* ── Selector de paleta ── */
+.palette-picker { display: flex; align-items: center; gap: 6px; }
+.palette-dot {
+  width: 18px; height: 18px; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent; transition: all 0.2s;
+  box-shadow: 0 0 0 0 transparent;
+}
+.palette-dot:hover { transform: scale(1.2); }
+.palette-dot.active { border-color: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.4); transform: scale(1.15); }
+.palette-dot[data-p="default"] { background: #1278B7; }
+.palette-dot[data-p="layer3"]  { background: #6366F1; }
+.palette-dot[data-p="mlp"]     { background: #38d8f5; }
+.palette-dot[data-p="carbon"]  { background: #22c55e; }
+.palette-dot[data-p="gold"]    { background: #F59E0B; }

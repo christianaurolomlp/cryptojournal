@@ -135,8 +135,17 @@ function SyncBadge({ syncing }) {
 }
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
+const PALETTES = [
+  { id: 'default', color: '#1278B7', label: 'Midnight Blue' },
+  { id: 'layer3',  color: '#6366F1', label: 'Layer3 Purple' },
+  { id: 'mlp',    color: '#38d8f5', label: 'MLP Cyan'       },
+  { id: 'carbon', color: '#22c55e', label: 'Carbon Green'   },
+  { id: 'gold',   color: '#F59E0B', label: 'Noir Gold'      },
+]
+
 export default function App() {
   const { theme, toggleTheme } = useTheme()
+  const [palette, setPalette] = useState(() => localStorage.getItem('cj-palette') || 'default')
   const [trades, setTrades] = useState([])
   const [caps, setCaps] = useState({})
   const [anthropicKey, setAnthropicKey] = useState(() => store.getAnthropicKey())
@@ -595,7 +604,7 @@ EJEMPLOS:
   }
 
   return (
-    <div className="app-layout">
+    <div className="app-layout" data-palette={palette}>
       <div className="bg-ambient" />
       {/* Overlay for mobile sidebar */}
       <div
@@ -696,6 +705,19 @@ EJEMPLOS:
           </div>
 
           <div className="topbar-right">
+            {/* Palette picker */}
+            <div className="palette-picker">
+              {PALETTES.map(p => (
+                <div
+                  key={p.id}
+                  className={`palette-dot${palette === p.id ? ' active' : ''}`}
+                  data-p={p.id}
+                  title={p.label}
+                  onClick={() => { setPalette(p.id); localStorage.setItem('cj-palette', p.id) }}
+                />
+              ))}
+            </div>
+
             {/* Refresh button — recargar datos desde la API */}
             <button
               onClick={() => { setSyncing(true); loadData() }}
