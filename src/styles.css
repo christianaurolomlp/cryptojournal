@@ -2,9 +2,9 @@ body {
   margin: 0;
   font-family: var(--font);
   background:
-    radial-gradient(ellipse 90% 50% at 50% -8%, rgba(28,119,255,0.32) 0%, rgba(28,119,255,0.10) 38%, transparent 60%),
-    radial-gradient(ellipse 55% 40% at 98% 2%, rgba(113,51,245,0.20) 0%, transparent 52%),
-    var(--bg);
+    radial-gradient(ellipse 100% 65% at 50% -10%, rgba(17,84,185,0.75) 0%, rgba(28,119,255,0.35) 25%, rgba(28,119,255,0.08) 55%, transparent 70%),
+    radial-gradient(ellipse 60% 45% at 95% 5%, rgba(80,40,180,0.30) 0%, transparent 50%),
+    #06080f;
   background-attachment: fixed;
   min-height: 100vh;
   color: var(--text);
@@ -1658,4 +1658,64 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LAYER3 GLASS — outer card + inner dark section
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Outer card: semi-transparente, tinte azulado ── */
+.card,
+.kpi-card,
+.page-right-panel .card {
+  background: rgba(18, 25, 42, 0.50) !important;
+  backdrop-filter: blur(28px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
+  border: 1px solid rgba(60, 100, 200, 0.15) !important;
+  box-shadow:
+    0 4px 32px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+/* ── Card body interior: sección más oscura (nested dark) ── */
+.card-body,
+.card > .card-body {
+  background: rgba(8, 10, 18, 0.60) !important;
+  border-radius: 12px !important;
+  margin: 0 16px 16px !important;
+  padding: 16px !important;
+}
+
+/* KPI cards — sin inner section, solo el outer glass */
+.kpi-card .card-body {
+  background: transparent !important;
+  margin: 0 !important;
+}
+
+/* ── Hero banner — glass azul más visible ── */
+.hero-banner {
+  background: rgba(14, 40, 90, 0.45) !important;
+  backdrop-filter: blur(28px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
+  border: 1px solid rgba(28,119,255,0.25) !important;
+  box-shadow:
+    0 0 60px rgba(28,119,255,0.12),
+    0 4px 24px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(28,119,255,0.20) !important;
+}
+
+/* ── Sidebar: glass oscuro ── */
+.sidebar {
+  background: rgba(8, 10, 18, 0.70) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-right: 1px solid rgba(60,100,200,0.12) !important;
+}
+
+/* ── Topbar: glass oscuro ── */
+.topbar {
+  background: rgba(8, 10, 18, 0.55) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-bottom: 1px solid rgba(60,100,200,0.10) !important;
 }
