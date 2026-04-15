@@ -933,30 +933,10 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 0 40px rgba(239,68,68,0.06);
 }
 
-/* ── Sidebar glassmorphism ── */
-.sidebar {
-  background: rgba(13,13,20,0.92) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-  border-right: 1px solid rgba(255,255,255,0.07) !important;
-}
-
-/* ── Topbar glassmorphism ── */
-.topbar {
-  background: rgba(10,10,15,0.85) !important;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.07) !important;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-/* ── Nav items with colored icon glow on active ── */
+/* glassmorphism removed — Layer3 uses flat dark bg */
 .nav-item.active {
-  background: rgba(18,120,183,0.12) !important;
-  color: #FFFFFF !important;
-  box-shadow: inset 0 0 16px rgba(18,120,183,0.06) !important;
+  background: var(--nav-active-bg) !important;
+  color: var(--text) !important;
 }
 .nav-item.active svg {
   color: #1278B7;
