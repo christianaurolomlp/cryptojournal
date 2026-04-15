@@ -1252,3 +1252,171 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 /* Overflow prevention */
 .kpi-grid, .charts-grid { width: 100%; min-width: 0; }
 .kpi-grid > *, .card { min-width: 0; overflow: hidden; }
+
+/* ══════════════════════════════════════════════════════════
+   LAYER3 VISUAL OVERHAUL — espaciado real, tipografía grande
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Page — más aire ── */
+.page {
+  padding: 32px 40px !important;
+  max-width: 1280px;
+}
+
+/* ── Topbar — 64px, minimalista ── */
+.topbar {
+  height: 64px !important;
+  padding: 0 32px !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+/* ── Sidebar brand — más grande ── */
+.sidebar-brand {
+  padding: 24px 20px 16px !important;
+}
+.brand-icon {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 16px !important;
+  border-radius: 10px !important;
+}
+.brand-name {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+}
+
+/* ── Nav items — Layer3 exact: 44px alto, 16px font ── */
+.nav-item {
+  padding: 12px 14px !important;
+  border-radius: 10px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  gap: 14px !important;
+  margin-bottom: 2px !important;
+}
+.nav-item svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* ── Sidebar nav — más padding ── */
+.sidebar-nav {
+  padding: 8px 12px !important;
+  gap: 2px !important;
+}
+
+/* ── Sidebar widget — más prominente ── */
+.sidebar-widget {
+  margin: 0 12px 12px !important;
+  padding: 16px 18px !important;
+  border-radius: 14px !important;
+}
+.sidebar-widget-label {
+  font-size: 11px !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 6px !important;
+}
+.sidebar-widget-value {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  font-family: var(--font) !important;
+  letter-spacing: -0.04em !important;
+}
+
+/* ── KPI cards — Layer3-size: más alto, valor MÁS GRANDE ── */
+.kpi-card {
+  padding: 24px 22px !important;
+  border-radius: 16px !important;
+  background: var(--bg-card) !important;
+  border: none !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+  min-height: 110px !important;
+}
+.kpi-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  margin-bottom: 10px !important;
+  color: var(--text-faint) !important;
+}
+.kpi-value {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  font-family: var(--font) !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+  margin-bottom: 6px !important;
+}
+.kpi-sub {
+  font-size: 12px !important;
+  color: var(--text-muted) !important;
+  margin-top: 4px !important;
+}
+.kpi-grid {
+  gap: 14px !important;
+  margin-bottom: 14px !important;
+}
+
+/* ── Cards — más padding, sombra ── */
+.card {
+  border-radius: 16px !important;
+  background: var(--bg-card) !important;
+  border: none !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+}
+.card-header {
+  padding: 24px 24px 0 !important;
+}
+.card-body {
+  padding: 24px !important;
+}
+.card-title {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* ── Insight card — Layer3 style ── */
+.insight-card {
+  padding: 18px 22px !important;
+  border-radius: 14px !important;
+  margin-bottom: 20px !important;
+  background: rgba(108,92,231,0.08) !important;
+  border: 1px solid rgba(108,92,231,0.15) !important;
+}
+.insight-title {
+  font-size: 11px !important;
+  letter-spacing: 0.08em !important;
+  color: var(--accent) !important;
+}
+
+/* ── Trade cards ── */
+.trade-card {
+  border-radius: 14px !important;
+  padding: 16px 18px !important;
+  background: var(--bg-card) !important;
+  border: none !important;
+  border-left: 3px solid transparent !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+}
+
+/* ── Charts gap ── */
+.charts-grid {
+  gap: 14px !important;
+  margin-bottom: 14px !important;
+}
+
+/* ── New trade button — más prominente ── */
+.btn-primary-full {
+  padding: 12px 18px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* ── Modal ── */
+.modal {
+  border-radius: 20px !important;
+  padding: 28px !important;
+}
