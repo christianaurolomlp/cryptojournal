@@ -116,23 +116,30 @@ export function BadgeGrid({ trades }) {
 
 export function StreakCalendar({ trades }) {
   const today = new Date()
+  const todayKey = today.toISOString().split('T')[0]
+
+  // 28 days = 4 weeks, fill to start on Monday
   const days = Array.from({ length: 28 }, (_, i) => {
     const d = new Date(today)
     d.setDate(today.getDate() - (27 - i))
     const key = d.toISOString().split('T')[0]
     const dt = trades.filter(t => (t.closeDate || t.date || '').startsWith(key))
-    return {
-      key,
-      hasWin:   dt.some(t => t.result === 'WIN'),
-      hasLoss:  dt.some(t => t.result === 'LOSS'),
-      isToday:  key === today.toISOString().split('T')[0],
-      count:    dt.length,
-    }
+    const hasWin  = dt.some(t => t.result === 'WIN')
+    const hasLoss = dt.some(t => t.result === 'LOSS')
+    const dayNum = d.getDate()
+    const mon = d.toLocaleString('es-ES', { month: 'short' })
+    return { key, hasWin, hasLoss, isToday: key === todayKey, count: dt.length, label: `${dayNum} ${mon}` }
   })
 
+  // Days of week headers
+  const DOW = ['L','M','X','J','V','S','D']
+
   return (
-    <>
-      <div className="streak-cal-title">Actividad 28d</div>
+    <div className="streak-wrapper">
+      <div className="streak-cal-title">Actividad — 4 semanas</div>
+      <div className="streak-dow">
+        {DOW.map(d => <span key={d}>{d}</span>)}
+      </div>
       <div className="streak-cal">
         {days.map(d => {
           let cls = 'streak-day'
@@ -140,9 +147,15 @@ export function StreakCalendar({ trades }) {
           else if (d.hasLoss && !d.hasWin) cls += ' loss'
           else if (d.count > 0) cls += ' mixed'
           if (d.isToday) cls += ' today'
-          return <div key={d.key} className={cls} title={d.key} />
+          return <div key={d.key} className={cls} title={`${d.label}${d.count > 0 ? ` — ${d.count} trade(s)` : ''}`} />
         })}
       </div>
-    </>
+      <div className="streak-legend">
+        <span><span className="sl-dot win" />Win</span>
+        <span><span className="sl-dot loss" />Loss</span>
+        <span><span className="sl-dot mixed" />Mixto</span>
+        <span><span className="sl-dot" />Sin trade</span>
+      </div>
+    </div>
   )
 }

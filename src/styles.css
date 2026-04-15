@@ -1285,3 +1285,28 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
     #0a0a0f !important;
 }
 .main-content { background: #0a0a0f !important; }
+
+/* ── Streak calendar v2 ── */
+.streak-wrapper { border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
+.streak-dow { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; padding: 0 12px 3px; }
+.streak-dow span { font-size: 9px; font-weight: 700; color: var(--text-muted); text-align: center; text-transform: uppercase; }
+.streak-cal { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; padding: 0 12px; }
+.streak-day { height: 16px; border-radius: 3px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); transition: all 0.15s; cursor: default; }
+.streak-day:hover { transform: scale(1.3); z-index: 10; position: relative; }
+.streak-day.win { background: rgba(34,197,94,0.3); border-color: rgba(34,197,94,0.45); box-shadow: 0 0 5px rgba(34,197,94,0.2); }
+.streak-day.loss { background: rgba(239,68,68,0.25); border-color: rgba(239,68,68,0.4); }
+.streak-day.mixed { background: rgba(245,158,11,0.25); border-color: rgba(245,158,11,0.4); }
+.streak-day.today { border-color: #8B5CF6 !important; box-shadow: 0 0 8px rgba(139,92,246,0.7) !important; animation: todayPulse 2s ease-in-out infinite; }
+.streak-legend { display: flex; gap: 8px; padding: 5px 12px; flex-wrap: wrap; }
+.streak-legend span { display: flex; align-items: center; gap: 3px; font-size: 9px; color: var(--text-muted); }
+.sl-dot { width: 8px; height: 8px; border-radius: 2px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+.sl-dot.win { background: rgba(34,197,94,0.3); border-color: rgba(34,197,94,0.45); }
+.sl-dot.loss { background: rgba(239,68,68,0.25); border-color: rgba(239,68,68,0.4); }
+.sl-dot.mixed { background: rgba(245,158,11,0.25); border-color: rgba(245,158,11,0.4); }
+
+/* ── XP bar más visible ── */
+.xp-track { height: 6px !important; background: rgba(255,255,255,0.09) !important; }
+.xp-fill { border-radius: 3px !important; }
+
+/* ── Sidebar widget con P&L color ── */
+.sidebar-widget-value { font-family: var(--mono) !important; letter-spacing: -0.03em; }

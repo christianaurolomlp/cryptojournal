@@ -3,7 +3,7 @@ import { useTheme } from './hooks/useTheme'
 import { VIEWS } from './constants.js'
 import { LayoutDashboard, CalendarDays, BarChart2, CalendarRange, History, Settings as SettingsIcon, Plus, Mic, MicOff, Zap, RefreshCw, Moon, Sun } from 'lucide-react'
 import { store, apiStore, isApiConfigured, uid, seedIfEmpty } from './store.js'
-import { currentMonthKey, monthLabel, prevMonth, nextMonth } from './utils.js'
+import { currentMonthKey, monthLabel, prevMonth, nextMonth, calcStats, tradesForMonth } from './utils.js'
 import { XPBar, BadgeGrid, StreakCalendar } from './components/Gamification.jsx'
 import Dashboard from './components/Dashboard.jsx'
 import Calendar from './components/Calendar.jsx'
@@ -617,8 +617,15 @@ EJEMPLOS:
 
         {capital > 0 && (
           <div className="sidebar-widget">
-            <div className="sidebar-widget-label">Capital Actual</div>
-            <div className="sidebar-widget-value">${capital.toLocaleString('es-ES')}</div>
+            <div className="sidebar-widget-label">Capital Final del mes</div>
+            <div className="sidebar-widget-value" style={{ color: capitalActual > capital ? '#22c55e' : capitalActual < capital ? '#ef4444' : '#fff' }}>
+              ${capitalActual.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </div>
+            <div className="xp-next" style={{ marginTop: 2 }}>
+              Inicial: ${capital.toLocaleString('es-ES')}
+              {capitalActual > capital && <span style={{ color: '#22c55e', marginLeft: 4 }}>+{((capitalActual/capital - 1)*100).toFixed(1)}%</span>}
+              {capitalActual < capital && <span style={{ color: '#ef4444', marginLeft: 4 }}>{((capitalActual/capital - 1)*100).toFixed(1)}%</span>}
+            </div>
           </div>
         )}
 
