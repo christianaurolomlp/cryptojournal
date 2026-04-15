@@ -1752,3 +1752,46 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .sidebar * {
   font-family: var(--font) !important;
 }
+
+/* ══════════════════════════════════════════════════════════
+   BOTONES LAYER3 — amber/azul en vez de morado
+   ══════════════════════════════════════════════════════════ */
+
+:root {
+  --accent-amber: #F59E0B;
+  --accent-amber-soft: rgba(245,158,11,0.15);
+}
+
+/* Botón primario — amber Layer3 */
+.btn-primary,
+button.btn-primary,
+a.btn-primary {
+  background: var(--accent-amber) !important;
+  color: #0a0800 !important;
+  border: none !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 20px rgba(245,158,11,0.25) !important;
+}
+.btn-primary:hover {
+  background: #FBBF24 !important;
+  box-shadow: 0 0 28px rgba(245,158,11,0.40) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Equity card — full width */
+.equity-card {
+  width: 100% !important;
+  min-height: 280px !important;
+}
+.equity-card .card-body {
+  min-height: 240px !important;
+}
+
+/* Right panel scrollable si mucho contenido */
+.page-right-panel {
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.page-right-panel::-webkit-scrollbar { display: none; }

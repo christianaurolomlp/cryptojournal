@@ -190,14 +190,19 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
         {/* ─── Hero Banner ─── */}
         <div className="hero-banner">
           <div className="hero-banner-left">
-            <div className="hero-banner-label">{insight ? insight.icon + ' ' + insight.label : '📊 RESUMEN'}</div>
+            <div className="hero-banner-label">📅 {monthLabel(currentMonth).toUpperCase()} · RESUMEN</div>
             <div className="hero-banner-title">
               {stats.pnl >= 0
                 ? <><span className="hero-value green">+{Math.abs(stats.pnl).toLocaleString('es-ES', {minimumFractionDigits:0, maximumFractionDigits:0})} USD</span> este mes</>
                 : <><span className="hero-value red">-{Math.abs(stats.pnl).toLocaleString('es-ES', {minimumFractionDigits:0, maximumFractionDigits:0})} USD</span> este mes</>
               }
             </div>
-            {insight && <div className="hero-banner-sub" dangerouslySetInnerHTML={{ __html: insight.text }} />}
+            {insight && (
+              <div className="hero-banner-sub">
+                <span style={{color:'var(--accent-amber)',fontWeight:600}}>{insight.icon} {insight.label}:</span>{' '}
+                <span dangerouslySetInnerHTML={{ __html: insight.text }} />
+              </div>
+            )}
           </div>
           <div className="hero-banner-right">
             <div className="hero-stat">
@@ -251,9 +256,8 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
         )}
 
       {/* ─── Charts Grid — Equity + Assets ─── */}
-      <div className="charts-grid">
-        {/* Equity Curve (recharts) */}
-        <div className="card equity-card">
+      {/* ─── Equity Curve — full width ─── */}
+      <div className="card equity-card" style={{ width: '100%' }}>
           <div className="card-header">
             <div>
               <div className="card-title">Equity Curve</div>
@@ -308,128 +312,6 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
           </div>
         </div>
 
-        {/* Right column — stacked cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {/* Asset Performance */}
-          <div className="card" style={{ flex: 1 }}>
-            <div className="card-header">
-              <div>
-                <div className="card-title">Por Activo</div>
-                <div className="card-description">PnL por criptomoneda</div>
-              </div>
-            </div>
-            <div className="card-body">
-              {assetData.length === 0 ? (
-                <div className="empty-state" style={{ padding: '24px 0' }}>
-                  <div className="empty-sub">Sin operaciones cerradas</div>
-                </div>
-              ) : (
-                <ResponsiveContainer width="100%" height={Math.max(180, assetData.length * 28)}>
-                  <BarChart data={assetData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.3} horizontal={false} />
-                    <XAxis type="number" tick={{ fill: axisColor, fontSize: 10, fontFamily: "var(--font)" }} axisLine={{ stroke: gridColor }} tickLine={false} tickFormatter={v => `$${v}`} />
-                    <YAxis type="category" dataKey="name" interval={0} tick={{ fill: labelColor, fontSize: 11, fontFamily: "var(--font)", fontWeight: 600 }} axisLine={false} tickLine={false} width={72} />
-                    <Tooltip content={<AssetTooltip />} cursor={{ fill: cursorFill }} />
-                    <Bar dataKey="pnl" radius={[0, 4, 4, 0]} maxBarSize={20}>
-                      {assetData.map((entry, i) => (
-                        <Cell key={i} fill={entry.pnl >= 0 ? '#34C759' : '#FF3B30'} fillOpacity={0.75} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-          </div>
-
-          {/* Distribución WIN/LOSS/BE */}
-          <div className="card">
-            <div className="card-header">
-              <div className="card-title">Distribución</div>
-            </div>
-            <div className="card-body" style={{ paddingTop: 12 }}>
-              {/* Visual bars */}
-              {stats.total > 0 && (
-                <>
-                  <div style={{ display: 'flex', gap: 4, height: 8, borderRadius: 4, overflow: 'hidden', marginBottom: 12 }}>
-                    {stats.wins > 0 && <div style={{ flex: stats.wins, background: 'var(--green)', opacity: 0.8 }} />}
-                    {stats.be > 0 && <div style={{ flex: stats.be, background: 'var(--orange)', opacity: 0.8 }} />}
-                    {stats.losses > 0 && <div style={{ flex: stats.losses, background: 'var(--red)', opacity: 0.8 }} />}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
-                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--green)', display: 'inline-block' }} />
-                        WIN
-                      </span>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--green)' }}>{stats.wins} <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-muted)' }}>({stats.total > 0 ? Math.round(stats.wins/stats.total*100) : 0}%)</span></span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
-                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--orange)', display: 'inline-block' }} />
-                        BE
-                      </span>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--orange)' }}>{stats.be} <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-muted)' }}>({stats.total > 0 ? Math.round(stats.be/stats.total*100) : 0}%)</span></span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
-                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--red)', display: 'inline-block' }} />
-                        LOSS
-                      </span>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--red)' }}>{stats.losses} <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-muted)' }}>({stats.total > 0 ? Math.round(stats.losses/stats.total*100) : 0}%)</span></span>
-                    </div>
-                  </div>
-                </>
-              )}
-              {stats.total === 0 && <div className="empty-sub">Sin datos</div>}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ─── Recent Trades Table ─── */}
-      {closedTrades.length > 0 && (
-        <div className="card" style={{ marginBottom: 24 }}>
-          <div className="card-header">
-            <div>
-              <div className="card-title">Últimas Operaciones</div>
-              <div className="card-description">{closedTrades.length} cerradas este mes</div>
-            </div>
-          </div>
-          <div className="card-body-flush">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Activo</th>
-                  <th>Tipo</th>
-                  <th>Resultado</th>
-                  <th>TF</th>
-                  <th>Margen</th>
-                  <th style={{ textAlign: 'right' }}>PnL</th>
-                </tr>
-              </thead>
-              <tbody>
-                {closedTrades.slice(0, 8).map(t => (
-                  <tr key={t.id}>
-                    <td style={{ fontWeight: 700, color: 'var(--text)' }}>{t.crypto}</td>
-                    <td><span className={`badge badge-${t.type === 'LONG' ? 'long' : 'short'}`}>{t.type}</span></td>
-                    <td>
-                      <span className={`badge badge-${(t.result || '').toLowerCase()}`}>
-                        {t.result === 'WIN' ? '✓ WIN' : t.result === 'LOSS' ? '✗ LOSS' : '≈ BE'}
-                      </span>
-                    </td>
-                    <td style={{ color: 'var(--text-muted)' }}>{t.tf}</td>
-                    <td style={{ color: 'var(--text-muted)' }}>${t.margin?.toFixed(0)}</td>
-                    <td style={{ textAlign: 'right', fontWeight: 700, color: t.result === 'WIN' ? 'var(--green)' : t.result === 'LOSS' ? 'var(--red)' : 'var(--orange)' }}>
-                      {t.pnl !== null ? formatMoney(t.result === 'LOSS' ? -Math.abs(t.pnl) : t.pnl) : '—'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
       </div>{/* end page-main */}
 
       {/* ── RIGHT PANEL ── */}
@@ -464,6 +346,52 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
             </div>
           </div>
         </div>
+
+        {/* Por Activo */}
+        {assetData.length > 0 && (
+          <div className="card" style={{ marginBottom: 12 }}>
+            <div className="card-header"><div className="card-title">Por Activo</div></div>
+            <div className="card-body" style={{ paddingTop: 8, paddingBottom: 12 }}>
+              {assetData.slice(0, 6).map((item, i) => (
+                <div key={i} style={{ marginBottom: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)' }}>{item.name}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: item.pnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
+                      {item.pnl >= 0 ? '+' : ''}{item.pnl.toFixed(0)} USD
+                    </span>
+                  </div>
+                  <div style={{ height: 4, borderRadius: 2, background: 'var(--border-subtle)', overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%', borderRadius: 2,
+                      background: item.pnl >= 0 ? 'var(--green)' : 'var(--red)',
+                      width: `${Math.min(100, Math.abs(item.pnl) / Math.max(...assetData.map(a => Math.abs(a.pnl))) * 100)}%`,
+                      opacity: 0.8
+                    }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Distribución */}
+        {stats.total > 0 && (
+          <div className="card" style={{ marginBottom: 12 }}>
+            <div className="card-header"><div className="card-title">Distribución</div></div>
+            <div className="card-body" style={{ paddingTop: 12, paddingBottom: 12 }}>
+              <div style={{ display: 'flex', gap: 3, height: 6, borderRadius: 3, overflow: 'hidden', marginBottom: 10 }}>
+                {stats.wins > 0 && <div style={{ flex: stats.wins, background: 'var(--green)', opacity: 0.85 }} />}
+                {stats.be > 0 && <div style={{ flex: stats.be, background: 'var(--orange)', opacity: 0.85 }} />}
+                {stats.losses > 0 && <div style={{ flex: stats.losses, background: 'var(--red)', opacity: 0.85 }} />}
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 12, color: 'var(--green)', fontWeight: 600 }}>✓ {stats.wins} wins</span>
+                {stats.be > 0 && <span style={{ fontSize: 12, color: 'var(--orange)', fontWeight: 600 }}>— {stats.be} BE</span>}
+                <span style={{ fontSize: 12, color: 'var(--red)', fontWeight: 600 }}>✗ {stats.losses} loss</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Open positions */}
         {openTrades.length > 0 && (
