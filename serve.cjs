@@ -66,13 +66,23 @@ app.use('/api', async (req, res) => {
   }
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'dist')));
+// Serve static assets with long cache (hashed filenames)
+app.use('/assets', express.static(path.join(__dirname, 'dist/assets'), {
+  maxAge: '1y',
+  immutable: true,
+}));
+
+// Serve other static files (no cache)
+app.use(express.static(path.join(__dirname, 'dist'), { maxAge: 0 }));
 
 // Health check
 app.get('/health', (req, res) => res.json({status: 'ok', timestamp: new Date().toISOString()}));
 
-// SPA fallback
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html')));
+// SPA fallback — NEVER cache index.html
+app.get('*', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 app.listen(PORT, '0.0.0.0', () => console.log(`CryptoJournal on port ${PORT}`));
