@@ -1803,3 +1803,6 @@ a.btn-primary {
 .page-main {
   gap: 10px !important;
 }
+
+/* ── Equity más pegada al RiskCard ── */
+.page-main { gap: 6px !important; }

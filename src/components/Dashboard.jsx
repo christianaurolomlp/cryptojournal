@@ -257,7 +257,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
 
       {/* ─── Charts Grid — Equity + Assets ─── */}
       {/* ─── Equity Curve — full width ─── */}
-      <div className="card equity-card" style={{ width: '100%' }}>
+      <div className="card equity-card" style={{ width: '100%', marginTop: -6 }}>
           <div className="card-header">
             <div>
               <div className="card-title">Equity Curve</div>
