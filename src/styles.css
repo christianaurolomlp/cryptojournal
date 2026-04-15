@@ -78,33 +78,38 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0A0A0A;
-  --bg-card: #171717;
-  --bg-card-hover: #262626;
-  --bg-elevated: #262626;
-  --bg-input: #171717;
-  --card-elevated: #262626;
-  --sidebar: #0A0A0A;
-  --border: rgba(255,255,255,0.10);
-  --border-input: rgba(255,255,255,0.12);
-  --text: #FAFAFA;
-  --text-secondary: #A0A3AF;
-  --text-muted: #525252;
-  --accent: #1278B7;
-  --accent-soft: rgba(18,120,183,0.15);
-  --cyan: #1278B7;
-  --blue: #1278B7;
-  --blue-soft: rgba(18,120,183,0.15);
-  --green: #4ADE80;
-  --green-soft: rgba(34,197,94,0.12);
-  --red: #F87171;
-  --red-soft: rgba(239,68,68,0.12);
-  --orange: #FB923C;
-  --orange-soft: rgba(245,158,11,0.12);
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-  --shadow: 0 2px 12px rgba(0,0,0,0.2);
-  --shadow-md: 0 4px 24px rgba(0,0,0,0.3);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.4);
+  /* Exact Layer3 tokens — identical to :root */
+  --bg:            #111318;
+  --bg-card:       #1C2130;
+  --bg-card-hover: #232B3E;
+  --bg-elevated:   #202840;
+  --bg-input:      #1C2130;
+  --card-elevated: #202840;
+  --sidebar:       #0D1117;
+  --border:        rgba(255,255,255,0.07);
+  --border-subtle: rgba(255,255,255,0.04);
+  --border-input:  rgba(255,255,255,0.12);
+  --text:          #FFFFFF;
+  --text-secondary:#C8C8CC;
+  --text-muted:    #8A8A8E;
+  --text-faint:    #6B6B70;
+  --accent:        #6C5CE7;
+  --accent-soft:   rgba(108,92,231,0.15);
+  --cyan:          #6C5CE7;
+  --blue:          #6C5CE7;
+  --blue-soft:     rgba(108,92,231,0.12);
+  --green:         #4ADE80;
+  --green-soft:    rgba(74,222,128,0.08);
+  --red:           #F87171;
+  --red-soft:      rgba(248,113,113,0.08);
+  --orange:        #FB923C;
+  --orange-soft:   rgba(251,146,60,0.08);
+  --nav-active-bg: #1A2540;
+  --badge-bg:      #1C2130;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
 }
 
 /* ─── Reset ────────────────────────────────── */
@@ -1230,7 +1235,35 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .crypto-default { background: rgba(18,120,183,0.11); color: #1278B7; border: 1px solid rgba(18,120,183,0.22); }
 
 /* ── Ambient background ── */
-.bg-ambient { display: none; }  /* Layer3: no ambient glow */
+.bg-ambient { display: none; } /* hidden in favor of ::before pseudo-element */
+
+/* ── Layer3 ambient glow — replicates app.layer3.xyz lights ── */
+.app-layout::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at -10% 20%, rgba(99,102,241,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 110% 80%, rgba(108,92,231,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 50% -5%, rgba(99,102,241,0.06) 0%, transparent 50%);
+}
+
+/* ── Main content area glow ── */
+.main-content::before {
+  content: "";
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 85% 15%, rgba(99,102,241,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 25% at 15% 85%, rgba(74,222,128,0.04) 0%, transparent 50%);
+}
+
+.app-layout { position: relative; }
+.main-content { position: relative; }  /* Layer3: no ambient glow */
 
 /* Noise texture */
 .app-layout::before {
