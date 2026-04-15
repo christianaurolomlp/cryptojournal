@@ -53,36 +53,76 @@ export function XPBar({ trades }) {
 
 // ─── Badges ──────────────────────────────────────────────────────────────────
 
+const SCALPER_TFS  = ['1', '3', '5', '15']
+const DAYTRADER_TFS = ['60', '1h', '240', '4h']
+const SWING_TFS    = ['D', '1d', 'W', '1w', 'M', '1M']
+
 const ALL_BADGES = [
+  // ── Milestone
   {
     id: 'first', name: 'First Trade', emoji: '⚓', color: '#6B7280',
+    desc: 'Registra tu primer trade',
     req: t => t.length >= 1,
   },
   {
-    id: 'sniper', name: 'Sniper', emoji: '🎯', color: '#10B981',
-    req: t => {
-      let s = 0, m = 0
-      ;[...t].filter(x => x.closed)
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-        .forEach(x => { x.result === 'WIN' ? m = Math.max(m, ++s) : (s = 0) })
-      return m >= 5
-    },
-  },
-  {
-    id: 'fire', name: 'On Fire', emoji: '🔥', color: '#F59E0B',
-    req: t => t.filter(x => x.result === 'WIN').length >= 10,
-  },
-  {
     id: 'diamond', name: 'Diamond', emoji: '💎', color: '#06B6D4',
+    desc: '25 trades cerrados',
     req: t => t.filter(x => x.closed).length >= 25,
   },
   {
-    id: 'captain', name: 'Capitán', emoji: '🚢', color: '#8B5CF6',
-    req: t => t.filter(x => x.closed).length >= 50,
+    id: 'centurion', name: 'Centurión', emoji: '🏆', color: '#EC4899',
+    desc: '100 trades cerrados',
+    req: t => t.filter(x => x.closed).length >= 100,
+  },
+
+  // ── Performance
+  {
+    id: 'fire', name: 'On Fire', emoji: '🔥', color: '#F59E0B',
+    desc: '5 wins en el mismo mes',
+    req: t => {
+      const byMonth = {}
+      t.filter(x => x.closed && x.result === 'WIN').forEach(x => {
+        const m = (x.closeDate || x.date || '').slice(0, 7)
+        if (m) byMonth[m] = (byMonth[m] || 0) + 1
+      })
+      return Object.values(byMonth).some(v => v >= 5)
+    },
   },
   {
-    id: 'legend', name: 'Leyenda', emoji: '🏆', color: '#EC4899',
-    req: t => t.filter(x => x.closed).length >= 100,
+    id: 'sniper', name: 'Sniper', emoji: '🎯', color: '#10B981',
+    desc: '5 wins consecutivos',
+    req: t => {
+      let s = 0, m = 0
+      t.filter(x => x.closed)
+        .slice()
+        .sort((a, b) => new Date(a.closeDate || a.date) - new Date(b.closeDate || b.date))
+        .forEach(x => { x.result === 'WIN' ? (m = Math.max(m, ++s)) : (s = 0) })
+      return m >= 5
+    },
+  },
+
+  // ── Estilo de trading (por TF usado)
+  {
+    id: 'scalper', name: 'Scalper', emoji: '⚡', color: '#22c55e',
+    desc: '5 trades en TF 1m-15m',
+    req: t => t.filter(x => x.closed && SCALPER_TFS.includes(String(x.tf))).length >= 5,
+  },
+  {
+    id: 'daytrader', name: 'Day Trader', emoji: '📊', color: '#8B5CF6',
+    desc: '5 trades en TF 1h-4h',
+    req: t => t.filter(x => x.closed && DAYTRADER_TFS.includes(String(x.tf))).length >= 5,
+  },
+  {
+    id: 'swing', name: 'Swing Trader', emoji: '🌊', color: '#38d8f5',
+    desc: '3 trades en TF 1d o superior',
+    req: t => t.filter(x => x.closed && SWING_TFS.includes(String(x.tf))).length >= 3,
+  },
+
+  // ── Volumen
+  {
+    id: 'prolific', name: 'Prolífico', emoji: '📈', color: '#F59E0B',
+    desc: '50 trades cerrados',
+    req: t => t.filter(x => x.closed).length >= 50,
   },
 ]
 
@@ -95,7 +135,7 @@ export function BadgeGrid({ trades }) {
           <div
             key={b.id}
             className={`badge-item ${ok ? 'unlocked' : 'locked'}`}
-            title={ok ? b.name : '???'}
+            title={ok ? `✅ ${b.name}` : `🔒 ${b.desc}`}
           >
             <div
               className="badge-emoji"
