@@ -1537,3 +1537,71 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   .page-trades { padding: 0 20px 32px !important; }
   .page-3col { padding: 20px !important; }
 }
+
+/* ══════════════════════════════════════════════════════════
+   LAYER3 AMBIENT LIGHT + GLASSMORPHISM
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Luz azul arriba — exacta de Layer3 ── */
+.app-layout::before {
+  content: "";
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(28,119,255,0.22) 0%, rgba(28,119,255,0.08) 35%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Segundo glow — esquina superior derecha ── */
+.app-layout::after {
+  content: "";
+  position: fixed;
+  top: -100px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(113,51,245,0.12) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Cards con glassmorphism (como Layer3) ── */
+.card,
+.kpi-card {
+  background: rgba(30, 31, 36, 0.7) !important;
+  backdrop-filter: blur(16px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+/* ── Hero banner — más glass ── */
+.hero-banner {
+  background: linear-gradient(135deg, rgba(28,119,255,0.10) 0%, rgba(113,51,245,0.08) 100%) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(28,119,255,0.18) !important;
+}
+
+/* ── Sidebar widget — glass ── */
+.sidebar-widget {
+  background: rgba(30,31,36,0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+}
+
+/* ── Right panel cards — glass ── */
+.page-right-panel .card {
+  background: rgba(30,31,36,0.65) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* Ensure z-index above glow */
+.sidebar, .main-content, .topbar { position: relative; z-index: 1; }
