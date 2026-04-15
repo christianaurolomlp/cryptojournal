@@ -412,7 +412,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 [data-theme="light"] .data-table th { border-bottom: 1px solid var(--border); color: var(--text-muted); }
 [data-theme="light"] .data-table td { border-bottom: 1px solid rgba(0,0,0,0.04); color: var(--text-secondary); }
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover td { background: #1A1D28; }
+.data-table tr:hover td { background: var(--bg-elevated); }
 [data-theme="light"] .data-table tr:hover td { background: rgba(0,0,0,0.03); }
 
 /* ═══ BADGES ═══════════════════════════════ */
@@ -465,7 +465,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 [data-theme="light"] .btn-secondary:hover { background: rgba(0,0,0,0.08); }
 
 .btn-ghost {
-  background: #1C1F28; color: #A0A3B1; padding: 6px 12px;
+  background: var(--bg-elevated); color: #A0A3B1; padding: 6px 12px;
   font-size: 13px; border: 1px solid #2A2D3A; border-radius: 8px;
   cursor: pointer; font-family: var(--font); transition: background 150ms, color 150ms;
 }
@@ -556,7 +556,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   width: 100%; padding: 9px 12px;
   border: 1px solid #2A2D3A; border-radius: 10px;
   font-size: 14px; font-family: var(--font);
-  background: #1C1F28; color: #FFFFFF;
+  background: var(--bg-elevated); color: #FFFFFF;
   outline: none; transition: border-color 150ms, box-shadow 150ms;
 }
 .form-input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
@@ -567,7 +567,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   width: 100%; padding: 9px 12px;
   border: 1px solid #2A2D3A; border-radius: 10px;
   font-size: 14px; font-family: var(--font);
-  background: #1C1F28; color: #FFFFFF;
+  background: var(--bg-elevated); color: #FFFFFF;
   outline: none; transition: border-color 150ms, box-shadow 150ms;
 }
 .form-control:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
@@ -1117,10 +1117,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   background-size: 128px 128px;
 }
 
-/* ── Space Mono for numbers ── */
-.kpi-value, .trade-pnl, .stat-value-lg, .capital-badge strong, .xp-points {
-  font-family: "Space Mono", monospace !important;
-}
+/* Numbers use Inter (var(--font)) — no monospace override */
 
 /* ── XP Bar ── */
 .xp-bar-container { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); }
