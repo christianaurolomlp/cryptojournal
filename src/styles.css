@@ -1420,3 +1420,120 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   border-radius: 20px !important;
   padding: 28px !important;
 }
+
+/* ══════════════════════════════════════════════════════════
+   V2 LAYOUT — 3 columnas + hero banner (Layer3 style)
+   ══════════════════════════════════════════════════════════ */
+
+/* ── 3-column layout ── */
+.page-3col {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  padding: 32px 40px !important;
+  max-width: 1400px;
+  align-items: start;
+}
+.page-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.page-right-panel {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.page-trades {
+  padding: 0 40px 40px !important;
+  max-width: 1400px;
+}
+
+/* ── Hero Banner ── */
+.hero-banner {
+  background: linear-gradient(135deg, rgba(108,92,231,0.12) 0%, rgba(28,119,255,0.06) 100%);
+  border: 1px solid rgba(108,92,231,0.2);
+  border-radius: 20px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(108,92,231,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-banner-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.hero-banner-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.hero-value {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.hero-banner-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  max-width: 420px;
+  line-height: 1.5;
+}
+.hero-banner-right {
+  display: flex;
+  gap: 32px;
+  flex-shrink: 0;
+}
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.hero-stat-val {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Page-main gap reset (cards already in flex column) ── */
+.page-main .kpi-grid { margin-bottom: 0 !important; }
+.page-main .charts-grid { margin-bottom: 0 !important; }
+
+@media (max-width: 1024px) {
+  .page-3col { grid-template-columns: 1fr; }
+  .page-right-panel { position: static; }
+  .page-trades { padding: 0 20px 32px !important; }
+  .page-3col { padding: 20px !important; }
+}
