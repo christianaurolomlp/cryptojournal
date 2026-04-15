@@ -4,8 +4,8 @@
 const LEVELS = [
   { name: 'Nivel 1 · Novato',    min: 0,     max: 500,      color: '#6B7280', icon: '🌱' },
   { name: 'Nivel 2 · Aprendiz',  min: 500,   max: 1500,     color: '#10B981', icon: '📈' },
-  { name: 'Nivel 3 · Operador',  min: 1500,  max: 3500,     color: '#06B6D4', icon: '🎯' },
-  { name: 'Nivel 4 · Trader',    min: 3500,  max: 7000,     color: '#8B5CF6', icon: '💹' },
+  { name: 'Nivel 3 · Operador',  min: 1500,  max: 3500,     color: '#1278B7', icon: '🎯' },
+  { name: 'Nivel 4 · Trader',    min: 3500,  max: 7000,     color: '#1278B7', icon: '💹' },
   { name: 'Nivel 5 · Experto',   min: 7000,  max: 12000,    color: '#F59E0B', icon: '🏆' },
   { name: 'Nivel 6 · Élite',     min: 12000, max: Infinity, color: '#EC4899', icon: '💎' },
 ]
@@ -66,7 +66,7 @@ const ALL_BADGES = [
     req: t => t.length >= 1,
   },
   {
-    id: 'diamond', name: 'Veterano', emoji: '💎', color: '#06B6D4',
+    id: 'diamond', name: 'Veterano', emoji: '💎', color: '#1278B7',
     desc: 'Llega a 25 trades cerrados',
     achieved: '25 trades cerrados registrados. Ya tienes datos reales con los que trabajar.',
     req: t => t.filter(x => x.closed).length >= 25,
@@ -120,7 +120,7 @@ const ALL_BADGES = [
     req: t => t.filter(x => x.closed && SCALPER_TFS.includes(String(x.tf))).length >= 5,
   },
   {
-    id: 'daytrader', name: 'Day Trader', emoji: '📊', color: '#8B5CF6',
+    id: 'daytrader', name: 'Day Trader', emoji: '📊', color: '#1278B7',
     desc: 'Opera 5 trades en TF 1h o 4h',
     achieved: 'Más de 5 trades en 1h/4h. Tu estilo es el intradía con contexto.',
     req: t => t.filter(x => x.closed && DAYTRADER_TFS.includes(String(x.tf))).length >= 5,
