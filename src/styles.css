@@ -1819,3 +1819,17 @@ a.btn-primary {
 .equity-card {
   margin-top: 0 !important;
 }
+
+/* ── REVERT gap — restaurar espaciado normal ── */
+.page-main { gap: 14px !important; }
+.card .card-body { margin-bottom: 16px !important; }
+.equity-card .card-header { padding-top: 24px !important; }
+.equity-card { margin-top: 0 !important; }
+
+/* ── Equity Curve MÁS GRANDE ── */
+.equity-card {
+  min-height: 360px !important;
+}
+.equity-card .card-body {
+  min-height: 300px !important;
+}
