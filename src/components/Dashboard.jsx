@@ -316,15 +316,35 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
 
       {/* ── RIGHT PANEL ── */}
       <aside className="page-right-panel">
-        {/* Capital widget */}
-        <div className="card" style={{ marginBottom: 12 }}>
-          <div className="card-header"><div className="card-title">Capital</div></div>
-          <div className="card-body" style={{ paddingTop: 12 }}>
-            <div style={{ fontSize: 26, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.04em', marginBottom: 4 }}>
+        {/* Capital widget — DESTACADO */}
+        <div className="card capital-hero-card" style={{ marginBottom: 12 }}>
+          <div className="card-header"><div className="card-title" style={{ fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>💰 Capital del mes</div></div>
+          <div className="card-body" style={{ paddingTop: 8 }}>
+            <div style={{ fontSize: 30, fontWeight: 800, letterSpacing: '-0.05em', marginBottom: 6, background: stats.rentPct >= 0 ? 'linear-gradient(135deg, #ffffff 0%, #4ade80 100%)' : 'linear-gradient(135deg, #ffffff 0%, #f87171 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               {stats.capitalFinal !== null ? `$${Math.round(stats.capitalFinal).toLocaleString('es-ES')}` : capital ? `$${capital.toLocaleString('es-ES')}` : '—'}
             </div>
-            {capital > 0 && <div style={{ fontSize: 13, color: stats.rentPct >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>{stats.rentPct >= 0 ? '▲' : '▼'} {Math.abs(stats.rentPct || 0).toFixed(1)}%</div>}
-            {capital > 0 && <div style={{ fontSize: 11, color: 'var(--text-faint)', marginTop: 2 }}>Inicial: ${capital.toLocaleString('es-ES')}</div>}
+            {capital > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <span style={{ fontSize: 15, fontWeight: 700, color: stats.rentPct >= 0 ? 'var(--green)' : 'var(--red)' }}>
+                  {stats.rentPct >= 0 ? '▲' : '▼'} {Math.abs(stats.rentPct || 0).toFixed(1)}%
+                </span>
+                <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>este mes</span>
+              </div>
+            )}
+            {capital > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>Inicial</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)' }}>${capital.toLocaleString('es-ES')}</span>
+              </div>
+            )}
+            {capital > 0 && stats.pnl !== 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 11, color: 'var(--text-faint)' }}>P&L</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: stats.pnl >= 0 ? 'var(--green)' : 'var(--red)' }}>
+                  {stats.pnl >= 0 ? '+' : ''}{formatMoney(stats.pnl)}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

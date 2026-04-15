@@ -622,17 +622,6 @@ EJEMPLOS:
           </div>
         </div>
 
-        {capital > 0 && (
-          <div className="sidebar-widget">
-            <div className="sidebar-widget-label">Capital Final del mes</div>
-            <div className="sidebar-widget-value" style={{ color: capitalActual > capital ? '#22c55e' : capitalActual < capital ? '#ef4444' : '#fff' }}>
-              ${capitalActual.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </div>
-            <div className="xp-next" style={{ marginTop: 2 }}>
-              Inicial: ${capital.toLocaleString('es-ES')}
-              {capitalActual > capital && <span style={{ color: '#22c55e', marginLeft: 4 }}>+{((capitalActual/capital - 1)*100).toFixed(1)}%</span>}
-              {capitalActual < capital && <span style={{ color: '#ef4444', marginLeft: 4 }}>{((capitalActual/capital - 1)*100).toFixed(1)}%</span>}
-            </div>
           </div>
         )}
 
