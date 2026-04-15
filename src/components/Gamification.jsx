@@ -65,12 +65,12 @@ const ALL_BADGES = [
     req: t => t.length >= 1,
   },
   {
-    id: 'diamond', name: 'Diamond', emoji: '💎', color: '#06B6D4',
+    id: 'diamond', name: 'Veterano', emoji: '💎', color: '#06B6D4',
     desc: '25 trades cerrados',
     req: t => t.filter(x => x.closed).length >= 25,
   },
   {
-    id: 'centurion', name: 'Centurión', emoji: '🏆', color: '#EC4899',
+    id: 'centurion', name: 'Leyenda', emoji: '🏆', color: '#EC4899',
     desc: '100 trades cerrados',
     req: t => t.filter(x => x.closed).length >= 100,
   },
@@ -120,7 +120,7 @@ const ALL_BADGES = [
 
   // ── Volumen
   {
-    id: 'prolific', name: 'Prolífico', emoji: '📈', color: '#F59E0B',
+    id: 'prolific', name: 'Incansable', emoji: '📈', color: '#F59E0B',
     desc: '50 trades cerrados',
     req: t => t.filter(x => x.closed).length >= 50,
   },
