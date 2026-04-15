@@ -558,14 +558,12 @@ EJEMPLOS:
 
   const capital = caps[currentMonth] || 0
 
-  // Capital actual = capital inicial + PnL de trades cerrados del mes (para cálculo de riesgo dinámico)
+  // Capital final = capital inicial + P&L del mes (igual que calcStats en Dashboard)
   const capitalActual = (() => {
     if (!capital) return 0
-    const monthPrefix = currentMonth // 'YYYY-MM'
-    const closedPnl = trades
-      .filter(t => t.closed && t.pnl != null && (t.date || '').startsWith(monthPrefix))
-      .reduce((sum, t) => sum + (parseFloat(t.pnl) || 0), 0)
-    return capital + closedPnl
+    const mTrades = tradesForMonth(trades, currentMonth)
+    const st = calcStats(mTrades, capital)
+    return st.capitalFinal ?? capital
   })()
 
   if (loading) {
