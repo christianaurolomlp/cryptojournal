@@ -222,24 +222,26 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
         {/* ─── KPI Grid — 4 cards ─── */}
         <div className="kpi-grid">
           <div className="kpi-card">
-            <div className="kpi-label">P&L del mes</div>
-            <div className={`kpi-value ${pnlColor}`}>{formatMoney(stats.pnl)}</div>
-            {capital > 0 && <div className="kpi-sub">{formatPct(stats.rentPct)} rentabilidad</div>}
-          </div>
-          <div className="kpi-card">
-            <div className="kpi-label">Win Rate</div>
-            <div className={`kpi-value ${winRateColor}`}>{stats.winRate.toFixed(1)}%</div>
+            <div className="kpi-label">Operaciones</div>
+            <div className="kpi-value">{stats.total}</div>
             <div className="kpi-sub">{stats.wins}W · {stats.losses}L · {stats.be}BE</div>
           </div>
           <div className="kpi-card">
             <div className="kpi-label">Profit Factor</div>
             <div className={`kpi-value ${pfColor}`}>{stats.profitFactor === Infinity ? '∞' : stats.profitFactor.toFixed(2)}</div>
-            <div className="kpi-sub">Ganancia / Pérdida</div>
+            <div className="kpi-sub">Ganancia / Pérdida bruta</div>
           </div>
           <div className="kpi-card">
             <div className="kpi-label">Max Drawdown</div>
             <div className="kpi-value red">{stats.maxDrawdown > 0 ? `-$${stats.maxDrawdown.toFixed(0)}` : '—'}</div>
             <div className="kpi-sub">{capital > 0 && stats.maxDrawdown > 0 ? `${(stats.maxDrawdown / capital * 100).toFixed(1)}% del capital` : 'Caída máxima'}</div>
+          </div>
+          <div className="kpi-card">
+            <div className="kpi-label">Racha actual</div>
+            <div className={`kpi-value ${stats.currentStreakType === 'WIN' ? 'green' : stats.currentStreakType === 'LOSS' ? 'red' : ''}`}>
+              {stats.currentStreakType ? `${stats.currentStreak} ${stats.currentStreakType === 'WIN' ? '✓' : '✗'}` : '—'}
+            </div>
+            <div className="kpi-sub">Máx: {stats.maxWinStreak}W · {stats.maxLossStreak}L</div>
           </div>
         </div>
 
@@ -444,21 +446,22 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
           </div>
         </div>
 
-        {/* Stats widget */}
+        {/* Mejor / Peor widget */}
         <div className="card" style={{ marginBottom: 12 }}>
-          <div className="card-header"><div className="card-title">Estadísticas</div></div>
+          <div className="card-header"><div className="card-title">Mejor · Peor trade</div></div>
           <div className="card-body" style={{ paddingTop: 12 }}>
-            {[
-              { label: 'Mejor trade', val: stats.bestTrade !== null ? `+$${Math.abs(stats.bestTrade).toFixed(0)}` : '—', color: 'var(--green)' },
-              { label: 'Peor trade', val: stats.worstTrade !== null ? `-$${Math.abs(stats.worstTrade).toFixed(0)}` : '—', color: 'var(--red)' },
-              { label: 'Profit factor', val: stats.profitFactor === Infinity ? '∞' : stats.profitFactor.toFixed(2), color: stats.profitFactor >= 2 ? 'var(--green)' : stats.profitFactor >= 1 ? 'var(--orange)' : 'var(--red)' },
-              { label: 'Racha actual', val: stats.currentStreakType ? `${stats.currentStreak} ${stats.currentStreakType === 'WIN' ? '✓' : '✗'}` : '—', color: stats.currentStreakType === 'WIN' ? 'var(--green)' : stats.currentStreakType === 'LOSS' ? 'var(--red)' : 'var(--text)' },
-            ].map(({ label, val, color }) => (
-              <div key={label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border-subtle)' }}>
-                <span style={{ fontSize: 12, color: 'var(--text-faint)' }}>{label}</span>
-                <span style={{ fontSize: 14, fontWeight: 700, color }}>{val}</span>
-              </div>
-            ))}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+              <span style={{ fontSize: 12, color: 'var(--text-faint)' }}>Mejor trade</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--green)' }}>{stats.bestTrade !== null ? `+$${Math.abs(stats.bestTrade).toFixed(0)}` : '—'}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+              <span style={{ fontSize: 12, color: 'var(--text-faint)' }}>Peor trade</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--red)' }}>{stats.worstTrade !== null ? `-$${Math.abs(stats.worstTrade).toFixed(0)}` : '—'}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0' }}>
+              <span style={{ fontSize: 12, color: 'var(--text-faint)' }}>Abiertas ahora</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>{openTrades.length}</span>
+            </div>
           </div>
         </div>
 

@@ -1719,3 +1719,36 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
   -webkit-backdrop-filter: blur(24px) !important;
   border-bottom: 1px solid rgba(60,100,200,0.10) !important;
 }
+
+/* ══════════════════════════════════════════════════════════
+   FIXES AUROLO 16:41 — sidebar font, nav white, sin borde
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Sidebar: sin borde separador, integrado ── */
+.sidebar {
+  border-right: none !important;
+}
+
+/* ── Nav items: texto siempre blanco/brillante ── */
+.nav-item,
+.nav-item span,
+.nav-link,
+.nav-label,
+.sidebar nav a,
+.sidebar nav button,
+.sidebar a,
+.sidebar button {
+  color: rgba(255,255,255,0.85) !important;
+  font-family: var(--font) !important;
+}
+.nav-item:hover span,
+.nav-item.active span,
+.nav-item:hover,
+.nav-item.active {
+  color: #ffffff !important;
+}
+
+/* Todos los textos en sidebar misma fuente */
+.sidebar * {
+  font-family: var(--font) !important;
+}
