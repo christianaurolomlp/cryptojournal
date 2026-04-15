@@ -622,9 +622,6 @@ EJEMPLOS:
           </div>
         </div>
 
-          </div>
-        )}
-
         <XPBar trades={trades} />
 
         <nav className="sidebar-nav">
