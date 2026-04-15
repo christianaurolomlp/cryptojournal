@@ -6,42 +6,43 @@
 ═══════════════════════════════════════════ */
 
 :root {
-  /* ── Layer3 exact design tokens ── */
-  --bg:            #111318;   /* body / todo el fondo */
-  --bg-card:       #1C2130;   /* cards, superficies elevadas */
-  --bg-card-hover: #232B3E;   /* hover de cards */
-  --bg-elevated:   #202840;   /* superficies anidadas */
-  --bg-input:      #1C2130;   /* inputs, search */
-  --card-elevated: #202840;
-  --sidebar:       #0D1117;   /* igual que bg — sin distinción */
-  --border:        rgba(255,255,255,0.07);   /* bordes de cards */
-  --border-subtle: rgba(255,255,255,0.05);
-  --border-input:  rgba(255,255,255,0.12);
-  --text:          #FFFFFF;   /* texto principal */
-  --text-secondary:#C8C8CC;   /* texto secundario */
-  --text-muted:    #8A8A8E;   /* texto muted */
-  --text-faint:    #6B6B70;   /* footer, timestamps */
-  --accent:        #6C5CE7;   /* purple Layer3 */
+  /* ── Layer3 EXACT tokens (extracted from app.layer3.xyz/discover) ── */
+  --bg:            #101114;   /* body bg — rgb(16,17,20) */
+  --bg-card:       #1E1F24;   /* card bg — rgb(30,31,36) */
+  --bg-card-hover: #26272C;   /* card hover */
+  --bg-elevated:   #26272C;   /* elevated surfaces */
+  --bg-input:      #1E1F24;   /* inputs */
+  --card-elevated: #26272C;
+  --sidebar:       #101114;   /* same as bg — L3 sidebar is transparent */
+  --border:        rgba(255,255,255,0.06); /* very subtle */
+  --border-subtle: rgba(255,255,255,0.04);
+  --border-input:  rgba(255,255,255,0.10);
+  --text:          #FFFFFF;
+  --text-secondary:#E0E0E2;
+  --text-muted:    #A8A8AA;
+  --text-faint:    #848486;   /* exact L3 inactive nav color rgb(132,132,134) */
+  --accent:        #6C5CE7;
   --accent-soft:   rgba(108,92,231,0.15);
   --cyan:          #6C5CE7;
   --cyan-glow:     rgba(108,92,231,0.35);
   --blue:          #6C5CE7;
   --blue-soft:     rgba(108,92,231,0.12);
-  --green:         #22c55e;
-  --green-soft:    rgba(34,197,94,0.10);
-  --red:           #ef4444;
-  --red-soft:      rgba(239,68,68,0.10);
-  --orange:        #F59E0B;
-  --orange-soft:   rgba(245,158,11,0.10);
+  --green:         #4ADE80;
+  --green-soft:    rgba(74,222,128,0.08);
+  --red:           #F87171;
+  --red-soft:      rgba(248,113,113,0.08);
+  --orange:        #FB923C;
+  --orange-soft:   rgba(251,146,60,0.08);
   --pink:          #EC4899;
   --pink-glow:     rgba(236,72,153,0.3);
   --gold:          #F5C842;
-  --nav-active-bg: #1A2540;   /* item activo sidebar */
-  --badge-bg:      #2A2A2E;   /* badges secundarios */
-  --sidebar-width: 260px;
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono: 'Space Mono', monospace;
-  --radius: 16px;
+  --nav-active-bg: #26272C;   /* L3 active nav same as elevated */
+  --badge-bg:      #26272C;
+  --sidebar-width: 280px;     /* exact L3 value */
+  --header-height: 80px;
+  --font:          "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:          "Space Mono", monospace;
+  --radius:        16px;      /* exact L3 card border-radius */
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
   --shadow:    0 2px 8px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
@@ -78,21 +79,21 @@
 }
 
 [data-theme="dark"] {
-  /* Exact Layer3 tokens — identical to :root */
-  --bg:            #111318;
-  --bg-card:       #1C2130;
-  --bg-card-hover: #232B3E;
-  --bg-elevated:   #202840;
-  --bg-input:      #1C2130;
-  --card-elevated: #202840;
-  --sidebar:       #0D1117;
-  --border:        rgba(255,255,255,0.07);
+  /* Exact Layer3 tokens — mirrors :root */
+  --bg:            #101114;
+  --bg-card:       #1E1F24;
+  --bg-card-hover: #26272C;
+  --bg-elevated:   #26272C;
+  --bg-input:      #1E1F24;
+  --card-elevated: #26272C;
+  --sidebar:       #101114;
+  --border:        rgba(255,255,255,0.06);
   --border-subtle: rgba(255,255,255,0.04);
-  --border-input:  rgba(255,255,255,0.12);
+  --border-input:  rgba(255,255,255,0.10);
   --text:          #FFFFFF;
-  --text-secondary:#C8C8CC;
-  --text-muted:    #8A8A8E;
-  --text-faint:    #6B6B70;
+  --text-secondary:#E0E0E2;
+  --text-muted:    #A8A8AA;
+  --text-faint:    #848486;
   --accent:        #6C5CE7;
   --accent-soft:   rgba(108,92,231,0.15);
   --cyan:          #6C5CE7;
@@ -104,10 +105,10 @@
   --red-soft:      rgba(248,113,113,0.08);
   --orange:        #FB923C;
   --orange-soft:   rgba(251,146,60,0.08);
-  --nav-active-bg: #1A2540;
-  --badge-bg:      #1C2130;
+  --nav-active-bg: #26272C;
+  --sidebar-width: 280px;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
-  --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow:    0 2px 8px rgba(0,0,0,0.3);
   --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
   --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
 }
@@ -335,7 +336,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .card {
   background: var(--bg-card);
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.05);
   box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   overflow: hidden;
   animation: fadeInUp 0.3s ease both;
@@ -360,7 +361,7 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 .kpi-card {
   background: var(--bg-card);
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.05);
   box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   padding: 20px 20px 18px;
   animation: fadeInUp 0.3s ease both;
@@ -1234,29 +1235,18 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 /* ── Ambient background ── */
 .bg-ambient { display: none; } /* hidden in favor of ::before pseudo-element */
 
-/* ── Layer3 ambient glow — replicates app.layer3.xyz lights ── */
+/* ── Layer3 ambient glow — exact replication of app.layer3.xyz/discover ── */
 .app-layout::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  /* Layer3 blue radial glow — top center, 1080px circle */
   background:
-    radial-gradient(ellipse 80% 50% at -10% 20%, rgba(99,102,241,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 110% 80%, rgba(108,92,231,0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 30% at 50% -5%, rgba(99,102,241,0.06) 0%, transparent 50%);
-}
-
-/* ── Main content area glow ── */
-.main-content::before {
-  content: "";
-  position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse 50% 40% at 85% 15%, rgba(99,102,241,0.07) 0%, transparent 55%),
-    radial-gradient(ellipse 35% 25% at 15% 85%, rgba(74,222,128,0.04) 0%, transparent 50%);
+    radial-gradient(ellipse 75% 60% at 50% -10%, rgba(28,119,255,0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at -5% 30%, rgba(113,51,245,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 105% 70%, rgba(113,51,245,0.08) 0%, transparent 55%);
 }
 
 .app-layout { position: relative; }
