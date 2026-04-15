@@ -2079,3 +2079,23 @@ input[type="search"],
 [class*="Search"] {
   border-radius: 10px !important;
 }
+
+/* ── FIX RAÍZ: card-body NO debe heredar estilos de [class*="card"] ── */
+.card-body,
+[class*="card-body"],
+[class*="CardBody"] {
+  background: rgba(8,9,14,0.55) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+}
+
+/* Excluir card-body del selector broad — restaurar solo outer cards */
+.card:not(.card-body),
+.kpi-card,
+.chart-card,
+.risk-card,
+.hero-banner {
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 14px !important;
+}
