@@ -1614,3 +1614,48 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 
 /* Ensure z-index above glow */
 .sidebar, .main-content, .topbar { /* glow-through */ position: relative; z-index: 1; }
+
+/* ══════════════════════════════════════════════════════════
+   GLASS FINAL — cards translúcidas (Layer3 style)
+   ══════════════════════════════════════════════════════════ */
+
+/* Cards más translúcidas para que se note el glass */
+.card,
+.kpi-card,
+.page-right-panel .card {
+  background: rgba(22, 23, 28, 0.55) !important;
+  backdrop-filter: blur(24px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(140%) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+
+.card:hover,
+.kpi-card:hover {
+  border-color: rgba(255,255,255,0.12) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+
+/* Hero banner — glass azul */
+.hero-banner {
+  background: rgba(28,119,255,0.08) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border: 1px solid rgba(28,119,255,0.20) !important;
+  box-shadow: 0 0 40px rgba(28,119,255,0.08), inset 0 1px 0 rgba(28,119,255,0.15) !important;
+}
+
+/* Sidebar también translúcido */
+.sidebar {
+  background: rgba(14, 15, 20, 0.75) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Topbar translúcida */
+.topbar {
+  background: rgba(14, 15, 20, 0.60) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
