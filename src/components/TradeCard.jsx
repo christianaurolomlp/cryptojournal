@@ -1,4 +1,5 @@
 import { formatMoney } from '../utils.js'
+import CryptoLogo from './CryptoLogo.jsx'
 
 
 function getPnlClass(result) {
@@ -27,7 +28,10 @@ export default function TradeCard({ trade, onEdit, onDelete, onClose, onReopen, 
     <div className={`trade-card ${getCardClass(trade)}`}>
       <div className="trade-card-top">
         <div className="trade-card-left">
-          <span className={`trade-crypto crypto-tag crypto-${['BTC','ETH','SOL','BNB','XRP'].includes(trade.crypto) ? trade.crypto : 'default'}`}>{trade.crypto}</span>
+          <span className={`trade-crypto crypto-tag crypto-${['BTC','ETH','SOL','BNB','XRP'].includes(trade.crypto) ? trade.crypto : 'default'}`} style={{display:'inline-flex',alignItems:'center',gap:5}}>
+            <CryptoLogo symbol={trade.crypto} size={18} />
+            {trade.crypto}
+          </span>
           <span className={`badge badge-${trade.type === 'LONG' ? 'long' : 'short'}`}>
             {trade.type}
           </span>
