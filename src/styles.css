@@ -2048,3 +2048,111 @@ aside.sidebar {
   position: fixed !important;
   z-index: 99999 !important;
 }
+
+/* ══════════════════════════════════════════════════════
+   TRADE CARDS — GAMING GLOW BORDERS
+   ══════════════════════════════════════════════════════ */
+
+/* Base */
+.trade-card {
+  position: relative !important;
+  border-radius: 14px !important;
+  border-left: none !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+.trade-card:hover {
+  transform: translateY(-2px) !important;
+}
+
+/* WIN — verde esmeralda */
+.trade-card.win {
+  border: 1.5px solid rgba(34,197,94,0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(34,197,94,0.15),
+    0 0 12px rgba(34,197,94,0.25),
+    0 0 30px rgba(34,197,94,0.10),
+    inset 0 0 20px rgba(34,197,94,0.04) !important;
+  background: rgba(28,36,30,0.75) !important;
+}
+.trade-card.win:hover {
+  box-shadow:
+    0 0 0 1px rgba(34,197,94,0.30),
+    0 0 20px rgba(34,197,94,0.40),
+    0 0 50px rgba(34,197,94,0.15),
+    inset 0 0 20px rgba(34,197,94,0.06) !important;
+}
+
+/* LOSS — rojo intenso */
+.trade-card.loss {
+  border: 1.5px solid rgba(239,68,68,0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(239,68,68,0.15),
+    0 0 12px rgba(239,68,68,0.25),
+    0 0 30px rgba(239,68,68,0.10),
+    inset 0 0 20px rgba(239,68,68,0.04) !important;
+  background: rgba(36,22,22,0.75) !important;
+}
+.trade-card.loss:hover {
+  box-shadow:
+    0 0 0 1px rgba(239,68,68,0.30),
+    0 0 20px rgba(239,68,68,0.40),
+    0 0 50px rgba(239,68,68,0.15),
+    inset 0 0 20px rgba(239,68,68,0.06) !important;
+}
+
+/* BE — ámbar */
+.trade-card.be {
+  border: 1.5px solid rgba(245,158,11,0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(245,158,11,0.15),
+    0 0 12px rgba(245,158,11,0.25),
+    0 0 30px rgba(245,158,11,0.10),
+    inset 0 0 20px rgba(245,158,11,0.04) !important;
+  background: rgba(36,30,18,0.75) !important;
+}
+
+/* OPEN — cyan/MLP */
+.trade-card.open {
+  border: 1.5px solid rgba(56,216,245,0.50) !important;
+  box-shadow:
+    0 0 0 1px rgba(56,216,245,0.12),
+    0 0 14px rgba(56,216,245,0.25),
+    0 0 35px rgba(56,216,245,0.10),
+    inset 0 0 20px rgba(56,216,245,0.04) !important;
+  background: rgba(18,28,36,0.75) !important;
+}
+.trade-card.open:hover {
+  box-shadow:
+    0 0 0 1px rgba(56,216,245,0.25),
+    0 0 22px rgba(56,216,245,0.40),
+    0 0 55px rgba(56,216,245,0.15),
+    inset 0 0 24px rgba(56,216,245,0.06) !important;
+}
+
+/* PROTEGIDA — escudo pulsante encima del borde cyan */
+.trade-card.open .badge[style*="shield"],
+.trade-card.open .badge-open + span,
+span.badge[style*="Protegida"],
+span.badge:has(.shield-badge) {
+  animation: shield-pulse 2s ease-in-out infinite !important;
+}
+
+/* Corner accent — esquina superior izquierda de color */
+.trade-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 14px 0 0 14px;
+  opacity: 0.8;
+}
+.trade-card.win::before  { background: linear-gradient(to bottom, #22c55e, rgba(34,197,94,0.2)); }
+.trade-card.loss::before { background: linear-gradient(to bottom, #ef4444, rgba(239,68,68,0.2)); }
+.trade-card.be::before   { background: linear-gradient(to bottom, #F59E0B, rgba(245,158,11,0.2)); }
+.trade-card.open::before { background: linear-gradient(to bottom, #38d8f5, rgba(56,216,245,0.2)); }
+
+@keyframes shield-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(56,216,245,0.4); }
+  50%       { box-shadow: 0 0 14px rgba(56,216,245,0.9), 0 0 24px rgba(56,216,245,0.4); }
+}
