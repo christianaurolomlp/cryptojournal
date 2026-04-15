@@ -160,7 +160,7 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
       pool.push({ icon:'🔥', label:'EN RACHA', text: `Llevas <b style="color:#22c55e">${curStreak} wins consecutivos</b>. Mantén el mismo proceso, el mercado está respondiendo.` })
 
     if (curStreak >= 2 && curType === 'LOSS')
-      pool.push({ icon:'🛑', label:'ALERTA RACHA', text: `Llevas <b style="color:#ef4444">${curStreak} pérdidas seguidas</b>. Revisa tu sesgo antes del siguiente trade.` })
+      pool.push({ icon:'🔄', label:'AJUSTA EL SESGO', text: `Llevas <b style="color:#ef4444">${curStreak} pérdidas seguidas</b>. Revisa la dirección del mercado — puede que el bias haya cambiado.` })
 
     if (mostTraded && mostTraded[1].total >= 3)
       pool.push({ icon:'📊', label:'MÁS OPERADO', text: `Este mes has operado <b style="color:#8B5CF6">${mostTraded[0]}</b> ${mostTraded[1].total} veces. Es tu activo principal — asegúrate de tener un edge claro en él.` })
@@ -168,8 +168,8 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
     if (stats.winRate > 0 && stats.profitFactor >= 2)
       pool.push({ icon:'💎', label:'TRADING SÓLIDO', text: `Con un profit factor de <b style="color:#06B6D4">${stats.profitFactor.toFixed(2)}</b> y win rate del ${stats.winRate.toFixed(0)}%, tu sistema está funcionando. Sigue el proceso.` })
 
-    if (avgPerDay && parseFloat(avgPerDay) > 4)
-      pool.push({ icon:'⚡', label:'SOBRETRADING', text: `Haces un promedio de <b style="color:#F59E0B">${avgPerDay} trades/día</b> activo. Un volumen alto puede indicar sobretrading. Considera si cada trade tiene un edge real.` })
+    if (avgPerDay && parseFloat(avgPerDay) >= 3)
+      pool.push({ icon:'⚡', label:'ACTIVO', text: `Estás operando <b style="color:#F59E0B">${avgPerDay} trades/día</b> de media. Tu ritmo es alto — más datos = mejor estadística a largo plazo.` })
 
     if (!pool.length) return null
     return pool[dayOfMonth % pool.length]
@@ -193,14 +193,6 @@ export default function Dashboard({ trades, caps, currentMonth, theme, onEdit, o
           <div className="insight-text" dangerouslySetInnerHTML={{ __html: insight.text }} />
         </div>
       )}
-
-      <div className="quick-add-card" style={{ position: 'relative' }}>
-        <div className="quick-add-text">
-          <div className="quick-add-title">+ Registrar operación</div>
-          <div className="quick-add-sub">Cada trade suma XP al diario naval ⚓</div>
-        </div>
-        <button className="quick-add-btn" onClick={onNewTrade}>Nueva operación →</button>
-      </div>
 
       {/* ─── KPI Strip — 4 cards ─── */}
       <div className="kpi-grid">

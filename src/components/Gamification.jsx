@@ -62,23 +62,33 @@ const ALL_BADGES = [
   {
     id: 'first', name: 'First Trade', emoji: '⚓', color: '#6B7280',
     desc: 'Registra tu primer trade',
+    achieved: '¡Lo conseguiste! Registraste tu primer trade en el diario.',
     req: t => t.length >= 1,
   },
   {
     id: 'diamond', name: 'Veterano', emoji: '💎', color: '#06B6D4',
-    desc: '25 trades cerrados',
+    desc: 'Llega a 25 trades cerrados',
+    achieved: '25 trades cerrados registrados. Ya tienes datos reales con los que trabajar.',
     req: t => t.filter(x => x.closed).length >= 25,
   },
   {
+    id: 'prolific', name: 'Incansable', emoji: '📈', color: '#F59E0B',
+    desc: 'Llega a 50 trades cerrados',
+    achieved: '50 trades cerrados. Tu muestra estadística empieza a ser sólida.',
+    req: t => t.filter(x => x.closed).length >= 50,
+  },
+  {
     id: 'centurion', name: 'Leyenda', emoji: '🏆', color: '#EC4899',
-    desc: '100 trades cerrados',
+    desc: 'Llega a 100 trades cerrados',
+    achieved: '100 trades cerrados. Eres de los pocos que llegan aquí con datos reales.',
     req: t => t.filter(x => x.closed).length >= 100,
   },
 
   // ── Performance
   {
     id: 'fire', name: 'On Fire', emoji: '🔥', color: '#F59E0B',
-    desc: '5 wins en el mismo mes',
+    desc: 'Consigue 5 wins en el mismo mes',
+    achieved: '5 wins en un mes. El mercado está respondiendo a tu análisis.',
     req: t => {
       const byMonth = {}
       t.filter(x => x.closed && x.result === 'WIN').forEach(x => {
@@ -90,7 +100,8 @@ const ALL_BADGES = [
   },
   {
     id: 'sniper', name: 'Sniper', emoji: '🎯', color: '#10B981',
-    desc: '5 wins consecutivos',
+    desc: 'Encadena 5 wins consecutivos',
+    achieved: '5 wins seguidos. Tu proceso está alineado con el mercado.',
     req: t => {
       let s = 0, m = 0
       t.filter(x => x.closed)
@@ -101,28 +112,24 @@ const ALL_BADGES = [
     },
   },
 
-  // ── Estilo de trading (por TF usado)
+  // ── Estilo de trading
   {
     id: 'scalper', name: 'Scalper', emoji: '⚡', color: '#22c55e',
-    desc: '5 trades en TF 1m-15m',
+    desc: 'Opera 5 trades en TF cortos (1m–15m)',
+    achieved: 'Más de 5 trades en TF de 1m a 15m. Dominas los movimientos rápidos.',
     req: t => t.filter(x => x.closed && SCALPER_TFS.includes(String(x.tf))).length >= 5,
   },
   {
     id: 'daytrader', name: 'Day Trader', emoji: '📊', color: '#8B5CF6',
-    desc: '5 trades en TF 1h-4h',
+    desc: 'Opera 5 trades en TF 1h o 4h',
+    achieved: 'Más de 5 trades en 1h/4h. Tu estilo es el intradía con contexto.',
     req: t => t.filter(x => x.closed && DAYTRADER_TFS.includes(String(x.tf))).length >= 5,
   },
   {
     id: 'swing', name: 'Swing Trader', emoji: '🌊', color: '#38d8f5',
-    desc: '3 trades en TF 1d o superior',
+    desc: 'Opera 3 trades en TF 1d o superior',
+    achieved: 'Más de 3 trades en diario o superior. Juegas a grande y con paciencia.',
     req: t => t.filter(x => x.closed && SWING_TFS.includes(String(x.tf))).length >= 3,
-  },
-
-  // ── Volumen
-  {
-    id: 'prolific', name: 'Incansable', emoji: '📈', color: '#F59E0B',
-    desc: '50 trades cerrados',
-    req: t => t.filter(x => x.closed).length >= 50,
   },
 ]
 
@@ -135,7 +142,7 @@ export function BadgeGrid({ trades }) {
           <div
             key={b.id}
             className={`badge-item ${ok ? 'unlocked' : 'locked'}`}
-            title={ok ? `✅ ${b.name}` : `🔒 ${b.desc}`}
+            title={ok ? `✅ ${b.name} — ${b.achieved}` : `🔒 ${b.name}: ${b.desc}`}
           >
             <div
               className="badge-emoji"
