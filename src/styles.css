@@ -1806,3 +1806,16 @@ a.btn-primary {
 
 /* ── Equity más pegada al RiskCard ── */
 .page-main { gap: 6px !important; }
+
+/* ── Fix gap RiskCard → Equity Curve ── */
+/* Eliminar margin-bottom del card-body en RiskCard y padding-top del header equity */
+.equity-card .card-header {
+  padding-top: 14px !important;
+}
+/* card-body sin margin inferior para no crear gap falso */
+.card .card-body {
+  margin-bottom: 0 !important;
+}
+.equity-card {
+  margin-top: 0 !important;
+}
