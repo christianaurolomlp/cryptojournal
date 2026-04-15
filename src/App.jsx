@@ -613,6 +613,13 @@ EJEMPLOS:
           </div>
         </div>
 
+        {capital > 0 && (
+          <div className="sidebar-widget">
+            <div className="sidebar-widget-label">Capital Actual</div>
+            <div className="sidebar-widget-value">${capital.toLocaleString('es-ES')}</div>
+          </div>
+        )}
+
         <nav className="sidebar-nav">
           {navItems.map(item => {
             const Icon = item.icon
@@ -622,7 +629,7 @@ EJEMPLOS:
                 className={`nav-item ${view === item.id ? 'active' : ''}`}
                 onClick={() => navigate(item.id)}
               >
-                <Icon size={16} strokeWidth={1.8} />
+                <Icon size={18} strokeWidth={1.8} />
                 {item.label}
               </button>
             )
@@ -631,7 +638,7 @@ EJEMPLOS:
 
         <div className="sidebar-footer">
           <button className="nav-item" onClick={toggleTheme}>
-            {theme === 'light' ? <Moon size={16} strokeWidth={1.8} /> : <Sun size={16} strokeWidth={1.8} />}
+            {theme === 'light' ? <Moon size={18} strokeWidth={1.8} /> : <Sun size={18} strokeWidth={1.8} />}
             {theme === 'light' ? 'Modo oscuro' : 'Modo claro'}
           </button>
           <button
@@ -670,6 +677,13 @@ EJEMPLOS:
                 <strong>{capital ? `$${capital.toLocaleString('es-ES')}` : '— Sin definir'}</strong>
               </button>
             )}
+
+            <input
+              className="topbar-search"
+              placeholder="Buscar operaciones..."
+              type="search"
+              style={{ display: typeof window !== 'undefined' && window.innerWidth <= 768 ? 'none' : undefined }}
+            />
           </div>
 
           <div className="topbar-right">
