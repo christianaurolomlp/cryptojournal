@@ -1946,17 +1946,21 @@ a.btn-primary {
   pointer-events: none !important;
 }
 
-/* ── Fondo Layer3 exacto: #101114 ── */
+
+/* ════════════════════════════════════════════════════════════════
+   BLOQUE FINAL — LAYER3 DESIGN SYSTEM (rewrite limpio)
+   ════════════════════════════════════════════════════════════════ */
+
+/* 1. Fondo página: #101114 Layer3 exacto */
 :root { --bg: #101114; }
 [data-theme="dark"] { --bg: #101114; }
-body {
-  background: radial-gradient(ellipse 100% 55% at 50% -8%, rgba(17,84,185,0.35) 0%, transparent 60%), #101114 !important;
+html, body {
+  background: radial-gradient(ellipse 100% 55% at 50% -8%, rgba(17,84,185,0.30) 0%, transparent 60%), #101114 !important;
 }
 
-/* ── Sidebar: fondo transparente, mismo que página ── */
+/* 2. Sidebar: completamente transparente, mismo fondo que página */
 .sidebar,
-aside.sidebar,
-[class*="sidebar"] {
+aside.sidebar {
   background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1964,138 +1968,83 @@ aside.sidebar,
   box-shadow: none !important;
 }
 
-/* ── Cards Layer3 exacto: gris neutro #1E1F24, sin azul ── */
-:root {
-  --card-bg: rgba(30,31,36,0.90);
-  --card-body: rgba(22,23,28,0.85);
-}
-[data-theme="dark"] {
-  --card-bg: rgba(30,31,36,0.90);
-  --card-body: rgba(22,23,28,0.85);
-}
-
-/* Todas las cards/panels: gris neutro Layer3 */
-.card,
-.stat-card,
-.kpi-card,
-.right-card,
-.hero-banner,
-.chart-card,
-.risk-card,
-[class*="card"],
-[class*="panel"],
-[class*="section"] {
-  background: rgba(30,31,36,0.92) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border-color: rgba(255,255,255,0.07) !important;
-}
-
-/* Card body (inner dark section) */
-.card-body,
-[class*="card-body"],
-[class*="inner"] {
-  background: rgba(20,21,26,0.80) !important;
-}
-
-/* Nav item active: más sutil, sin parecer separado */
-.nav-item.active,
-.nav-item:hover {
-  background: rgba(255,255,255,0.06) !important;
-  border-radius: 8px !important;
-}
-.nav-item {
-  background: transparent !important;
-}
-
-/* Hero card: un toque azul sutil como Layer3 */
-.hero-banner {
-  background: rgba(28,34,52,0.92) !important;
-  border-color: rgba(56,216,245,0.12) !important;
-}
-
-/* ── Fix: panel derecho SIN fondo extra, transparente ── */
+/* 3. Panel derecho: sin fondo propio */
 .page-right-panel {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  padding-right: 16px !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
-/* ── Cards más transparentes (menos opacas, más sutiles) ── */
+/* 4. CARDS exteriores — gris Layer3, rounded */
 .card,
-.stat-card,
 .kpi-card,
-.right-card,
-.chart-card,
-.risk-card,
-[class*="card"]:not(.capital-hero-card) {
-  background: rgba(28,29,34,0.65) !important;
-  border: 1px solid rgba(255,255,255,0.06) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-}
-
-/* Hero banner: más transparente también */
-.hero-banner {
-  background: rgba(22,28,46,0.55) !important;
-  border: 1px solid rgba(56,216,245,0.10) !important;
-}
-
-/* ── URGENTE: restaurar border-radius en todos los cards ── */
-.card,
-.stat-card,
-.kpi-card,
-.right-card,
 .chart-card,
 .risk-card,
 .hero-banner,
-.capital-hero-card,
-[class*="card"],
-[class*="panel"] > *,
-.trade-item,
-.trade-row,
-[class*="trade"] {
-  border-radius: 14px !important;
+.equity-card {
+  background: rgba(28,29,34,0.72) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  overflow: hidden !important;
 }
 
-/* Right panel: padding para que no toque el borde derecho */
-.page-right-panel {
-  padding: 0 16px 0 0 !important;
-}
-
-/* Trade list items */
-.trade-item,
-[class*="trade-item"],
-[class*="trade-row"],
-[class*="TradeItem"] {
-  border-radius: 12px !important;
-}
-
-/* Search input */
-input[type="search"],
-[class*="search"],
-[class*="Search"] {
-  border-radius: 10px !important;
-}
-
-/* ── FIX RAÍZ: card-body NO debe heredar estilos de [class*="card"] ── */
-.card-body,
-[class*="card-body"],
-[class*="CardBody"] {
+/* 5. CARD-BODY interior: más oscuro, sin borde */
+.card-body {
   background: rgba(8,9,14,0.55) !important;
   border: none !important;
   border-radius: 10px !important;
   box-shadow: none !important;
+  overflow: visible !important;
 }
 
-/* Excluir card-body del selector broad — restaurar solo outer cards */
-.card:not(.card-body),
-.kpi-card,
-.chart-card,
-.risk-card,
+/* 6. Hero banner: toque azul suave */
 .hero-banner {
+  background: rgba(18,24,42,0.72) !important;
+  border: 1px solid rgba(56,216,245,0.10) !important;
+}
+
+/* 7. Capital card: degradé especial */
+.capital-hero-card {
+  background: linear-gradient(135deg, rgba(18,28,50,0.80) 0%, rgba(10,30,60,0.70) 100%) !important;
+  border: 1px solid rgba(74,222,128,0.18) !important;
+  border-radius: 16px !important;
+}
+
+/* 8. Trade items: sin borde extra, rounded */
+.trade-item,
+[class*="trade-item"],
+[class*="TradeItem"] {
+  background: rgba(28,29,34,0.70) !important;
   border: 1px solid rgba(255,255,255,0.07) !important;
   border-radius: 14px !important;
+}
+
+/* 9. Pills / tags: rounded pill */
+.tag, .badge, .pill,
+[class*="tag-"],
+[class*="badge-"],
+[class*="-tag"],
+[class*="-badge"] {
+  border-radius: 999px !important;
+}
+
+/* 10. Nav items */
+.nav-item { background: transparent !important; border-radius: 8px !important; }
+.nav-item.active, .nav-item:hover { background: rgba(255,255,255,0.06) !important; }
+
+/* 11. Badges sin nombre */
+.badge-item .badge-name { display: none !important; }
+.badge-grid { grid-template-columns: repeat(3,1fr) !important; gap: 8px !important; }
+.badge-item { padding: 6px !important; background: transparent !important; border: none !important; }
+
+/* 12. Tooltip siempre encima */
+[data-tip]:hover::after {
+  position: fixed !important;
+  z-index: 99999 !important;
 }
