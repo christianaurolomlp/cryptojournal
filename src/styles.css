@@ -1310,3 +1310,44 @@ input, select, textarea { -webkit-appearance: none; appearance: none; }
 
 /* ── Sidebar widget con P&L color ── */
 .sidebar-widget-value { font-family: var(--mono) !important; letter-spacing: -0.03em; }
+
+/* ── Badge tooltip ── */
+.badge-item { position: relative; cursor: pointer; }
+.badge-item[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1C1F2E;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-family: var(--font);
+  color: #E2E4EF;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  width: 180px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 999;
+}
+.badge-item[data-tip]::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(255,255,255,0.12);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 999;
+}
+.badge-item[data-tip]:hover::after,
+.badge-item[data-tip]:hover::before { opacity: 1; }

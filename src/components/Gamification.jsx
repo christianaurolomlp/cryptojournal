@@ -142,7 +142,7 @@ export function BadgeGrid({ trades }) {
           <div
             key={b.id}
             className={`badge-item ${ok ? 'unlocked' : 'locked'}`}
-            title={ok ? `✅ ${b.name} — ${b.achieved}` : `🔒 ${b.name}: ${b.desc}`}
+            data-tip={ok ? `✅ ${b.achieved}` : `🔒 ${b.desc}`}
           >
             <div
               className="badge-emoji"
