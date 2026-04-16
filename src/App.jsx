@@ -1,4 +1,71 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+
+// ─── Password Gate ────────────────────────────────────────────────────────────
+const AUTH_KEY = 'cj-auth-v1'
+const CORRECT_HASH = btoa('NAVY2026!')
+
+function PasswordGate({ onUnlock }) {
+  const [pw, setPw] = useState('')
+  const [error, setError] = useState(false)
+  const [shake, setShake] = useState(false)
+  const inputRef = useRef(null)
+
+  useEffect(() => { inputRef.current?.focus() }, [])
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    if (btoa(pw) === CORRECT_HASH) {
+      localStorage.setItem(AUTH_KEY, CORRECT_HASH)
+      onUnlock()
+    } else {
+      setError(true)
+      setShake(true)
+      setPw('')
+      setTimeout(() => setShake(false), 600)
+    }
+  }
+
+  return (
+    <div style={{
+      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      background: 'linear-gradient(135deg, #0a0e1a 0%, #101114 100%)',
+      fontFamily: 'Inter, sans-serif'
+    }}>
+      <div style={{
+        background: 'rgba(28,29,34,0.85)', border: '1px solid rgba(56,216,245,0.15)',
+        borderRadius: 20, padding: '40px 48px', width: 360, textAlign: 'center',
+        backdropFilter: 'blur(20px)', boxShadow: '0 20px 60px rgba(0,0,0,0.5)'
+      }}>
+        <div style={{ fontSize: 40, marginBottom: 12 }}>⚓</div>
+        <h2 style={{ color: '#FAFAFA', fontWeight: 700, fontSize: 22, margin: '0 0 6px' }}>BITÁCORA</h2>
+        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, marginBottom: 28 }}>Acceso privado</p>
+        <form onSubmit={handleSubmit}>
+          <input
+            ref={inputRef}
+            type="password"
+            value={pw}
+            onChange={e => { setPw(e.target.value); setError(false) }}
+            placeholder="Contraseña"
+            style={{
+              width: '100%', padding: '12px 16px', borderRadius: 10, fontSize: 15,
+              background: 'rgba(8,9,14,0.8)', border: `1px solid ${error ? '#ef4444' : 'rgba(255,255,255,0.1)'}`,
+              color: '#FAFAFA', outline: 'none', boxSizing: 'border-box',
+              animation: shake ? 'shake 0.5s ease' : 'none', marginBottom: 8
+            }}
+          />
+          {error && <p style={{ color: '#ef4444', fontSize: 12, margin: '0 0 12px' }}>Contraseña incorrecta</p>}
+          <button type="submit" style={{
+            width: '100%', padding: '12px', borderRadius: 10, fontSize: 15, fontWeight: 600,
+            background: 'linear-gradient(135deg, #38d8f5, #22c55e)', color: '#0a0e1a',
+            border: 'none', cursor: 'pointer', marginTop: error ? 0 : 12
+          }}>Entrar</button>
+        </form>
+      </div>
+      <style>{`@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}`}</style>
+    </div>
+  )
+}
+// ─────────────────────────────────────────────────────────────────────────────
 import { useTheme } from './hooks/useTheme'
 import { VIEWS } from './constants.js'
 import { LayoutDashboard, CalendarDays, BarChart2, CalendarRange, History, Settings as SettingsIcon, Plus, Mic, MicOff, Zap, RefreshCw, Moon, Sun } from 'lucide-react'
@@ -143,7 +210,7 @@ const PALETTES = [
   { id: 'gold',   color: '#F59E0B', label: 'Noir Gold'      },
 ]
 
-export default function App() {
+function AppInner() {
   const { theme, toggleTheme } = useTheme()
   const [palette, setPalette] = useState(() => localStorage.getItem('cj-palette') || 'default')
   const [trades, setTrades] = useState([])
@@ -850,4 +917,10 @@ EJEMPLOS:
       />
     </div>
   )
+}
+
+export default function App() {
+  const [unlocked, setUnlocked] = useState(() => localStorage.getItem(AUTH_KEY) === CORRECT_HASH)
+  if (!unlocked) return <PasswordGate onUnlock={() => setUnlocked(true)} />
+  return <AppInner />
 }
