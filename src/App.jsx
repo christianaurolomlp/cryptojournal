@@ -81,6 +81,7 @@ import TradeHistory from './components/TradeHistory.jsx'
 import TradeForm from './components/TradeForm.jsx'
 import CloseModal from './components/CloseModal.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
+import ImportModal from './components/ImportModal.jsx'
 
 // ─── Voice Status ────────────────────────────────────────────────────────────
 const VOICE_IDLE = 'idle'
@@ -227,6 +228,7 @@ function AppInner() {
 
   // Modals
   const [showNewTrade, setShowNewTrade] = useState(false)
+  const [showImport, setShowImport] = useState(false)
   const [editTrade, setEditTrade] = useState(null)
   const [closeTrade, setCloseTrade] = useState(null)
   const [deleteTrade, setDeleteTrade] = useState(null)
@@ -373,6 +375,24 @@ function AppInner() {
         await apiStore.deleteTrade(trade.id)
       } catch (err) {
         console.error('Failed to delete trade from API:', err)
+      }
+      setSyncing(false)
+    }
+  }, [])
+
+  const importTrades = useCallback(async (newTrades) => {
+    setTrades(prev => {
+      const merged = [...prev, ...newTrades]
+      if (!isApiConfigured()) store.saveTrades(merged)
+      return merged
+    })
+    if (isApiConfigured()) {
+      setSyncing(true)
+      try {
+        await apiStore.bulkImport(newTrades)
+      } catch (err) {
+        console.error('Failed to bulk import trades to API:', err)
+        throw err
       }
       setSyncing(false)
     }
@@ -785,6 +805,14 @@ EJEMPLOS:
             </button>
 
             <button
+              className="btn-import"
+              onClick={() => setShowImport(true)}
+              title="Importar operaciones antiguas"
+            >
+              📥 Importar
+            </button>
+
+            <button
               className="btn-new"
               onClick={() => { setVoicePrefill(null); setShowNewTrade(true) }}
             >
@@ -873,6 +901,13 @@ EJEMPLOS:
           onSave={saveTrade}
           onClose={() => setEditTrade(null)}
           isEdit
+        />
+      )}
+
+      {showImport && (
+        <ImportModal
+          onImport={importTrades}
+          onClose={() => setShowImport(false)}
         />
       )}
 
